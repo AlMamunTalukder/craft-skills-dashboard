@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import * as React from "react"
+import { useLocation } from "react-router-dom"
 import {
-  AudioWaveform,
   BookOpen,
   Bot,
-  Command,
   Frame,
   GalleryVerticalEnd,
   Map,
@@ -17,6 +17,7 @@ import {
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
+import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -24,9 +25,10 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { ModeToggle } from "./mode-toggle"
 
 // This is sample data.
-const data = {
+const navData = {
   user: {
     name: "shadcn",
     email: "m@example.com",
@@ -37,120 +39,97 @@ const data = {
       name: "Acme Inc",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
+    }
   ],
   navMain: [
     {
-      title: "Content",
-      url: "#",
+      title: "Playground",
+      url: "/playground",
       icon: SquareTerminal,
-      isActive: true,
       items: [
         {
-          title: "Site Content",
-          url: "/site-content",
+          title: "About",
+          url: "/about",
         },
         {
-          title: "Banner",
-          url: "/banner",
+          title: "Dashboard",
+          url: "/dashboard",
         },
         {
-          title: "Class Schedule",
-          url: "#",
-        },
-        {
-          title: "Instructior",
-          url: "#",
-        },
-        {
-          title: "Total Class",
-          url: "#",
-        },
-        {
-          title: "Holiday",
-          url: "#",
+          title: "Settings",
+          url: "/settings",
         },
       ],
     },
     {
-      title: "Seminer",
-      url: "#",
+      title: "Models",
+      url: "/models",
       icon: Bot,
       items: [
         {
           title: "Genesis",
-          url: "#",
+          url: "/genesis",
         },
         {
           title: "Explorer",
-          url: "#",
+          url: "/explorer",
         },
         {
           title: "Quantum",
-          url: "#",
+          url: "/quantum",
         },
       ],
     },
     {
-      title: "Courses",
-      url: "#",
+      title: "Documentation",
+      url: "/documentation",
       icon: BookOpen,
       items: [
         {
           title: "Introduction",
-          url: "#",
+          url: "/introduction",
         },
         {
           title: "Get Started",
-          url: "#",
+          url: "/get-started",
         },
         {
           title: "Tutorials",
-          url: "#",
+          url: "/tutorials",
         },
         {
           title: "Changelog",
-          url: "#",
+          url: "/changelog",
         },
       ],
     },
     {
-      title: "Coupons",
-      url: "#",
+      title: "Settings",
+      url: "/settings",
       icon: Settings2,
       items: [
         {
           title: "General",
-          url: "#",
+          url: "/general",
         },
         {
           title: "Team",
-          url: "#",
+          url: "/team",
         },
         {
           title: "Billing",
-          url: "#",
-        },
+          url: "/billing",
+        }, 
         {
           title: "Limits",
-          url: "#",
+          url: "/limits",
         },
       ],
     },
   ],
-  filemanger: [
+  projects: [
     {
-      name: "File manager",
+      name: "Design Engineering",
       url: "#",
       icon: Frame,
     },
@@ -165,24 +144,100 @@ const data = {
       icon: Map,
     },
   ],
-  
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const location = useLocation()
+  const [navMain, setNavMain] = React.useState(() => 
+    initializeActiveStates(navData.navMain, location.pathname)
+  )
+
+  // Update active states when route changes
+  React.useEffect(() => {
+    setNavMain(prevNav => updateActiveStates(prevNav, location.pathname))
+  }, [location.pathname])
+
+  const handleItemClick = (clickedTitle: string) => {
+    setNavMain(prevNav => 
+      prevNav.map(item => ({
+        ...item,
+        isActive: item.title === clickedTitle,
+        // Reset all sub-items when main item is clicked
+        items: item.items?.map((subItem: any) => ({
+          ...subItem,
+          isActive: false
+        }))
+      }))
+    )
+  }
+
+  const handleSubItemClick = (mainTitle: string, subItemTitle: string) => {
+    setNavMain(prevNav => 
+      prevNav.map(item => ({
+        ...item,
+        isActive: item.title === mainTitle,
+        items: item.items?.map((subItem: any) => ({
+          ...subItem,
+          isActive: subItem.title === subItemTitle && item.title === mainTitle
+        }))
+      }))
+    )
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        {/* <TeamSwitcher teams={data.teams} /> */}
-        Craft Dashboard
+        <TeamSwitcher teams={navData.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.filemanger} />
+        <NavMain 
+          items={navMain} 
+          onItemClick={handleItemClick}
+          onSubItemClick={handleSubItemClick}
+        />
+        <NavProjects projects={navData.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <div className="flex justify-between p-3 gap-2">Theme
+          <ModeToggle/>
+        </div>
+        <NavUser user={navData.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )
+}
+
+// Helper function to initialize active states based on current path
+function initializeActiveStates(navMain: any[], currentPath: string) {
+  return navMain.map(item => {
+    const isMainActive = item.url === currentPath
+    const activeSubItem = item.items?.find((subItem: any) => subItem.url === currentPath)
+    
+    return {
+      ...item,
+      isActive: isMainActive || !!activeSubItem,
+      items: item.items?.map((subItem: any) => ({
+        ...subItem,
+        isActive: subItem.url === currentPath
+      }))
+    }
+  })
+}
+
+// Helper function to update active states based on current path
+function updateActiveStates(navMain: any[], currentPath: string) {
+  return navMain.map(item => {
+    const isMainActive = item.url === currentPath
+    const activeSubItem = item.items?.find((subItem: any) => subItem.url === currentPath)
+    
+    return {
+      ...item,
+      isActive: isMainActive || !!activeSubItem,
+      items: item.items?.map((subItem: any) => ({
+        ...subItem,
+        isActive: subItem.url === currentPath
+      }))
+    }
+  })
 }
