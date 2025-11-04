@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
+"use client";
 
-import * as React from "react"
-import { useLocation } from "react-router-dom"
+import * as React from "react";
+import { useLocation } from "react-router-dom";
 import {
   BookCheck,
   Database,
@@ -11,12 +11,12 @@ import {
   LayoutDashboard,
   LayoutGrid,
   Megaphone,
-  Percent
-} from "lucide-react"
+  Percent,
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
-import logo from '../../public/logo.png'
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
+import logo from "../../public/logo.png";
 import {
   Sidebar,
   SidebarContent,
@@ -26,7 +26,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 // Combined navigation data
 const navData = [
@@ -71,7 +71,6 @@ const navData = [
     url: "#",
     icon: Megaphone,
     isActive: false,
-
   },
   {
     title: "Courses",
@@ -112,7 +111,6 @@ const navData = [
         url: "/explorer",
         isActive: false,
       },
-
     ],
   },
   {
@@ -154,7 +152,6 @@ const navData = [
         url: "/explorer",
         isActive: false,
       },
-
     ],
   },
   {
@@ -163,52 +160,51 @@ const navData = [
     icon: Database,
     isActive: false,
   },
-
-]
+];
 
 const userData = {
   name: "Craft Skills",
   email: "craft@gmail.com",
   avatar: "/public/logo.png",
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const location = useLocation()
+  const location = useLocation();
   const [navItems, setNavItems] = React.useState(() =>
-    initializeActiveStates(navData, location.pathname)
-  )
+    initializeActiveStates(navData, location.pathname),
+  );
 
   // Update active states when route changes
   React.useEffect(() => {
-    setNavItems(prevNav => updateActiveStates(prevNav, location.pathname))
-  }, [location.pathname])
+    setNavItems((prevNav) => updateActiveStates(prevNav, location.pathname));
+  }, [location.pathname]);
 
   const handleItemClick = (clickedTitle: string) => {
-    setNavItems(prevNav =>
-      prevNav.map(item => ({
+    setNavItems((prevNav) =>
+      prevNav.map((item) => ({
         ...item,
         isActive: item.title === clickedTitle,
         // Reset all sub-items when main item is clicked
         items: item.items?.map((subItem: any) => ({
           ...subItem,
-          isActive: false
-        }))
-      }))
-    )
-  }
+          isActive: false,
+        })),
+      })),
+    );
+  };
 
   const handleSubItemClick = (mainTitle: string, subItemTitle: string) => {
-    setNavItems(prevNav =>
-      prevNav.map(item => ({
+    setNavItems((prevNav) =>
+      prevNav.map((item) => ({
         ...item,
         isActive: item.title === mainTitle,
         items: item.items?.map((subItem: any) => ({
           ...subItem,
-          isActive: subItem.title === subItemTitle && item.title === mainTitle
-        }))
-      }))
-    )
-  }
+          isActive: subItem.title === subItemTitle && item.title === mainTitle,
+        })),
+      })),
+    );
+  };
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -220,7 +216,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border"
             >
               <div className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <img src={logo} className="rounded-lg" alt="Craft Skills Logo" />
+                <img
+                  src={logo}
+                  className="rounded-lg"
+                  alt="Craft Skills Logo"
+                />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight truncate font-medium">
                 Craft Skills
@@ -242,39 +242,43 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
 
 // Helper function to initialize active states based on current path
 function initializeActiveStates(navItems: any[], currentPath: string) {
-  return navItems.map(item => {
-    const isMainActive = item.url === currentPath
-    const activeSubItem = item.items?.find((subItem: any) => subItem.url === currentPath)
+  return navItems.map((item) => {
+    const isMainActive = item.url === currentPath;
+    const activeSubItem = item.items?.find(
+      (subItem: any) => subItem.url === currentPath,
+    );
 
     return {
       ...item,
       isActive: isMainActive || !!activeSubItem,
       items: item.items?.map((subItem: any) => ({
         ...subItem,
-        isActive: subItem.url === currentPath
-      }))
-    }
-  })
+        isActive: subItem.url === currentPath,
+      })),
+    };
+  });
 }
 
 // Helper function to update active states based on current path
 function updateActiveStates(navItems: any[], currentPath: string) {
-  return navItems.map(item => {
-    const isMainActive = item.url === currentPath
-    const activeSubItem = item.items?.find((subItem: any) => subItem.url === currentPath)
+  return navItems.map((item) => {
+    const isMainActive = item.url === currentPath;
+    const activeSubItem = item.items?.find(
+      (subItem: any) => subItem.url === currentPath,
+    );
 
     return {
       ...item,
       isActive: isMainActive || !!activeSubItem,
       items: item.items?.map((subItem: any) => ({
         ...subItem,
-        isActive: subItem.url === currentPath
-      }))
-    }
-  })
+        isActive: subItem.url === currentPath,
+      })),
+    };
+  });
 }

@@ -4,15 +4,25 @@ import Home from "../pages/Home/Home";
 import About from "@/pages/SiteContent/SiteContent";
 import Main from "@/Layout/Main";
 import { LoginForm } from "@/components/login-form";
+import GuestRoute from "@/components/GuestRoute";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginForm />,
+    element: (
+      <GuestRoute>
+        <LoginForm />
+      </GuestRoute>
+    ),
   },
   {
-    path: "/", 
-    element: <Main />,
+    path: "/",
+    element: (
+      <ProtectedRoute roles={["admin", "teacher"]}>
+        <Main />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "dashboard",

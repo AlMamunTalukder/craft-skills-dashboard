@@ -1,19 +1,25 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { 
-  BookOpen, 
-  Users, 
-  GraduationCap, 
-  TrendingUp, 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import {
+  BookOpen,
+  Users,
+  GraduationCap,
+  TrendingUp,
   Clock,
   Award,
   Calendar,
   BarChart3,
   PlayCircle,
-  CheckCircle2
-} from "lucide-react"
+  CheckCircle2,
+} from "lucide-react";
 
 const Home = () => {
   // Sample data - replace with actual data from your API
@@ -22,27 +28,87 @@ const Home = () => {
     totalStudents: 1247,
     totalTeachers: 48,
     completionRate: 76,
-    activeUsers: 892
-  }
+    activeUsers: 892,
+  };
 
   const recentCourses = [
-    { id: 1, title: "Web Development Bootcamp", progress: 85, students: 234, duration: "8 weeks" },
-    { id: 2, title: "Data Science Fundamentals", progress: 45, students: 189, duration: "10 weeks" },
-    { id: 3, title: "UI/UX Design Masterclass", progress: 30, students: 156, duration: "6 weeks" }
-  ]
+    {
+      id: 1,
+      title: "Web Development Bootcamp",
+      progress: 85,
+      students: 234,
+      duration: "8 weeks",
+    },
+    {
+      id: 2,
+      title: "Data Science Fundamentals",
+      progress: 45,
+      students: 189,
+      duration: "10 weeks",
+    },
+    {
+      id: 3,
+      title: "UI/UX Design Masterclass",
+      progress: 30,
+      students: 156,
+      duration: "6 weeks",
+    },
+  ];
 
   const upcomingEvents = [
-    { id: 1, title: "Live Q&A Session", date: "2024-01-15", time: "14:00", type: "workshop" },
-    { id: 2, title: "New Course Launch", date: "2024-01-20", time: "10:00", type: "launch" },
-    { id: 3, title: "Student Meetup", date: "2024-01-25", time: "16:00", type: "meetup" }
-  ]
+    {
+      id: 1,
+      title: "Live Q&A Session",
+      date: "2024-01-15",
+      time: "14:00",
+      type: "workshop",
+    },
+    {
+      id: 2,
+      title: "New Course Launch",
+      date: "2024-01-20",
+      time: "10:00",
+      type: "launch",
+    },
+    {
+      id: 3,
+      title: "Student Meetup",
+      date: "2024-01-25",
+      time: "16:00",
+      type: "meetup",
+    },
+  ];
 
   const quickStats = [
-    { icon: BookOpen, label: "Total Courses", value: stats.totalCourses, change: "+12%", trend: "up" },
-    { icon: Users, label: "Total Students", value: stats.totalStudents, change: "+8%", trend: "up" },
-    { icon: GraduationCap, label: "Active Teachers", value: stats.totalTeachers, change: "+5%", trend: "up" },
-    { icon: TrendingUp, label: "Completion Rate", value: `${stats.completionRate}%`, change: "+3%", trend: "up" }
-  ]
+    {
+      icon: BookOpen,
+      label: "Total Courses",
+      value: stats.totalCourses,
+      change: "+12%",
+      trend: "up",
+    },
+    {
+      icon: Users,
+      label: "Total Students",
+      value: stats.totalStudents,
+      change: "+8%",
+      trend: "up",
+    },
+    {
+      icon: GraduationCap,
+      label: "Active Teachers",
+      value: stats.totalTeachers,
+      change: "+5%",
+      trend: "up",
+    },
+    {
+      icon: TrendingUp,
+      label: "Completion Rate",
+      value: `${stats.completionRate}%`,
+      change: "+3%",
+      trend: "up",
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -59,13 +125,19 @@ const Home = () => {
         {quickStats.map((stat, index) => (
           <Card key={index}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {stat.label}
+              </CardTitle>
               <stat.icon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stat.value}</div>
               <p className="text-xs text-muted-foreground">
-                <span className={stat.trend === "up" ? "text-green-600" : "text-red-600"}>
+                <span
+                  className={
+                    stat.trend === "up" ? "text-green-600" : "text-red-600"
+                  }
+                >
                   {stat.change}
                 </span>{" "}
                 from last month
@@ -88,13 +160,18 @@ const Home = () => {
           <CardContent>
             <div className="space-y-4">
               {recentCourses.map((course) => (
-                <div key={course.id} className="flex items-center justify-between space-x-4">
+                <div
+                  key={course.id}
+                  className="flex items-center justify-between space-x-4"
+                >
                   <div className="flex items-center space-x-4">
                     <div className="rounded-lg bg-primary/10 p-2">
                       <BookOpen className="h-6 w-6 text-primary" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-medium leading-none">{course.title}</p>
+                      <p className="text-sm font-medium leading-none">
+                        {course.title}
+                      </p>
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                         <Users className="h-3 w-3" />
                         <span>{course.students} students</span>
@@ -105,7 +182,9 @@ const Home = () => {
                   </div>
                   <div className="flex flex-col items-end space-y-1">
                     <Progress value={course.progress} className="w-24" />
-                    <span className="text-sm text-muted-foreground">{course.progress}%</span>
+                    <span className="text-sm text-muted-foreground">
+                      {course.progress}%
+                    </span>
                   </div>
                 </div>
               ))}
@@ -123,9 +202,7 @@ const Home = () => {
           <Card>
             <CardHeader>
               <CardTitle>Upcoming Events</CardTitle>
-              <CardDescription>
-                Workshops and important dates
-              </CardDescription>
+              <CardDescription>Workshops and important dates</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -142,9 +219,7 @@ const Home = () => {
                         <span>{event.time}</span>
                       </div>
                     </div>
-                    <Badge variant="outline">
-                      {event.type}
-                    </Badge>
+                    <Badge variant="outline">{event.type}</Badge>
                   </div>
                 ))}
               </div>
@@ -159,9 +234,7 @@ const Home = () => {
           <Card>
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>
-                Frequently used actions
-              </CardDescription>
+              <CardDescription>Frequently used actions</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-2">
@@ -189,9 +262,7 @@ const Home = () => {
           <Card>
             <CardHeader>
               <CardTitle>Platform Performance</CardTitle>
-              <CardDescription>
-                Overall system health
-              </CardDescription>
+              <CardDescription>Overall system health</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -200,7 +271,10 @@ const Home = () => {
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
                     <span className="text-sm">Server Status</span>
                   </div>
-                  <Badge variant="outline" className="bg-green-50 text-green-700">
+                  <Badge
+                    variant="outline"
+                    className="bg-green-50 text-green-700"
+                  >
                     Operational
                   </Badge>
                 </div>
@@ -218,7 +292,10 @@ const Home = () => {
                     <Award className="h-4 w-4 text-orange-600" />
                     <span className="text-sm">Certificate System</span>
                   </div>
-                  <Badge variant="outline" className="bg-orange-50 text-orange-700">
+                  <Badge
+                    variant="outline"
+                    className="bg-orange-50 text-orange-700"
+                  >
                     Active
                   </Badge>
                 </div>
