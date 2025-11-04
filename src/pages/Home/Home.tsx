@@ -1,7 +1,232 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { 
+  BookOpen, 
+  Users, 
+  GraduationCap, 
+  TrendingUp, 
+  Clock,
+  Award,
+  Calendar,
+  BarChart3,
+  PlayCircle,
+  CheckCircle2
+} from "lucide-react"
+
 const Home = () => {
+  // Sample data - replace with actual data from your API
+  const stats = {
+    totalCourses: 24,
+    totalStudents: 1247,
+    totalTeachers: 48,
+    completionRate: 76,
+    activeUsers: 892
+  }
+
+  const recentCourses = [
+    { id: 1, title: "Web Development Bootcamp", progress: 85, students: 234, duration: "8 weeks" },
+    { id: 2, title: "Data Science Fundamentals", progress: 45, students: 189, duration: "10 weeks" },
+    { id: 3, title: "UI/UX Design Masterclass", progress: 30, students: 156, duration: "6 weeks" }
+  ]
+
+  const upcomingEvents = [
+    { id: 1, title: "Live Q&A Session", date: "2024-01-15", time: "14:00", type: "workshop" },
+    { id: 2, title: "New Course Launch", date: "2024-01-20", time: "10:00", type: "launch" },
+    { id: 3, title: "Student Meetup", date: "2024-01-25", time: "16:00", type: "meetup" }
+  ]
+
+  const quickStats = [
+    { icon: BookOpen, label: "Total Courses", value: stats.totalCourses, change: "+12%", trend: "up" },
+    { icon: Users, label: "Total Students", value: stats.totalStudents, change: "+8%", trend: "up" },
+    { icon: GraduationCap, label: "Active Teachers", value: stats.totalTeachers, change: "+5%", trend: "up" },
+    { icon: TrendingUp, label: "Completion Rate", value: `${stats.completionRate}%`, change: "+3%", trend: "up" }
+  ]
+
   return (
-    <div>
-     log
+    <div className="space-y-6">
+      {/* Welcome Section */}
+      <div className="flex flex-col gap-2">
+        <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
+        <p className="text-muted-foreground">
+          Here's what's happening with your learning platform today.
+        </p>
+      </div>
+
+      {/* Quick Stats Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {quickStats.map((stat, index) => (
+          <Card key={index}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
+              <stat.icon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className="text-xs text-muted-foreground">
+                <span className={stat.trend === "up" ? "text-green-600" : "text-red-600"}>
+                  {stat.change}
+                </span>{" "}
+                from last month
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+        {/* Recent Courses - Left Column */}
+        <Card className="lg:col-span-4">
+          <CardHeader>
+            <CardTitle>Recent Courses</CardTitle>
+            <CardDescription>
+              Your most popular courses with student progress
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {recentCourses.map((course) => (
+                <div key={course.id} className="flex items-center justify-between space-x-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="rounded-lg bg-primary/10 p-2">
+                      <BookOpen className="h-6 w-6 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none">{course.title}</p>
+                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                        <Users className="h-3 w-3" />
+                        <span>{course.students} students</span>
+                        <Clock className="h-3 w-3" />
+                        <span>{course.duration}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end space-y-1">
+                    <Progress value={course.progress} className="w-24" />
+                    <span className="text-sm text-muted-foreground">{course.progress}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Button className="mt-4 w-full" variant="outline">
+              <BookOpen className="mr-2 h-4 w-4" />
+              View All Courses
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Right Sidebar */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Upcoming Events */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Upcoming Events</CardTitle>
+              <CardDescription>
+                Workshops and important dates
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {upcomingEvents.map((event) => (
+                  <div key={event.id} className="flex items-center space-x-4">
+                    <div className="rounded-lg bg-secondary p-2">
+                      <Calendar className="h-4 w-4" />
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <p className="text-sm font-medium">{event.title}</p>
+                      <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                        <span>{new Date(event.date).toLocaleDateString()}</span>
+                        <span>•</span>
+                        <span>{event.time}</span>
+                      </div>
+                    </div>
+                    <Badge variant="outline">
+                      {event.type}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+              <Button className="mt-4 w-full" variant="outline">
+                <Calendar className="mr-2 h-4 w-4" />
+                View Calendar
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>
+                Frequently used actions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-2">
+                <Button variant="outline" className="h-auto flex-col gap-2 p-4">
+                  <BookOpen className="h-5 w-5" />
+                  <span className="text-xs">Add Course</span>
+                </Button>
+                <Button variant="outline" className="h-auto flex-col gap-2 p-4">
+                  <Users className="h-5 w-5" />
+                  <span className="text-xs">Manage Students</span>
+                </Button>
+                <Button variant="outline" className="h-auto flex-col gap-2 p-4">
+                  <GraduationCap className="h-5 w-5" />
+                  <span className="text-xs">Add Teacher</span>
+                </Button>
+                <Button variant="outline" className="h-auto flex-col gap-2 p-4">
+                  <BarChart3 className="h-5 w-5" />
+                  <span className="text-xs">View Reports</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Platform Performance */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Platform Performance</CardTitle>
+              <CardDescription>
+                Overall system health
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <span className="text-sm">Server Status</span>
+                  </div>
+                  <Badge variant="outline" className="bg-green-50 text-green-700">
+                    Operational
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <PlayCircle className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm">Video Streaming</span>
+                  </div>
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                    Stable
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Award className="h-4 w-4 text-orange-600" />
+                    <span className="text-sm">Certificate System</span>
+                  </div>
+                  <Badge variant="outline" className="bg-orange-50 text-orange-700">
+                    Active
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

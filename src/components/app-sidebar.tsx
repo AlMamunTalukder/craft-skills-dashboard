@@ -45,13 +45,23 @@ const navData = [
     isActive: false,
     items: [
       {
-        title: "About",
+        title: "Site Content",
         url: "/about",
         isActive: false,
       },
       {
-        title: "Settings",
-        url: "/settings",
+        title: "Banner",
+        url: "#",
+        isActive: false,
+      },
+      {
+        title: "Class Schedule & Holidays",
+        url: "#",
+        isActive: false,
+      },
+      {
+        title: "Reviews",
+        url: "#",
         isActive: false,
       },
     ],
@@ -61,23 +71,7 @@ const navData = [
     url: "#",
     icon: Megaphone,
     isActive: false,
-    items: [
-      {
-        title: "Genesis",
-        url: "/genesis",
-        isActive: false,
-      },
-      {
-        title: "Explorer",
-        url: "/explorer",
-        isActive: false,
-      },
-      {
-        title: "Quantum",
-        url: "/quantum",
-        isActive: false,
-      },
-    ],
+
   },
   {
     title: "Courses",
@@ -86,17 +80,17 @@ const navData = [
     isActive: false,
     items: [
       {
-        title: "Genesis",
+        title: "List",
         url: "/genesis",
         isActive: false,
       },
       {
-        title: "Explorer",
+        title: "Add",
         url: "/explorer",
         isActive: false,
       },
       {
-        title: "Quantum",
+        title: "Course Batch",
         url: "/quantum",
         isActive: false,
       },
@@ -109,20 +103,16 @@ const navData = [
     isActive: false,
     items: [
       {
-        title: "Genesis",
+        title: "List",
         url: "/genesis",
         isActive: false,
       },
       {
-        title: "Explorer",
+        title: "Add",
         url: "/explorer",
         isActive: false,
       },
-      {
-        title: "Quantum",
-        url: "/quantum",
-        isActive: false,
-      },
+
     ],
   },
   {
@@ -132,17 +122,17 @@ const navData = [
     isActive: false,
     items: [
       {
-        title: "Genesis",
+        title: "Main Class ",
         url: "/genesis",
         isActive: false,
       },
       {
-        title: "Explorer",
+        title: "Special Class",
         url: "/explorer",
         isActive: false,
       },
       {
-        title: "Quantum",
+        title: "Guest Class",
         url: "/quantum",
         isActive: false,
       },
@@ -155,20 +145,16 @@ const navData = [
     isActive: false,
     items: [
       {
-        title: "Genesis",
+        title: "Photos",
         url: "/genesis",
         isActive: false,
       },
       {
-        title: "Explorer",
+        title: "Folders",
         url: "/explorer",
         isActive: false,
       },
-      {
-        title: "Quantum",
-        url: "/quantum",
-        isActive: false,
-      },
+
     ],
   },
   {
