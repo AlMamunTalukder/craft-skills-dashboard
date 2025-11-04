@@ -4,161 +4,201 @@
 import * as React from "react"
 import { useLocation } from "react-router-dom"
 import {
-  BookOpen,
-  Bot,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  BookCheck,
+  Database,
+  File,
+  Hand,
+  LayoutDashboard,
+  LayoutGrid,
+  Megaphone,
+  Percent
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import logo from '../../public/logo.png'
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "./mode-toggle"
 
-// This is sample data.
-const navData = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+// Combined navigation data
+const navData = [
+  // Simple menu items (no submenu)
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: LayoutDashboard,
+    isActive: false,
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    }
-  ],
-  navMain: [
-    {
-      title: "Playground",
-      url: "/playground",
-      icon: SquareTerminal,
-      items: [
-        {
-          title: "About",
-          url: "/about",
-        },
-        {
-          title: "Dashboard",
-          url: "/dashboard",
-        },
-        {
-          title: "Settings",
-          url: "/settings",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "/models",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "/genesis",
-        },
-        {
-          title: "Explorer",
-          url: "/explorer",
-        },
-        {
-          title: "Quantum",
-          url: "/quantum",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "/documentation",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "/introduction",
-        },
-        {
-          title: "Get Started",
-          url: "/get-started",
-        },
-        {
-          title: "Tutorials",
-          url: "/tutorials",
-        },
-        {
-          title: "Changelog",
-          url: "/changelog",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "/general",
-        },
-        {
-          title: "Team",
-          url: "/team",
-        },
-        {
-          title: "Billing",
-          url: "/billing",
-        }, 
-        {
-          title: "Limits",
-          url: "/limits",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  // Menu items with submenus
+  {
+    title: "Content",
+    url: "#",
+    icon: LayoutGrid,
+    isActive: false,
+    items: [
+      {
+        title: "About",
+        url: "/about",
+        isActive: false,
+      },
+      {
+        title: "Settings",
+        url: "/settings",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Seminar",
+    url: "#",
+    icon: Megaphone,
+    isActive: false,
+    items: [
+      {
+        title: "Genesis",
+        url: "/genesis",
+        isActive: false,
+      },
+      {
+        title: "Explorer",
+        url: "/explorer",
+        isActive: false,
+      },
+      {
+        title: "Quantum",
+        url: "/quantum",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Courses",
+    url: "#",
+    icon: BookCheck,
+    isActive: false,
+    items: [
+      {
+        title: "Genesis",
+        url: "/genesis",
+        isActive: false,
+      },
+      {
+        title: "Explorer",
+        url: "/explorer",
+        isActive: false,
+      },
+      {
+        title: "Quantum",
+        url: "/quantum",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Coupons",
+    url: "#",
+    icon: Percent,
+    isActive: false,
+    items: [
+      {
+        title: "Genesis",
+        url: "/genesis",
+        isActive: false,
+      },
+      {
+        title: "Explorer",
+        url: "/explorer",
+        isActive: false,
+      },
+      {
+        title: "Quantum",
+        url: "/quantum",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Attendance",
+    url: "#",
+    icon: Hand,
+    isActive: false,
+    items: [
+      {
+        title: "Genesis",
+        url: "/genesis",
+        isActive: false,
+      },
+      {
+        title: "Explorer",
+        url: "/explorer",
+        isActive: false,
+      },
+      {
+        title: "Quantum",
+        url: "/quantum",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "File Manager",
+    url: "#",
+    icon: File,
+    isActive: false,
+    items: [
+      {
+        title: "Genesis",
+        url: "/genesis",
+        isActive: false,
+      },
+      {
+        title: "Explorer",
+        url: "/explorer",
+        isActive: false,
+      },
+      {
+        title: "Quantum",
+        url: "/quantum",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Database Backup",
+    url: "/design",
+    icon: Database,
+    isActive: false,
+  },
+
+]
+
+const userData = {
+  name: "Craft Skills",
+  email: "craft@gmail.com",
+  avatar: "/public/logo.png",
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation()
-  const [navMain, setNavMain] = React.useState(() => 
-    initializeActiveStates(navData.navMain, location.pathname)
+  const [navItems, setNavItems] = React.useState(() =>
+    initializeActiveStates(navData, location.pathname)
   )
 
   // Update active states when route changes
   React.useEffect(() => {
-    setNavMain(prevNav => updateActiveStates(prevNav, location.pathname))
+    setNavItems(prevNav => updateActiveStates(prevNav, location.pathname))
   }, [location.pathname])
 
   const handleItemClick = (clickedTitle: string) => {
-    setNavMain(prevNav => 
+    setNavItems(prevNav =>
       prevNav.map(item => ({
         ...item,
         isActive: item.title === clickedTitle,
@@ -172,7 +212,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }
 
   const handleSubItemClick = (mainTitle: string, subItemTitle: string) => {
-    setNavMain(prevNav => 
+    setNavItems(prevNav =>
       prevNav.map(item => ({
         ...item,
         isActive: item.title === mainTitle,
@@ -187,21 +227,32 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={navData.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border"
+            >
+              <div className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <img src={logo} className="rounded-lg" alt="Craft Skills Logo" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight truncate font-medium">
+                Craft Skills
+              </div>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
-        <NavMain 
-          items={navMain} 
+        <NavMain
+          items={navItems}
           onItemClick={handleItemClick}
           onSubItemClick={handleSubItemClick}
         />
-        <NavProjects projects={navData.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex justify-between p-3 gap-2">Theme
-          <ModeToggle/>
-        </div>
-        <NavUser user={navData.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
@@ -209,11 +260,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 }
 
 // Helper function to initialize active states based on current path
-function initializeActiveStates(navMain: any[], currentPath: string) {
-  return navMain.map(item => {
+function initializeActiveStates(navItems: any[], currentPath: string) {
+  return navItems.map(item => {
     const isMainActive = item.url === currentPath
     const activeSubItem = item.items?.find((subItem: any) => subItem.url === currentPath)
-    
+
     return {
       ...item,
       isActive: isMainActive || !!activeSubItem,
@@ -226,11 +277,11 @@ function initializeActiveStates(navMain: any[], currentPath: string) {
 }
 
 // Helper function to update active states based on current path
-function updateActiveStates(navMain: any[], currentPath: string) {
-  return navMain.map(item => {
+function updateActiveStates(navItems: any[], currentPath: string) {
+  return navItems.map(item => {
     const isMainActive = item.url === currentPath
     const activeSubItem = item.items?.find((subItem: any) => subItem.url === currentPath)
-    
+
     return {
       ...item,
       isActive: isMainActive || !!activeSubItem,
