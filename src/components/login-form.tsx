@@ -49,7 +49,7 @@ export function LoginForm({
   return (
     <div
       className={cn(
-        "flex items-center justify-center min-h-screen bg-gray-50",
+        "flex items-center justify-center min-h-screen bg-black",
         className,
       )}
       {...props}
@@ -73,6 +73,7 @@ export function LoginForm({
               label="Email"
               type="email"
               placeholder="m@example.com"
+              className=""
             />
             <TextInput
               name="password"
