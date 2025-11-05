@@ -49,7 +49,7 @@ export function LoginForm({
   return (
     <div
       className={cn(
-        "flex items-center justify-center min-h-screen bg-gray-50",
+        "flex items-center justify-center min-h-screen",
         className,
       )}
       {...props}
@@ -60,9 +60,9 @@ export function LoginForm({
             <img
               src={logo}
               alt="Craft Skills Logo"
-              className="h-20 w-[250px]"
+              className="h-16 w-[250px]"
             />
-            <h2 className="text-2xl font-semibold text-gray-700">
+            <h2 className="text-2xl font-semibold text-gray-400">
               Welcome Back
             </h2>
           </div>
