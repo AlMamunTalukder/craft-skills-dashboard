@@ -40,7 +40,7 @@ export default function TextInput({
   value: initialValue,
   min,
   max,
-  labelClassName = "text-gray-200",
+  labelClassName = "dark:text-white",
   onChange: customOnChange,
   className = "",
 }: TextInputProps) {
@@ -110,7 +110,8 @@ export default function TextInput({
                   }
                   className={cn(
                     className,
-                    "block w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-gray-200 shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
+                    "block w-full rounded-md border-0 py-2 dark:text-white p-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-sm",
+                    error ? "focus:ring-red-500" : "focus:ring-indigo-600",
                     icon ? "pl-8" : "",
                     error ? "border-red-500 focus-visible:ring-red-500" : "focus-visible:ring-indigo-500",
                   )}
