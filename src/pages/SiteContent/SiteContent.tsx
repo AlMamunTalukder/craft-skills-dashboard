@@ -14,13 +14,10 @@ import {
     Group,
     MessageCircle,
     Send,
-    Users,
-    GraduationCap,
-    BookOpen,
-    Trophy,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import TableHeader from "../Tables/TableHeader";
+import { Outlet } from "react-router-dom";
 
 
 export default function SiteContent() {
@@ -50,8 +47,11 @@ export default function SiteContent() {
     }
 
     return (
-        <div className="py-10 space-y-8">
-            {/* the rest stays the SAME */}
+
+        <div className="py-1 space-y-8">
+             {location.pathname === "/sitecontent" ? (
+           
+            <>
 
             {/* Page header */}
             <TableHeader
@@ -61,46 +61,14 @@ export default function SiteContent() {
                 data={data}
                 model="student"
                 onStatusFilter={setStatusFilter}
-            />
-
-            {/* Stats Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                    icon={<Users className="h-6 w-6" />}
-                    title="Total Teachers"
-                    value={data.totalsTeachers || 0}
-                    color="text-blue-600"
-                    bgColor="bg-blue-50"
-                />
-                <StatCard
-                    icon={<BookOpen className="h-6 w-6" />}
-                    title="Total Courses"
-                    value={data.totalCourses || 0}
-                    color="text-green-600"
-                    bgColor="bg-green-50"
-                />
-                <StatCard
-                    icon={<GraduationCap className="h-6 w-6" />}
-                    title="Total Batches"
-                    value={data.totalBatches || 0}
-                    color="text-purple-600"
-                    bgColor="bg-purple-50"
-                />
-                <StatCard
-                    icon={<Trophy className="h-6 w-6" />}
-                    title="Success Rate"
-                    value={`${data.successRate || 0}%`}
-                    color="text-orange-600"
-                    bgColor="bg-orange-50"
-                />
-            </div>
+            />       
 
             {/* Main Card */}
             <Card className="shadow-md border border-muted">
-                <CardContent className="space-y-10 p-8">
+                <CardContent className="space-y-10 p-5">
                     {/* Tagline */}
                     <SectionHeader icon={<MessageCircle />} title="Tagline" />
-                    <p className="text-xl font-semibold bg-muted/20 p-4 rounded-lg">
+                    <p className="text-xl font-semibold bg-muted/20 p-0 rounded-lg">
                         {data.tagline}
                     </p>
 
@@ -159,40 +127,17 @@ export default function SiteContent() {
                     </div>
                 </CardContent>
             </Card>
+            </>
+            ):(
+
+            <Outlet />)}
         </div>
+
+
     );
 }
 
-// Stats Card Component
-function StatCard({
-    icon,
-    title,
-    value,
-    color,
-    bgColor,
-}: {
-    icon: React.ReactNode;
-    title: string;
-    value: string | number;
-    color: string;
-    bgColor: string;
-}) {
-    return (
-        <Card className="shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                    <div className={`p-3 rounded-full ${bgColor}`}>
-                        <div className={color}>{icon}</div>
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-muted-foreground">{title}</p>
-                        <p className="text-2xl font-bold">{value}</p>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-    );
-}
+
 
 // Reusable Section Header
 function SectionHeader({

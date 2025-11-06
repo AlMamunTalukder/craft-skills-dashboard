@@ -38,7 +38,7 @@ type TableHeaderProps = {
     showImport?: boolean;
     showButton?: boolean;
     showExport?: boolean;
-    onStatusFilter?: (value: string | null) => void; // ✅ important
+    onStatusFilter?: (value: string | null) => void; 
 };
 
 export default function TableHeader({
@@ -111,7 +111,7 @@ export default function TableHeader({
     }
 
     return (
-        <div className="bg-muted/50 border border-muted rounded-xl shadow-sm px-4 py-3 mb-6">
+        <div className="bg-muted/50 border border-muted rounded-xl shadow-sm px-4 py-1 mb-6">
             <div className="flex justify-between items-center py-3">
                 <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
 

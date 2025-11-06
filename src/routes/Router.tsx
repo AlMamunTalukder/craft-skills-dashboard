@@ -1,11 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import Home from "../pages/Home/Home";
-import About from "@/pages/SiteContent/SiteContent";
+
 import Main from "@/Layout/Main";
 import { LoginForm } from "@/components/login-form";
 import GuestRoute from "@/components/GuestRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import SiteContent from "@/pages/SiteContent/SiteContent";
+import UpdateSiteContent from "@/pages/SiteContent/UpdateSiteContent/UpdateSiteContent";
 
 const router = createBrowserRouter([
   {
@@ -29,9 +31,15 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "about",
-        element: <About />,
+        path: "sitecontent",
+        element: <SiteContent />,
+
       },
+      {
+        path: "sitecontent/update",
+        element: <UpdateSiteContent />
+      }
+
     ],
   },
 ]);

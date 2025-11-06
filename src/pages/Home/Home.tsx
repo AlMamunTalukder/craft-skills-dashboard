@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Card,
   CardContent,
@@ -21,15 +23,40 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
+
+
+import {
+    Trophy,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+
 const Home = () => {
-  // Sample data - replace with actual data from your API
-  const stats = {
-    totalCourses: 24,
-    totalStudents: 1247,
-    totalTeachers: 48,
-    completionRate: 76,
-    activeUsers: 892,
-  };
+
+  const [data, setData] = useState<any>(null);
+      const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  
+      const filteredData = statusFilter
+          ? data.filter((item: any) => String(item.status) === statusFilter)
+          : data;
+  
+      useEffect(() => {
+          const loadData = async () => {
+              try {
+                  const res = await fetch(`${import.meta.env.VITE_API_URL}/site`);
+                  const json = await res.json();
+                  setData(json?.data);
+              } catch (error) {
+                  console.error("Failed to load site data:", error);
+              }
+          };
+  
+          loadData();
+      }, []);
+  
+      if (!data) {
+          return <div className="text-center mt-10 text-gray-500">Loading...</div>;
+      }
+  
 
   const recentCourses = [
     {
@@ -79,36 +106,7 @@ const Home = () => {
     },
   ];
 
-  const quickStats = [
-    {
-      icon: BookOpen,
-      label: "Total Courses",
-      value: stats.totalCourses,
-      change: "+12%",
-      trend: "up",
-    },
-    {
-      icon: Users,
-      label: "Total Students",
-      value: stats.totalStudents,
-      change: "+8%",
-      trend: "up",
-    },
-    {
-      icon: GraduationCap,
-      label: "Active Teachers",
-      value: stats.totalTeachers,
-      change: "+5%",
-      trend: "up",
-    },
-    {
-      icon: TrendingUp,
-      label: "Completion Rate",
-      value: `${stats.completionRate}%`,
-      change: "+3%",
-      trend: "up",
-    },
-  ];
+  
 
   return (
     <div className="space-y-6">
@@ -120,32 +118,39 @@ const Home = () => {
         </p>
       </div>
 
-      {/* Quick Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {quickStats.map((stat, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.label}
-              </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                <span
-                  className={
-                    stat.trend === "up" ? "text-green-600" : "text-red-600"
-                  }
-                >
-                  {stat.change}
-                </span>{" "}
-                from last month
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Stats Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatCard
+                    icon={<Users className="h-6 w-6" />}
+                    title="Total Teachers"
+                    value={data.totalsTeachers || 0}
+                    color="text-blue-600"
+                    bgColor="bg-blue-50"
+                />
+                <StatCard
+                    icon={<BookOpen className="h-6 w-6" />}
+                    title="Total Courses"
+                    value={data.totalCourses || 0}
+                    color="text-green-600"
+                    bgColor="bg-green-50"
+                />
+                <StatCard
+                    icon={<GraduationCap className="h-6 w-6" />}
+                    title="Total Batches"
+                    value={data.totalBatches || 0}
+                    color="text-purple-600"
+                    bgColor="bg-purple-50"
+                />
+                <StatCard
+                    icon={<Trophy className="h-6 w-6" />}
+                    title="Success Rate"
+                    value={`${data.successRate || 0}%`}
+                    color="text-orange-600"
+                    bgColor="bg-orange-50"
+                />
+            </div>
+
+    
 
       {/* Main Content Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
@@ -308,4 +313,37 @@ const Home = () => {
   );
 };
 
+
+
 export default Home;
+
+
+function StatCard({
+    icon,
+    title,
+    value,
+    color,
+    bgColor,
+}: {
+    icon: React.ReactNode;
+    title: string;
+    value: string | number;
+    color: string;
+    bgColor: string;
+}) {
+    return (
+        <Card className="shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-full ${bgColor}`}>
+                        <div className={color}>{icon}</div>
+                    </div>
+                    <div>
+                        <p className="text-sm font-medium text-muted-foreground">{title}</p>
+                        <p className="text-2xl font-bold">{value}</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}

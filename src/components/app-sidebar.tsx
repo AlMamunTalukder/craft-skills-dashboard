@@ -46,7 +46,7 @@ const navData = [
     items: [
       {
         title: "Site Content",
-        url: "/about",
+        url: "/sitecontent",
         isActive: false,
       },
       {
