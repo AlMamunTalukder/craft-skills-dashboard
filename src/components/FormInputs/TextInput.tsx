@@ -9,6 +9,7 @@ import { CircleHelp, MonitorUp } from "lucide-react";
 import { Controller, useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
+
 type TextInputProps = {
   name: string;
   label: string;
@@ -52,7 +53,7 @@ export default function TextInput({
         <label
           htmlFor={name}
           className={cn(
-            "block font-medium leading-6 text-gray-900",
+            "block font-medium leading-6 text-black",
             labelClassName,
           )}
         >
@@ -101,18 +102,19 @@ export default function TextInput({
                     customOnChange
                       ? customOnChange
                       : (e) => {
-                          const inputValue = e.target.value;
-                          const numericValue =
-                            type === "number" ? Number(inputValue) : inputValue;
-                          onChange(numericValue);
-                        }
+                        const inputValue = e.target.value;
+                        const numericValue =
+                          type === "number" ? Number(inputValue) : inputValue;
+                        onChange(numericValue);
+                      }
                   }
-                  className={cn(
+                   className={cn(
                     className,
-                    "block w-full rounded-md border-0 py-2 dark:text-white p-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-sm",
-                    error ? "focus:ring-red-500" : "focus:ring-indigo-600",
+                    "block w-full rounded-md border border-input bg-background px-3 py-2 text-sm dark:text-gray-200 shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
                     icon ? "pl-8" : "",
+                    error ? "border-red-500 focus-visible:ring-red-500" : "focus-visible:ring-indigo-500",
                   )}
+
                   placeholder={placeholder || label}
                 />
                 {unit && (

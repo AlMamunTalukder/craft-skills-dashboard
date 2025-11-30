@@ -6,6 +6,7 @@ import GuestRoute from "@/components/GuestRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import SiteContent from "@/pages/SiteContent/SiteContent";
 import UpdateSiteContentPage from "@/pages/SiteContent/update/page";
+import UpdateSiteContent from "@/pages/SiteContent/UpdateSiteContent/UpdateSiteContent";
 
 
 const router = createBrowserRouter([
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
         path: "banner",
         element: <SiteContent />,
       },
+      {
+        path: "sitecontent/update",
+        element: <UpdateSiteContent />
+      }
+
     ],
   },
 ]);

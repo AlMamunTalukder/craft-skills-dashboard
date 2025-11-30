@@ -73,6 +73,7 @@ export function LoginForm({
               label="Email"
               type="email"
               placeholder="m@example.com"
+              className=""
             />
             <TextInput
               name="password"

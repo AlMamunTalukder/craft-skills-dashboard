@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { Badge } from "@/components/ui/badge";
 // import { Button } from "@/components/ui/button";
 // import {
@@ -34,528 +35,310 @@
 // import UploadButton from "../Gallery/UploadButton";
 // import FolderButton from "../Gallery/FolderButton";
 // import ListFolderButton from "../Gallery/ListFolderButton";
+=======
+"use client";
+>>>>>>> 4872fc6d0f0bc00f40f17f83ac729ae5dbd1fce2
 
-// interface Props {
-//   open: boolean;
-//   onClose: () => void;
-//   setSelectedImage: Dispatch<SetStateAction<any>>;
-//   mode: "single" | "multiple";
-//   selectedImage: string | string[];
-// }
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ImageIcon, Loader2, Trash2, Upload } from "lucide-react";
+import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import CustomPagination from "./CustomPagination";
+import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
+import toast from "react-hot-toast";
+import { Badge } from "../ui/badge";
 
-// interface ImageType {
-//   id: string;
-//   url: string;
-//   name: string;
-//   folderId?: string;
-// }
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  setSelectedImage: Dispatch<SetStateAction<any>>;
+  mode: "single" | "multiple";
+  selectedImage: string | string[];
+}
 
-// const IMAGES_PER_PAGE = 30;
+interface ImageType {
+  _id: string;
+  url: string;
+  name: string;
+}
 
-// const GlobalImageSelector = ({
-//   open,
-//   onClose,
-//   selectedImage,
-//   setSelectedImage,
-//   mode,
-// }: Props) => {
-//   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-//   const [page, setPage] = useState(1);
-//   const [isDialogOpen, setIsDialogOpen] = useState(false);
-//   const [imageToDelete, setImageToDelete] = useState<ImageType | null>(null);
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [activeTab, setActiveTab] = useState("all");
+interface GalleryResponse {
+  images: ImageType[];
+  totalPages: number;
+}
 
-//   const queryClient = useQueryClient();
+const IMAGES_PER_PAGE = 30;
 
-//   // Get images with pagination
-//   const { data, isLoading } = useQuery({
-//     queryFn: () => getAllImages(page, IMAGES_PER_PAGE),
-//     queryKey: ["images", page],
-//     staleTime: 60000,
-//   });
+const GlobalImageSelector = ({ open, onClose, selectedImage, setSelectedImage, mode }: Props) => {
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [imageToDelete, setImageToDelete] = useState<ImageType | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
-//   // Delete mutation
-//   const deleteMutation = useMutation({
-//     mutationFn: (id: string) => deleteImage(id),
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: ["images"] });
-//     },
-//   });
+  const queryClient = useQueryClient();
 
-//   const images = data?.images || [];
-//   const totalPages = data?.totalPages || 1;
+  // Fetch images
+  const { data, isLoading } = useQuery<GalleryResponse>({
+    queryKey: ["images", page],
+    queryFn: async () => {
+      const res = await fetch(`/api/gallery?page=${page}&limit=${IMAGES_PER_PAGE}`);
+      if (!res.ok) throw new Error("Failed to fetch images");
+      return res.json() as Promise<GalleryResponse>;
+    },
+  });
 
-//   // Initialize selection based on props
-//   useEffect(() => {
-//     if (mode === "single" && typeof selectedImage === "string") {
-//       setSelectedImages(selectedImage ? [selectedImage] : []);
-//     } else if (mode === "multiple" && Array.isArray(selectedImage)) {
-//       setSelectedImages(selectedImage);
-//     }
-//   }, [selectedImage, mode, open]);
+  const images: ImageType[] = data?.images || [];
+  const totalPages: number = data?.totalPages || 1;
 
-//   // Filter images based on search query
-//   const filteredImages = images.filter((img: any) =>
-//     img.name.toLowerCase().includes(searchQuery.toLowerCase()),
-//   );
+  // Delete image
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/gallery/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete image");
+      return res.json();
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["images"] }),
+  });
 
-//   const handleSelectImage = useCallback(
-//     (url: string) => {
-//       if (mode === "single") {
-//         setSelectedImages([url]);
-//       } else {
-//         setSelectedImages((prev) =>
-//           prev.includes(url)
-//             ? prev.filter((img) => img !== url)
-//             : [...prev, url],
-//         );
-//       }
-//     },
-//     [mode],
-//   );
+  // Initialize selection
+  useEffect(() => {
+    if (mode === "single" && typeof selectedImage === "string") {
+      setSelectedImages(selectedImage ? [selectedImage] : []);
+    } else if (mode === "multiple" && Array.isArray(selectedImage)) {
+      setSelectedImages(selectedImage);
+    }
+  }, [selectedImage, mode, open]);
 
-//   const handleRemoveImage = useCallback((url: string, e?: React.MouseEvent) => {
-//     if (e) {
-//       e.stopPropagation();
-//     }
-//     setSelectedImages((prev) => prev.filter((img) => img !== url));
-//   }, []);
+  const filteredImages = images.filter((img) =>
+    img.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-//   const handleOk = useCallback(() => {
-//     setSelectedImage(mode === "single" ? selectedImages[0] : selectedImages);
-//     onClose();
-//   }, [mode, selectedImages, setSelectedImage, onClose]);
+  const handleSelectImage = useCallback(
+    (url: string) => {
+      if (mode === "single") setSelectedImages([url]);
+      else
+        setSelectedImages((prev) =>
+          prev.includes(url) ? prev.filter((img) => img !== url) : [...prev, url]
+        );
+    },
+    [mode]
+  );
 
-//   const handleOpenDeleteDialog = useCallback(
-//     (image: ImageType, e: React.MouseEvent) => {
-//       e.stopPropagation();
-//       setImageToDelete(image);
-//       setIsDialogOpen(true);
-//     },
-//     [],
-//   );
+  const handleRemoveImage = useCallback(
+    (url: string, e?: React.MouseEvent) => {
+      if (e) e.stopPropagation();
+      setSelectedImages((prev) => prev.filter((img) => img !== url));
+    },
+    []
+  );
 
-//   const handleCloseDeleteDialog = useCallback(() => {
-//     setIsDialogOpen(false);
-//     setImageToDelete(null);
-//   }, []);
+  const handleOk = useCallback(() => {
+    setSelectedImage(mode === "single" ? selectedImages[0] : selectedImages);
+    onClose();
+  }, [mode, selectedImages, setSelectedImage, onClose]);
 
-//   const handleDeleteConfirm = useCallback(() => {
-//     if (imageToDelete) {
-//       deleteMutation.mutate(imageToDelete.id);
-//       // Remove from selected images if it was selected
-//       if (selectedImages.includes(imageToDelete.url)) {
-//         handleRemoveImage(imageToDelete.url);
-//       }
-//     }
-//     handleCloseDeleteDialog();
-//   }, [
-//     imageToDelete,
-//     deleteMutation,
-//     selectedImages,
-//     handleRemoveImage,
-//     handleCloseDeleteDialog,
-//   ]);
+  const handleOpenDeleteDialog = useCallback((image: ImageType, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setImageToDelete(image);
+    setIsDialogOpen(true);
+  }, []);
 
-//   // ImageThumbnail component for better code organization
-//   const ImageThumbnail = useCallback(
-//     ({ img, isSelected }: { img: ImageType; isSelected: boolean }) => (
-//       <div
-//         className={cn(
-//           "aspect-square overflow-hidden rounded-lg border bg-white relative group transition-all duration-200",
-//           deleteMutation.isPending && imageToDelete?.id === img.id
-//             ? "opacity-50"
-//             : "cursor-pointer",
-//         )}
-//         onClick={() => handleSelectImage(img.url)}
-//       >
-//         <div className="flex justify-center items-center w-full h-full">
-//           <img
-//             src={img.url}
-//             alt={img.name || "gallery image"}
-//             height={100}
-//             width={100}
-//             loading="lazy"
-//             className="cursor-pointer transition-transform duration-200 group-hover:scale-105 w-full h-full object-contain bg-white rounded-lg"
-//             sizes="100px"
-//           />
-//         </div>
+  const handleCloseDeleteDialog = useCallback(() => {
+    setIsDialogOpen(false);
+    setImageToDelete(null);
+  }, []);
 
-//         {deleteMutation.isPending && imageToDelete?.id === img.id ? (
-//           <div className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full">
-//             <Loader2 size={14} className="animate-spin" />
-//           </div>
-//         ) : (
-//           <button
-//             onClick={(e) => handleOpenDeleteDialog(img, e)}
-//             className="absolute top-2 right-2 p-1.5 bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
-//             title="Delete image"
-//           >
-//             <Trash2 size={14} />
-//           </button>
-//         )}
+  const handleDeleteConfirm = useCallback(() => {
+    if (imageToDelete) {
+      deleteMutation.mutate(imageToDelete._id);
+      if (selectedImages.includes(imageToDelete.url)) handleRemoveImage(imageToDelete.url);
+    }
+    handleCloseDeleteDialog();
+  }, [imageToDelete, deleteMutation, selectedImages, handleRemoveImage, handleCloseDeleteDialog]);
 
-//         {isSelected && (
-//           <div className="absolute inset-0 bg-primary/10 border-2 border-primary rounded-lg">
-//             <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full p-1">
-//               <svg
-//                 xmlns="http://www.w3.org/2000/svg"
-//                 width="16"
-//                 height="16"
-//                 viewBox="0 0 24 24"
-//                 fill="none"
-//                 stroke="currentColor"
-//                 strokeWidth="3"
-//                 strokeLinecap="round"
-//                 strokeLinejoin="round"
-//                 className="lucide lucide-check"
-//               >
-//                 <path d="M20 6 9 17l-5-5" />
-//               </svg>
-//             </div>
-//           </div>
-//         )}
+  // Upload image
+  const handleUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
 
-//         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent pt-8 pb-2 px-3 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-//           {img.name || "Untitled image"}
-//         </div>
-//       </div>
-//     ),
-//     [
-//       handleSelectImage,
-//       handleOpenDeleteDialog,
-//       deleteMutation.isPending,
-//       imageToDelete?.id,
-//     ],
-//   );
+    try {
+      toast.loading("Uploading...");
+      const res = await fetch("/api/gallery/upload", { method: "POST", body: formData });
+      if (!res.ok) throw new Error("Upload failed");
+      const data: ImageType = await res.json();
+      queryClient.invalidateQueries({ queryKey: ["images"] });
+      setSelectedImages((prev) => (mode === "single" ? [data.url] : [...prev, data.url]));
+      toast.dismiss();
+      toast.success("Image uploaded");
+    } catch (err: any) {
+      toast.dismiss();
+      toast.error(err?.message || "Upload failed");
+      console.error(err);
+    }
+  };
 
-//   // Enhanced skeleton for better loading states
-//   const ImageSkeleton = () => (
-//     <div className="relative flex flex-col gap-2">
-//       <div className="aspect-square w-full bg-gray-100 rounded-lg animate-pulse overflow-hidden relative">
-//         <div className="absolute inset-0 flex items-center justify-center">
-//           <ImageIcon className="text-gray-300" size={24} />
-//         </div>
-//       </div>
-//       <div className="h-4 bg-gray-100 rounded animate-pulse w-2/3" />
-//     </div>
-//   );
+  const ImageThumbnail = useCallback(
+    ({ img, isSelected }: { img: ImageType; isSelected: boolean }) => (
+      <div
+        className={cn(
+          "aspect-square overflow-hidden rounded-lg border bg-white relative group transition-all duration-200",
+          deleteMutation.isPending && imageToDelete?._id === img._id
+            ? "opacity-50"
+            : "cursor-pointer"
+        )}
+        onClick={() => handleSelectImage(img.url)}
+      >
+        <img
+          src={img.url}
+          alt={img.name || "gallery image"}
+          loading="lazy"
+          className="w-full h-full object-contain rounded-lg transition-transform group-hover:scale-105"
+        />
 
-//   return (
-//     <>
-//       <Sheet open={open} onOpenChange={onClose}>
-//         <SheetContent
-//           className="max-w-6xl w-full p-0"
-//           style={{ maxWidth: "80vw" }}
-//         >
-//           <div className="flex flex-col h-full">
-//             <SheetHeader className="border-b p-6">
-//               <div className="flex justify-between items-center">
-//                 <SheetTitle className="text-2xl font-bold">
-//                   Media Gallery
-//                 </SheetTitle>
-//                 <div className="flex items-center gap-2">
-//                   {selectedImages.length > 0 && (
-//                     <Badge variant="secondary" className="px-3 py-1 text-sm">
-//                       {selectedImages.length} selected
-//                     </Badge>
-//                   )}
-//                 </div>
-//                 {/* Upload */}
-//                 <div className="p-4 flex flex-wrap items-center justify-between gap-2">
-//                   <div className="text-sm text-gray-500">
-//                     {isLoading ? (
-//                       <Skeleton className="w-24 h-4" />
-//                     ) : (
-//                       <>
-//                         {images.length} {images.length === 1 ? "item" : "items"}
-//                       </>
-//                     )}
-//                   </div>
-//                   <div className="flex gap-3">
-//                     <Button
-//                       variant="outline"
-//                       onClick={onClose}
-//                       disabled={deleteMutation.isPending}
-//                     >
-//                       Cancel
-//                     </Button>
-//                     <Button
-//                       onClick={handleOk}
-//                       disabled={
-//                         mode === "single"
-//                           ? selectedImages.length !== 1
-//                           : selectedImages.length === 0 ||
-//                             deleteMutation.isPending
-//                       }
-//                     >
-//                       {mode === "single"
-//                         ? "Upload Image"
-//                         : `Select ${selectedImages.length || 0} Images`}
-//                     </Button>
-//                   </div>
-//                 </div>
-//               </div>
-//             </SheetHeader>
+        {deleteMutation.isPending && imageToDelete?._id === img._id ? (
+          <div className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full">
+            <Loader2 size={14} className="animate-spin" />
+          </div>
+        ) : (
+          <button
+            onClick={(e) => handleOpenDeleteDialog(img, e)}
+            className="absolute top-2 right-2 p-1.5 bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+            title="Delete image"
+          >
+            <Trash2 size={14} />
+          </button>
+        )}
 
-//             <div className="flex flex-row h-full">
-//               {/* Left sidebar */}
-//               <div className="w-64 border-r h-full p-4 hidden lg:block">
-//                 <Tabs
-//                   defaultValue="all"
-//                   className="w-full"
-//                   value={activeTab}
-//                   onValueChange={setActiveTab}
-//                 >
-//                   <TabsList className="grid w-full grid-cols-2 mb-4">
-//                     <TabsTrigger value="all">All Media</TabsTrigger>
-//                     <TabsTrigger value="selected">Selected</TabsTrigger>
-//                   </TabsList>
+        {isSelected && (
+          <div className="absolute inset-0 bg-primary/10 border-2 border-primary rounded-lg">
+            <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full p-1">
+              ✓
+            </div>
+          </div>
+        )}
+      </div>
+    ),
+    [handleSelectImage, handleOpenDeleteDialog, deleteMutation.isPending, imageToDelete?._id]
+  );
 
-//                   <TabsContent value="all" className="mt-0">
-//                     <div className="space-y-4 w-full">
-//                       <UploadButton className="w-full" />
-//                       <FolderButton className="w-full" />
-//                       <ListFolderButton className="w-full " />
-//                     </div>
-//                   </TabsContent>
+  const ImageSkeleton = () => (
+    <div className="relative flex flex-col gap-2">
+      <div className="aspect-square w-full bg-gray-100 rounded-lg animate-pulse relative flex items-center justify-center">
+        <ImageIcon size={24} className="text-gray-300" />
+      </div>
+      <div className="h-4 bg-gray-100 rounded animate-pulse w-2/3" />
+    </div>
+  );
 
-//                   <TabsContent value="selected" className="mt-0">
-//                     <div className="space-y-4">
-//                       <div className="text-sm font-medium flex justify-between">
-//                         <span>Selected Images</span>
-//                         <span className="text-primary">
-//                           {selectedImages.length}
-//                         </span>
-//                       </div>
+  return (
+    <Sheet open={open} onOpenChange={onClose}>
+      <SheetContent className="max-w-6xl w-full p-0">
+        <div className="flex flex-col h-full">
+          <SheetHeader className="border-b p-6 flex justify-between items-center">
+            <SheetTitle className="text-2xl font-bold">Media Gallery</SheetTitle>
 
-//                       {selectedImages.length > 0 ? (
-//                         <ScrollArea className="h-[calc(100vh-300px)]">
-//                           <div className="space-y-2">
-//                             {selectedImages.map((url) => (
-//                               <div
-//                                 key={url}
-//                                 className="relative group bg-white border rounded-lg shadow-sm overflow-hidden flex items-center p-2 gap-2"
-//                               >
-//                                 <div className="w-10 h-10 relative flex-shrink-0">
-//                                   <img
-//                                     src={url}
-//                                     alt="selected"                                    
-//                                     sizes="40px"
-//                                     className="object-cover rounded"
-//                                   />
-//                                 </div>
-//                                 <div className="text-xs line-clamp-2 flex-1">
-//                                   {url.split("/").pop() || "Image"}
-//                                 </div>
-//                                 <button
-//                                   onClick={(e) => handleRemoveImage(url, e)}
-//                                   className="p-1 text-gray-500 hover:text-red-500 rounded-full"
-//                                   title="Remove from selection"
-//                                 >
-//                                   <X size={14} />
-//                                 </button>
-//                               </div>
-//                             ))}
-//                           </div>
-//                         </ScrollArea>
-//                       ) : (
-//                         <div className="py-8 text-center text-sm text-gray-500">
-//                           No images selected
-//                         </div>
-//                       )}
-//                     </div>
-//                   </TabsContent>
-//                 </Tabs>
-//               </div>
-              
+            {selectedImages.length > 0 && (
+              <Badge variant="secondary" className="px-3 py-1 text-sm">
+                {selectedImages.length} selected
+              </Badge>
+            )}
 
-//               {/* Main content */}
-//               <div className="flex-1 flex flex-col h-full overflow-auto">
-//                 <ScrollArea className="flex-1 p-6">
-//                   {activeTab === "all" ? (
-//                     <>
-//                       {/* All Images - Gallery View */}
-//                       <div className="min-h-[350px]">
-//                         {isLoading ? (
-//                           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
-//                             {Array.from({ length: 15 }).map((_, i) => (
-//                               <ImageSkeleton key={i} />
-//                             ))}
-//                           </div>
-//                         ) : filteredImages.length > 0 ? (
-//                           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
-//                             {filteredImages.map((img: any) => {
-//                               const isSelected = selectedImages.includes(
-//                                 img.url,
-//                               );
-//                               return (
-//                                 <div key={img.id}>
-//                                   <ImageThumbnail
-//                                     img={img}
-//                                     isSelected={isSelected}
-//                                   />
-//                                 </div>
-//                               );
-//                             })}
-//                           </div>
-//                         ) : (
-//                           <div className="flex flex-col items-center justify-center py-16 text-center">
-//                             <div className="bg-gray-50 p-6 rounded-full mb-4">
-//                               <ImageIcon size={48} className="text-gray-400" />
-//                             </div>
-//                             <h3 className="text-lg font-medium mb-2">
-//                               {searchQuery
-//                                 ? "No matching images found"
-//                                 : "No media found"}
-//                             </h3>
-//                             <p className="text-sm text-gray-500 max-w-sm">
-//                               {searchQuery
-//                                 ? "Try a different search term or browse all images."
-//                                 : "Upload some images to get started."}
-//                             </p>
-//                             {searchQuery && (
-//                               <Button
-//                                 variant="outline"
-//                                 size="sm"
-//                                 className="mt-4"
-//                                 onClick={() => setSearchQuery("")}
-//                               >
-//                                 Clear Search
-//                               </Button>
-//                             )}
-//                           </div>
-//                         )}
-//                       </div>
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={onClose} disabled={deleteMutation.isPending}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleOk}
+                disabled={
+                  mode === "single"
+                    ? selectedImages.length !== 1
+                    : selectedImages.length === 0 || deleteMutation.isPending
+                }
+              >
+                {mode === "single" ? "Upload Image" : `Select ${selectedImages.length} Images`}
+              </Button>
+            </div>
+          </SheetHeader>
 
-//                       {/* Pagination */}
-//                       {!isLoading && totalPages > 1 && (
-//                         <div className="flex justify-center my-6">
-//                           <CustomPagination
-//                             currentPage={page}
-//                             totalPages={totalPages}
-//                             onPageChange={setPage}
-//                           />
-//                         </div>
-//                       )}
-//                     </>
-//                   ) : (
-//                     // Selected Images View (only visible on mobile/tablet)
-//                     <div className="lg:hidden">
-//                       {selectedImages.length > 0 ? (
-//                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-//                           {selectedImages.map((url) => (
-//                             <div
-//                               key={url}
-//                               className="relative group bg-white border rounded-lg shadow-sm overflow-hidden"
-//                             >
-//                               <div className="aspect-square w-full relative">
-//                                 <img
-//                                   src={url}
-//                                   alt="selected"                                  
-//                                   sizes="200px"
-//                                   className="object-cover"
-//                                 />
-//                               </div>
-//                               <button
-//                                 onClick={(e) => handleRemoveImage(url, e)}
-//                                 className="absolute top-2 right-2 p-1.5 bg-black/70 text-white rounded-full hover:bg-red-500"
-//                                 title="Remove from selection"
-//                               >
-//                                 <X size={14} />
-//                               </button>
-//                             </div>
-//                           ))}
-//                         </div>
-//                       ) : (
-//                         <div className="flex flex-col items-center justify-center py-16 text-center">
-//                           <div className="bg-gray-50 p-6 rounded-full mb-4">
-//                             <ImageIcon size={48} className="text-gray-400" />
-//                           </div>
-//                           <h3 className="text-lg font-medium mb-2">
-//                             No images selected
-//                           </h3>
-//                           <p className="text-sm text-gray-500 max-w-sm">
-//                             Select images from the gallery to continue.
-//                           </p>
-//                           <Button
-//                             variant="outline"
-//                             size="sm"
-//                             className="mt-4"
-//                             onClick={() => setActiveTab("all")}
-//                           >
-//                             Browse Gallery
-//                           </Button>
-//                         </div>
-//                       )}
-//                     </div>
-//                   )}
-//                 </ScrollArea>
-//                 {/* <SheetFooter className="p-4 flex flex-wrap items-center justify-between gap-2 border-t">
-//                   <div className="text-sm text-gray-500">
-//                     {isLoading ? (
-//                       <Skeleton className="w-24 h-4" />
-//                     ) : (
-//                       <>
-//                         {images.length} {images.length === 1 ? "item" : "items"}
-//                       </>
-//                     )}
-//                   </div>
-//                   <div className="flex gap-3">
-//                     <Button
-//                       variant="outline"
-//                       onClick={onClose}
-//                       disabled={deleteMutation.isPending}
-//                     >
-//                       Cancel
-//                     </Button>
-//                     <Button
-//                       onClick={handleOk}
-//                       disabled={
-//                         mode === "single"
-//                           ? selectedImages.length !== 1
-//                           : selectedImages.length === 0 ||
-//                             deleteMutation.isPending
-//                       }
-//                     >
-//                       {mode === "single"
-//                         ? "Select Image"
-//                         : `Select ${selectedImages.length || 0} Images`}
-//                     </Button>
-//                   </div>
-//                 </SheetFooter> */}
-                
-//               </div>
-//             </div>
-//           </div>
+          <div className="p-6 flex items-center gap-2">
+            <input
+              type="file"
+              accept="image/*"
+              id="image-upload"
+              className="hidden"
+              onChange={(e) => {
+                if (!e.target.files?.[0]) return;
+                handleUpload(e.target.files[0]);
+                e.target.value = "";
+              }}
+            />
+            <label
+              htmlFor="image-upload"
+              className="btn btn-outline cursor-pointer flex items-center gap-2"
+            >
+              <Upload size={16} /> Upload New Image
+            </label>
+          </div>
 
-//           {/* Delete Confirmation Dialog */}
-//           {isDialogOpen && (
-//             <DeleteConfirmationDialog
-//               isOpen={isDialogOpen}
-//               isLoading={deleteMutation.isPending}
-//               onClose={handleCloseDeleteDialog}
-//               onConfirm={handleDeleteConfirm}
-//               itemName={imageToDelete?.name || "this media item"}
-//               actionType="Delete Media"
-//             />
-//           )}
-//         </SheetContent>
-//       </Sheet>
-//     </>
-//   );
-// };
+          <ScrollArea className="flex-1 p-6">
+            {isLoading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
+                {Array.from({ length: 15 }).map((_, i) => (
+                  <ImageSkeleton key={i} />
+                ))}
+              </div>
+            ) : filteredImages.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
+                {filteredImages.map((img) => {
+                  const isSelected = selectedImages.includes(img.url);
+                  return <ImageThumbnail key={img._id} img={img} isSelected={isSelected} />;
+                })}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="bg-gray-50 p-6 rounded-full mb-4">
+                  <ImageIcon size={48} className="text-gray-400" />
+                </div>
+                <h3 className="text-lg font-medium mb-2">
+                  {searchQuery ? "No matching images found" : "No media found"}
+                </h3>
+                <p className="text-sm text-gray-500 max-w-sm">
+                  {searchQuery
+                    ? "Try a different search term or browse all images."
+                    : "Upload some images to get started."}
+                </p>
+              </div>
+            )}
 
-// export default GlobalImageSelector;
+            {totalPages > 1 && (
+              <div className="flex justify-center my-6">
+                <CustomPagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
+              </div>
+            )}
+          </ScrollArea>
 
-
-const GlobalImageSelector = () => {
-    return (
-        <div>
-            img selector
+          {isDialogOpen && (
+            <DeleteConfirmationDialog
+              isOpen={isDialogOpen}
+              isLoading={deleteMutation.isPending}
+              onClose={handleCloseDeleteDialog}
+              onConfirm={handleDeleteConfirm}
+              itemName={imageToDelete?.name || "this media item"}
+              actionType="Delete Media"
+            />
+          )}
         </div>
-    );
+      </SheetContent>
+    </Sheet>
+  );
 };
 
 export default GlobalImageSelector;
