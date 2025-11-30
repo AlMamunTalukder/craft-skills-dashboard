@@ -1,11 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
-
-import Home from "../pages/Home/Home";
-import About from "@/pages/SiteContent/SiteContent";
 import Main from "@/Layout/Main";
+import Home from "../pages/Home/Home";
 import { LoginForm } from "@/components/login-form";
 import GuestRoute from "@/components/GuestRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import SiteContent from "@/pages/SiteContent/SiteContent";
+import UpdateSiteContentPage from "@/pages/SiteContent/update/page";
+
 
 const router = createBrowserRouter([
   {
@@ -23,14 +24,22 @@ const router = createBrowserRouter([
         <Main />
       </ProtectedRoute>
     ),
-    children: [
+    children: [ 
       {
         path: "dashboard",
         element: <Home />,
       },
       {
-        path: "about",
-        element: <About />,
+        path: "site-content",
+        element: <SiteContent />,
+      },
+      {
+        path: "sitecontent/update", 
+        element: <UpdateSiteContentPage />,
+      },
+      {
+        path: "banner",
+        element: <SiteContent />,
       },
     ],
   },

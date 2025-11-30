@@ -20,7 +20,7 @@ type TFormProps = {
 } & TFormConfig;
 
 const AppForm = ({
-  onSubmit,
+  onSubmit, 
   children,
   defaultValues,
   resolver,

@@ -28,16 +28,14 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-// Combined navigation data
+
 const navData = [
-  // Simple menu items (no submenu)
   {
     title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
     isActive: false,
   },
-  // Menu items with submenus
   {
     title: "Content",
     url: "#",
@@ -46,7 +44,7 @@ const navData = [
     items: [
       {
         title: "Site Content",
-        url: "/about",
+        url: "/site-content",
         isActive: false,
       },
       {
@@ -171,7 +169,7 @@ const userData = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
   const [navItems, setNavItems] = React.useState(() =>
-    initializeActiveStates(navData, location.pathname),
+    initializeActiveStates(navData, location.pathname)
   );
 
   // Update active states when route changes
@@ -189,7 +187,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ...subItem,
           isActive: false,
         })),
-      })),
+      }))
     );
   };
 
@@ -202,7 +200,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ...subItem,
           isActive: subItem.title === subItemTitle && item.title === mainTitle,
         })),
-      })),
+      }))
     );
   };
 
@@ -250,7 +248,7 @@ function initializeActiveStates(navItems: any[], currentPath: string) {
   return navItems.map((item) => {
     const isMainActive = item.url === currentPath;
     const activeSubItem = item.items?.find(
-      (subItem: any) => subItem.url === currentPath,
+      (subItem: any) => subItem.url === currentPath
     );
 
     return {
@@ -269,7 +267,7 @@ function updateActiveStates(navItems: any[], currentPath: string) {
   return navItems.map((item) => {
     const isMainActive = item.url === currentPath;
     const activeSubItem = item.items?.find(
-      (subItem: any) => subItem.url === currentPath,
+      (subItem: any) => subItem.url === currentPath
     );
 
     return {

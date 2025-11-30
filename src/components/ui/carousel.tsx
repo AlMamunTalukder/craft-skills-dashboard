@@ -129,7 +129,7 @@ function Carousel({
     </CarouselContext.Provider>
   )
 }
-
+ 
 function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   const { carouselRef, orientation } = useCarousel()
 

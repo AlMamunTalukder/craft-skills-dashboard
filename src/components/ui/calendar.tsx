@@ -164,12 +164,12 @@ function Calendar({
             <td {...props}>
               <div className="flex size-(--cell-size) items-center justify-center text-center">
                 {children}
-              </div>
+              </div> 
             </td>
           )
         },
         ...components,
-      }}
+      }} 
       {...props}
     />
   )

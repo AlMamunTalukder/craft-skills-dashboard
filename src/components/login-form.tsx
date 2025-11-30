@@ -54,13 +54,13 @@ export function LoginForm({
       )}
       {...props}
     >
-      <Card className="w-full max-w-md shadow-lg">
-        <CardContent className="p-6">
+      <Card className="w-full max-w-md shadow-lg m-2">
+        <CardContent className="md:p-6 ">
           <div className="flex flex-col items-center gap-2 text-center mb-4">
             <img
               src={logo}
               alt="Craft Skills Logo"
-              className="h-16 w-[250px]"
+              className="h-14 w-[200px]"
             />
             <h2 className="text-2xl font-semibold text-gray-400">
               Welcome Back

@@ -198,37 +198,7 @@ const Home = () => {
 
         {/* Right Sidebar */}
         <div className="lg:col-span-3 space-y-6">
-          {/* Upcoming Events */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Upcoming Events</CardTitle>
-              <CardDescription>Workshops and important dates</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {upcomingEvents.map((event) => (
-                  <div key={event.id} className="flex items-center space-x-4">
-                    <div className="rounded-lg bg-secondary p-2">
-                      <Calendar className="h-4 w-4" />
-                    </div>
-                    <div className="space-y-1 flex-1">
-                      <p className="text-sm font-medium">{event.title}</p>
-                      <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                        <span>{new Date(event.date).toLocaleDateString()}</span>
-                        <span>•</span>
-                        <span>{event.time}</span>
-                      </div>
-                    </div>
-                    <Badge variant="outline">{event.type}</Badge>
-                  </div>
-                ))}
-              </div>
-              <Button className="mt-4 w-full" variant="outline">
-                <Calendar className="mr-2 h-4 w-4" />
-                View Calendar
-              </Button>
-            </CardContent>
-          </Card>
+          
 
           {/* Quick Actions */}
           <Card>

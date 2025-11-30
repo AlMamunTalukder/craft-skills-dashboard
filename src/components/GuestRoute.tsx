@@ -9,7 +9,7 @@ const GuestRoute = ({ children }: PropsWithChildren) => {
     isLoading,
     isFetching,
   } = useCurrentUserQuery(null);
-
+ 
   if (isLoading || isFetching) {
     return <PagePreloader />;
   }

@@ -24,14 +24,16 @@
 //   useEffect,
 //   useState,
 // } from "react";
-// import CustomPagination from "../shared/CustomPagination";
-// import { DeleteConfirmationDialog } from "../shared/DeleteConfirmationDialog";
+
+
 // import { Input } from "@/components/ui/input";
 // import { ScrollArea } from "@/components/ui/scroll-area";
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import UploadButton from "./Gallery/UploadButton";
-// import FolderButton from "./Gallery/FolderButton";
-// import ListFolderButton from "./Gallery/ListFolderButton";
+
+// import CustomPagination from "./CustomPagination";
+// import UploadButton from "../Gallery/UploadButton";
+// import FolderButton from "../Gallery/FolderButton";
+// import ListFolderButton from "../Gallery/ListFolderButton";
 
 // interface Props {
 //   open: boolean;
