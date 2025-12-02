@@ -40,11 +40,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@reduxjs/toolkit": "^2.10.0",
     "@tailwindcss/vite": "^4.1.16",
-<<<<<<< HEAD
     "@tanstack/react-query": "^5.90.11",
-=======
-    "@tanstack/react-query": "^5.90.7",
->>>>>>> 4872fc6d0f0bc00f40f17f83ac729ae5dbd1fce2
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

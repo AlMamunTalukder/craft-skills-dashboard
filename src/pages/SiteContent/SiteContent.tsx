@@ -152,8 +152,8 @@ export default function SiteContent() {
           {/* Logos */}
           <SectionHeader icon={<ImageIcon />} title="Brand Logos" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <LogoItem label="Logo (Light)" src={data.logoLight} />
-            <LogoItem label="Logo (Dark)" src={data.logoDark} />
+            <LogoItem label="Header Logo" src={data.logoLight} />
+            <LogoItem label="Footer Logo" src={data.logoDark} />
           </div>
         </CardContent>
       </Card>
