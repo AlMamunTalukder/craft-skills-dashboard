@@ -6,7 +6,10 @@ import GuestRoute from "@/components/GuestRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import SiteContent from "@/pages/SiteContent/SiteContent";
 import UpdateSiteContentPage from "@/pages/SiteContent/update/page";
-import UpdateSiteContent from "@/pages/SiteContent/UpdateSiteContent/UpdateSiteContent";
+import Banner from "@/pages/Banner/Banner";
+import UpdateBanner from "@/pages/Banner/update/page";
+import ClassSchedule from "@/pages/ClassSchedule/ClassSchedule";
+import UpdateClassSchedule from "@/pages/ClassSchedule/update/UpdateClassSchedule";
 
 
 const router = createBrowserRouter([
@@ -40,12 +43,20 @@ const router = createBrowserRouter([
       },
       {
         path: "banner",
-        element: <SiteContent />,
+        element: <Banner />,
       },
       {
-        path: "sitecontent/update",
-        element: <UpdateSiteContent />
-      }
+        path: "banner/update",
+        element: <UpdateBanner />
+      },
+      {
+        path: "class-schedule",
+        element: <ClassSchedule />,
+      },
+      {
+        path: "class-schedule/update",
+        element: <UpdateClassSchedule />
+      },
 
     ],
   },

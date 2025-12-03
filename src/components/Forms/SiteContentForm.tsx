@@ -2,13 +2,33 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { Upload, X } from "lucide-react";
+import { 
+  Upload, 
+  X, 
+  Globe, 
+  Mail, 
+  Phone, 
+  Users, 
+  BookOpen, 
+  Layers, 
+  TrendingUp, 
+  Facebook, 
+  Youtube, 
+  MessageSquare, 
+  Send,
+  Type,
+  Link,
+  BarChart3,
+  Palette
+} from "lucide-react";
 
 // Define the interface for site content data
 interface SiteContentData {
@@ -38,19 +58,12 @@ interface Props {
 export default function SiteContentForm({ initialValues }: Props) {
   const [formData, setFormData] = useState<SiteContentData>(initialValues);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState<string | null>(null); // 'light' | 'dark' | null
+  const [uploading, setUploading] = useState<string | null>(null); 
   const navigate = useNavigate();
 
  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setLoading(true);
-  
-  console.log('=== FORM SUBMISSION DATA ===');
-  console.log('Form Data:', formData);
-  console.log('Logo Light URL length:', formData.logoLight?.length);
-  console.log('Logo Dark URL length:', formData.logoDark?.length);
-  console.log('Logo Light is base64:', formData.logoLight?.startsWith('data:image'));
-  console.log('Logo Dark is base64:', formData.logoDark?.startsWith('data:image'));
   
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
@@ -169,159 +182,262 @@ export default function SiteContentForm({ initialValues }: Props) {
 };
 
   return (
-    <Card>
-      <CardContent className="p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Tagline Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Tagline</h3>
-            <div className="space-y-2">
-              <Label htmlFor="tagline">Site Tagline</Label>
-              <Textarea
-                id="tagline"
-                name="tagline"
-                value={formData.tagline || ''}
-                onChange={handleChange}
-                placeholder="Enter your site tagline"
-                rows={3}
-              />
-            </div>
-          </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Site Configuration</h1>
+          <p className="text-muted-foreground">
+            Update your website content, branding, and social media links
+          </p>
+        </div>
+        
+      </div>
 
-          {/* Contact Information Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Contact Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Brand Identity Section */}
+        <Card>
+          
+          <CardContent>
+            <div className="space-y-4 py-3">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email || ''}
+                <Label htmlFor="tagline" className="flex items-center gap-2">
+                  <Type className="w-4 h-4" />
+                  Site Tagline
+                </Label>
+                <Textarea
+                  id="tagline"
+                  name="tagline"
+                  value={formData.tagline || ''}
                   onChange={handleChange}
-                  placeholder="Enter email address"
+                  placeholder="Enter your compelling site tagline..."
+                  rows={3}
+                  className="min-h-[100px]"
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone1">Phone 1</Label>
-                <Input
-                  id="phone1"
-                  name="phone1"
-                  value={formData.phone1 || ''}
-                  onChange={handleChange}
-                  placeholder="Enter primary phone number"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone2">Phone 2 (Optional)</Label>
-                <Input
-                  id="phone2"
-                  name="phone2"
-                  value={formData.phone2 || ''}
-                  onChange={handleChange}
-                  placeholder="Enter secondary phone number"
-                />
+               
               </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Social Media Links Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Social Media Links</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="facebook">Facebook Page</Label>
-                <Input
-                  id="facebook"
-                  name="facebook"
-                  value={formData.facebook || ''}
-                  onChange={handleChange}
-                  placeholder="Enter Facebook page URL"
-                />
+        {/* Contact Information Section */}
+        <Card>
+          
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-5">
+              <div className="space-y-3">
+                <Label htmlFor="email" className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  Email Address
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={formData.email || ''}
+                    onChange={handleChange}
+                    placeholder="contact@example.com"
+                    className="pl-10"
+                  />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="facebookGroup">Facebook Group</Label>
-                <Input
-                  id="facebookGroup"
-                  name="facebookGroup"
-                  value={formData.facebookGroup || ''}
-                  onChange={handleChange}
-                  placeholder="Enter Facebook group URL"
-                />
+
+              <div className="space-y-3">
+                <Label htmlFor="phone1" className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  Primary Phone
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="phone1"
+                    name="phone1"
+                    value={formData.phone1 || ''}
+                    onChange={handleChange}
+                    placeholder="+1 (555) 123-4567"
+                    className="pl-10"
+                  />
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="whatsapp">WhatsApp Group</Label>
-                <Input
-                  id="whatsapp"
-                  name="whatsapp"
-                  value={formData.whatsapp || ''}
-                  onChange={handleChange}
-                  placeholder="Enter WhatsApp group link"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="youtube">YouTube Channel</Label>
-                <Input
-                  id="youtube"
-                  name="youtube"
-                  value={formData.youtube || ''}
-                  onChange={handleChange}
-                  placeholder="Enter YouTube channel URL"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="telegram">Telegram Channel</Label>
-                <Input
-                  id="telegram"
-                  name="telegram"
-                  value={formData.telegram || ''}
-                  onChange={handleChange}
-                  placeholder="Enter Telegram channel URL"
-                />
+
+              <div className="space-y-3">
+                <Label htmlFor="phone2" className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  Secondary Phone (Optional)
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="phone2"
+                    name="phone2"
+                    value={formData.phone2 || ''}
+                    onChange={handleChange}
+                    placeholder="+1 (555) 987-6543"
+                    className="pl-10"
+                  />
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                </div>
               </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Statistics Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Statistics</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="totalsTeachers">Total Teachers</Label>
+        {/* Social Media Section */}
+        <Card className="py-5 ">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Link className="w-5 h-5 text-primary" />
+              <CardTitle>Social Media Links</CardTitle>
+            </div>
+            <CardDescription>
+              Connect your social media profiles to increase engagement
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <Label htmlFor="facebook" className="flex items-center gap-2">
+                    <Facebook className="w-4 h-4 text-blue-600" />
+                    Facebook Page
+                  </Label>
+                  <Input
+                    id="facebook"
+                    name="facebook"
+                    value={formData.facebook || ''}
+                    onChange={handleChange}
+                    placeholder="https://facebook.com/yourpage"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="whatsapp" className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-green-600" />
+                    WhatsApp Group
+                  </Label>
+                  <Input
+                    id="whatsapp"
+                    name="whatsapp"
+                    value={formData.whatsapp || ''}
+                    onChange={handleChange}
+                    placeholder="https://wa.me/group-invite"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="telegram" className="flex items-center gap-2">
+                    <Send className="w-4 h-4 text-blue-500" />
+                    Telegram Channel
+                  </Label>
+                  <Input
+                    id="telegram"
+                    name="telegram"
+                    value={formData.telegram || ''}
+                    onChange={handleChange}
+                    placeholder="https://t.me/yourchannel"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <Label htmlFor="facebookGroup" className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-blue-700" />
+                    Facebook Group
+                  </Label>
+                  <Input
+                    id="facebookGroup"
+                    name="facebookGroup"
+                    value={formData.facebookGroup || ''}
+                    onChange={handleChange}
+                    placeholder="https://facebook.com/groups/yourgroup"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="youtube" className="flex items-center gap-2">
+                    <Youtube className="w-4 h-4 text-red-600" />
+                    YouTube Channel
+                  </Label>
+                  <Input
+                    id="youtube"
+                    name="youtube"
+                    value={formData.youtube || ''}
+                    onChange={handleChange}
+                    placeholder="https://youtube.com/@yourchannel"
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Statistics Section */}
+        <Card className="py-5">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-primary" />
+              <CardTitle>Key Statistics</CardTitle>
+            </div>
+            <CardDescription>
+              Showcase your achievements and success metrics
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="space-y-3">
+                <Label htmlFor="totalsTeachers" className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Total Teachers
+                </Label>
                 <Input
                   id="totalsTeachers"
                   name="totalsTeachers"
                   type="number"
                   value={formData.totalsTeachers || 0}
                   onChange={handleNumberChange}
-                  placeholder="Enter total teachers"
+                  placeholder="50"
+                  className="text-center text-lg"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="totalCourses">Total Courses</Label>
+
+              <div className="space-y-3">
+                <Label htmlFor="totalCourses" className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  Total Courses
+                </Label>
                 <Input
                   id="totalCourses"
                   name="totalCourses"
                   type="number"
                   value={formData.totalCourses || 0}
                   onChange={handleNumberChange}
-                  placeholder="Enter total courses"
+                  placeholder="100"
+                  className="text-center text-lg"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="totalBatches">Total Batches</Label>
+
+              <div className="space-y-3">
+                <Label htmlFor="totalBatches" className="flex items-center gap-2">
+                  <Layers className="w-4 h-4" />
+                  Total Batches
+                </Label>
                 <Input
                   id="totalBatches"
                   name="totalBatches"
                   type="number"
                   value={formData.totalBatches || 0}
                   onChange={handleNumberChange}
-                  placeholder="Enter total batches"
+                  placeholder="250"
+                  className="text-center text-lg"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="successRate">Success Rate (%)</Label>
+
+              <div className="space-y-3">
+                <Label htmlFor="successRate" className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  Success Rate (%)
+                </Label>
                 <Input
                   id="successRate"
                   name="successRate"
@@ -330,20 +446,38 @@ export default function SiteContentForm({ initialValues }: Props) {
                   max="100"
                   value={formData.successRate || 0}
                   onChange={handleNumberChange}
-                  placeholder="Enter success rate percentage"
+                  placeholder="98"
+                  className="text-center text-lg"
                 />
               </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Logo URLs Section - DIRECT UPLOAD ONLY */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Brand Logos</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Light Logo */}
-              <div className="space-y-3">
+        {/* Logo URLs Section - DIRECT UPLOAD ONLY */}
+        {/* <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Palette className="w-5 h-5 text-primary" />
+              <CardTitle>Brand Logos</CardTitle>
+            </div>
+            <CardDescription>
+              Upload logos for light and dark mode themes
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="logoLight" className="text-base font-medium">Light Logo</Label>
+                  <div className="space-y-1">
+                    <Label className="text-base font-medium flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                      Light Mode Logo
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Displayed on light backgrounds
+                    </p>
+                  </div>
                   <div className="flex gap-2">
                     <Button
                       type="button"
@@ -351,9 +485,10 @@ export default function SiteContentForm({ initialValues }: Props) {
                       size="sm"
                       onClick={() => document.getElementById('lightLogoUpload')?.click()}
                       disabled={uploading === 'light'}
+                      className="gap-2"
                     >
-                      <Upload className="w-4 h-4 mr-2" />
-                      {uploading === 'light' ? 'Uploading...' : 'Upload Logo'}
+                      <Upload className="w-4 h-4" />
+                      {uploading === 'light' ? 'Uploading...' : 'Upload'}
                     </Button>
                     {formData.logoLight && (
                       <Button
@@ -369,7 +504,6 @@ export default function SiteContentForm({ initialValues }: Props) {
                   </div>
                 </div>
                 
-                {/* Hidden file input for direct upload */}
                 <input
                   type="file"
                   id="lightLogoUpload"
@@ -379,34 +513,40 @@ export default function SiteContentForm({ initialValues }: Props) {
                   disabled={uploading === 'light'}
                 />
                 
-                {/* Logo Preview */}
                 {formData.logoLight ? (
-                  <div className="border-2 border-dashed border-green-200 rounded-lg p-4 bg-green-50">
+                  <div className="border-2 border-dashed border-green-200 dark:border-green-800 rounded-xl p-4 bg-green-50 dark:bg-green-900/20">
                     <div className="flex flex-col items-center">
-                      <p className="text-sm text-green-600 mb-2 font-medium">Current Light Logo:</p>
-                      <img
-                        src={formData.logoLight}
-                        alt="Light Logo Preview"
-                        className="h-32 object-contain max-w-full"
-                      />
-                      <p className="text-xs text-gray-500 mt-2 text-center break-all max-w-full">
+                      <Badge variant="secondary" className="mb-3">
+                        Current Logo Preview
+                      </Badge>
+                      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm w-full">
+                        <img
+                          src={formData.logoLight}
+                          alt="Light Logo Preview"
+                          className="h-32 object-contain mx-auto"
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-3 text-center break-all max-w-full">
                         {formData.logoLight}
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                        <Upload className="w-6 h-6 text-gray-400" />
+                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 text-center bg-gray-50 dark:bg-gray-900/50">
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                        <Upload className="w-8 h-8 text-gray-400" />
                       </div>
-                      <p className="text-sm text-gray-500">No light logo uploaded</p>
-                      <p className="text-xs text-gray-400">Click "Upload Logo" to add a light logo</p>
+                      <div>
+                        <p className="text-sm font-medium">No light logo uploaded</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Recommended: SVG or PNG with transparent background
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
                 
-                {/* Hidden input for form data */}
                 <Input
                   id="logoLight"
                   name="logoLight"
@@ -416,10 +556,17 @@ export default function SiteContentForm({ initialValues }: Props) {
                 />
               </div>
 
-              {/* Dark Logo */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="logoDark" className="text-base font-medium">Dark Logo</Label>
+                  <div className="space-y-1">
+                    <Label className="text-base font-medium flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-gray-800 dark:bg-gray-400" />
+                      Dark Mode Logo
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Displayed on dark backgrounds
+                    </p>
+                  </div>
                   <div className="flex gap-2">
                     <Button
                       type="button"
@@ -427,9 +574,10 @@ export default function SiteContentForm({ initialValues }: Props) {
                       size="sm"
                       onClick={() => document.getElementById('darkLogoUpload')?.click()}
                       disabled={uploading === 'dark'}
+                      className="gap-2"
                     >
-                      <Upload className="w-4 h-4 mr-2" />
-                      {uploading === 'dark' ? 'Uploading...' : 'Upload Logo'}
+                      <Upload className="w-4 h-4" />
+                      {uploading === 'dark' ? 'Uploading...' : 'Upload'}
                     </Button>
                     {formData.logoDark && (
                       <Button
@@ -445,7 +593,6 @@ export default function SiteContentForm({ initialValues }: Props) {
                   </div>
                 </div>
                 
-                {/* Hidden file input for direct upload */}
                 <input
                   type="file"
                   id="darkLogoUpload"
@@ -455,36 +602,40 @@ export default function SiteContentForm({ initialValues }: Props) {
                   disabled={uploading === 'dark'}
                 />
                 
-                {/* Logo Preview */}
                 {formData.logoDark ? (
-                  <div className="border-2 border-dashed border-blue-200 rounded-lg p-4 bg-blue-50">
+                  <div className="border-2 border-dashed border-blue-200 dark:border-blue-800 rounded-xl p-4 bg-blue-50 dark:bg-blue-900/20">
                     <div className="flex flex-col items-center">
-                      <p className="text-sm text-blue-600 mb-2 font-medium">Current Dark Logo:</p>
-                      <div className="bg-gray-800 p-4 rounded">
+                      <Badge variant="secondary" className="mb-3">
+                        Current Logo Preview
+                      </Badge>
+                      <div className="bg-gray-900 p-6 rounded-lg shadow-sm w-full">
                         <img
                           src={formData.logoDark}
                           alt="Dark Logo Preview"
-                          className="h-32 object-contain max-w-full"
+                          className="h-32 object-contain mx-auto"
                         />
                       </div>
-                      <p className="text-xs text-gray-500 mt-2 text-center break-all max-w-full">
+                      <p className="text-xs text-muted-foreground mt-3 text-center break-all max-w-full">
                         {formData.logoDark}
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                        <Upload className="w-6 h-6 text-gray-400" />
+                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 text-center bg-gray-50 dark:bg-gray-900/50">
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                        <Upload className="w-8 h-8 text-gray-400" />
                       </div>
-                      <p className="text-sm text-gray-500">No dark logo uploaded</p>
-                      <p className="text-xs text-gray-400">Click "Upload Logo" to add a dark logo</p>
+                      <div>
+                        <p className="text-sm font-medium">No dark logo uploaded</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Recommended: SVG or PNG with transparent background
+                        </p>
+                      </div>
                     </div>
                   </div>
                 )}
                 
-                {/* Hidden input for form data */}
                 <Input
                   id="logoDark"
                   name="logoDark"
@@ -494,23 +645,44 @@ export default function SiteContentForm({ initialValues }: Props) {
                 />
               </div>
             </div>
-            
-            {/* Logo Selection Tips */}
-            
-          </div>
+          </CardContent>
+        </Card> */}
 
-          {/* Submit Button */}
-          <div className="flex justify-end pt-4">
-            <Button 
-              type="submit" 
-              disabled={loading || uploading !== null} 
-              size="lg"
-            >
-              {loading ? "Updating..." : uploading ? "Uploading..." : "Update Site Content"}
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+        {/* Submit Section */}
+       
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                {/* <p className="font-medium">Ready to update your site configuration?</p>
+                <p className="text-sm text-muted-foreground">
+                  All changes will be applied immediately after saving
+                </p> */}
+              </div>
+              <Button 
+                type="submit" 
+                disabled={loading || uploading !== null} 
+                size="lg"
+                className="gap-2 min-w-[200px]"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    Updating...
+                  </>
+                ) : uploading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Globe className="w-4 h-4" />
+                    Update Site Configuration
+                  </>
+                )}
+              </Button>
+            </div>
+       
+      </form>
+    </div>
   );
 }

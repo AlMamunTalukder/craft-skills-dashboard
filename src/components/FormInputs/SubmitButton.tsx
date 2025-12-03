@@ -1,3 +1,4 @@
+// src/components/FormInputs/SubmitButton.tsx
 import { cn } from "@/lib/utils";
 import { Loader, Loader2, Plus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
@@ -24,10 +25,21 @@ export default function SubmitButton({
 }: SubmitButtonProps) {
   const LoaderIcon = loaderIcon || Loader2;
   const ButtonIcon = buttonIcon;
-  const { formState } = useFormContext();
+  
+  // Safely use form context - only if available
+  let formState = null;
+  try {
+    const formContext = useFormContext();
+    formState = formContext?.formState;
+  } catch (error) {
+    // Form context not available, use props only
+  }
+
+  const isSubmitting = loading || formState?.isSubmitting || formState?.isValidating;
+
   return (
     <>
-      {loading || formState.isSubmitting || formState.isValidating ? (
+      {isSubmitting ? (
         <button
           type="button"
           disabled
@@ -41,7 +53,7 @@ export default function SubmitButton({
         </button>
       ) : (
         <button
-          disabled={loading || formState.isSubmitting}
+          disabled={isSubmitting}
           type="submit"
           className={cn(
             "flex items-center justify-center rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600",

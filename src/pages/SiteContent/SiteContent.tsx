@@ -104,7 +104,7 @@ export default function SiteContent() {
 
           {/* Contact Info */}
           <SectionHeader icon={<Phone />} title="Contact Information" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <ContactItem icon={<Mail />} label="Email" value={data.email} />
             <ContactItem icon={<Phone />} label="Phone 1" value={data.phone1} />
             <ContactItem
@@ -112,11 +112,11 @@ export default function SiteContent() {
               label="Phone 2"
               value={data.phone2 || ""}
             />
-            <ContactItem
+            {/* <ContactItem
               icon={<MapPin />}
               label="Address"
               value={data.address}
-            />
+            /> */}
           </div>
 
           {/* Social Links */}
@@ -150,11 +150,11 @@ export default function SiteContent() {
           </div>
 
           {/* Logos */}
-          <SectionHeader icon={<ImageIcon />} title="Brand Logos" />
+          {/* <SectionHeader icon={<ImageIcon />} title="Brand Logos" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <LogoItem label="Header Logo" src={data.logoLight} />
             <LogoItem label="Footer Logo" src={data.logoDark} />
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>
@@ -258,19 +258,19 @@ function SocialItem({
 }
 
 // Reusable Logo Viewer
-function LogoItem({ label, src }: { label: string; src: string }) {
-  return (
-    <div>
-      <p className="text-sm font-medium text-muted-foreground mb-2">{label}</p>
-      <div className="border rounded bg-muted/20 p-3 flex items-center justify-center hover:bg-muted/30 transition-colors">
-        <img
-          width={200}
-          height={200}
-          src={src}
-          alt={label}
-          className="h-20 object-contain"
-        />
-      </div>
-    </div>
-  );
-}
+// function LogoItem({ label, src }: { label: string; src: string }) {
+//   return (
+//     <div>
+//       <p className="text-sm font-medium text-muted-foreground mb-2">{label}</p>
+//       <div className="border rounded bg-muted/20 p-3 flex items-center justify-center hover:bg-muted/30 transition-colors">
+//         <img
+//           width={200}
+//           height={200}
+//           src={src}
+//           alt={label}
+//           className="h-20 object-contain"
+//         />
+//       </div>
+//     </div>
+//   );
+// }

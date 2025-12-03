@@ -2,10 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
-// import { useRouter } from "next/navigation";
-// import React from "react";
 import CloseButton from "../FormInputs/CloseButton";
-// import SubmitButton from "../FormInputs/SubmitButton";
+import { useNavigate } from "react-router-dom";
+import SubmitButton from "../FormInputs/SubmitButton";
 
 type FormHeaderProps = {
   title: string;
@@ -18,14 +17,14 @@ type FormHeaderProps = {
 export default function FormHeader({
   title,
   editingId,
-//   loading,
+  loading,
   href,
   parent,
 }: FormHeaderProps) {
-//   const router = useRouter();
+  const router = useNavigate();
 
   function goBack() {
-    // router.back();
+    router(-1);
   }
 
   return (
@@ -37,7 +36,7 @@ export default function FormHeader({
             onClick={goBack}
             variant="outline"
             size="icon"
-            className="h-8 w-8"
+            className="h-8 w-8 "
             type="button"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -49,17 +48,10 @@ export default function FormHeader({
             </h1>
           )}
         </div>
-
-        {/* Right: Buttons */}
+        
+        {/* Right: Buttons */}       
         <div className="flex items-center gap-2 self-end sm:self-auto">
           <CloseButton href={href} parent={parent} />
-          {/* 
-          <SubmitButton
-            size="sm"
-            title={editingId ? `Update ${title}` : `Save ${title}`}
-            loading={loading}
-          /> 
-          */}
         </div>
       </div>
     </div>

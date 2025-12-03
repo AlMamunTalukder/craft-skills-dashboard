@@ -49,12 +49,12 @@ const navData = [
       },
       {
         title: "Banner",
-        url: "#",
+        url: "/banner",
         isActive: false,
       },
       {
         title: "Class Schedule & Holidays",
-        url: "#",
+        url: "/class-schedule",
         isActive: false,
       },
       {
