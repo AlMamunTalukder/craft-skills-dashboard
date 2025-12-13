@@ -41,7 +41,7 @@ export default function Banner() {
 
       {/* Seminar Banner Card */}
       <Card className="shadow-md border border-muted">
-        <CardContent className="space-y-6 p-8">
+        <CardContent className="space-y-6">
           <SectionHeader 
             icon={<PanelTop className="text-blue-600" />} 
             title="Seminar Banner" 
@@ -86,7 +86,7 @@ export default function Banner() {
 
       {/* Admission Banner Card */}
       <Card className="shadow-md border border-muted">
-        <CardContent className="space-y-6 p-8">
+        <CardContent className="space-y-6 ">
           <SectionHeader 
             icon={<Tag className="text-green-600" />} 
             title="Admission Banner" 
