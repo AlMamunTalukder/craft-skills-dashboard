@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import AppSelectFile from "@/components/FormInputs/AppSelectFile";
 import FormSelectInput from "@/components/FormInputs/FormSelectInput";

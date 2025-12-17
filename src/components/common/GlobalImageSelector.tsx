@@ -36,7 +36,7 @@
 // import FolderButton from "../Gallery/FolderButton";
 // import ListFolderButton from "../Gallery/ListFolderButton";
 =======
-"use client";
+ 
 >>>>>>> 4872fc6d0f0bc00f40f17f83ac729ae5dbd1fce2
 
 import { Button } from "@/components/ui/button";

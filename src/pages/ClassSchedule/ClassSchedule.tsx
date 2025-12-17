@@ -1,7 +1,16 @@
-"use client";
+ 
 
 import { useEffect, useState } from "react";
-import TableHeader from "../Tables/TableHeader";
+import TableTopBar from "../Tables/TableTopBar";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const ClassSchedule = () => {
   const [data, setData] = useState<any>(null);
@@ -27,7 +36,7 @@ const ClassSchedule = () => {
     <>
       <div className="py-10 space-y-8">
         {/* Page header */}
-        <TableHeader
+        <TableTopBar
           title="Class Schedule"
           href="/class-schedule/update"
           linkTitle="Update Class Schedule"
@@ -36,25 +45,28 @@ const ClassSchedule = () => {
           onStatusFilter={setStatusFilter}
         />
 
-        <table className="w-full border">
-          <thead className="bg-purple-700 text-white">
-            <tr>
-              <th>ক্লাস</th>
-              <th>বার</th>
-              <th>সময়</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item: any) => (
-              <tr key={item._id} className="border-b">
-                <td>{item.className}</td>
-                <td>{item.days}</td>
-                <td>{item.time}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
+        <div className="w-full border rounded-md overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-purple-700 text-white text-center">
+                <TableHead className="pl-4 text-white font-bold">Class</TableHead>
+                <TableHead className="text-white font-bold">Day</TableHead>
+                <TableHead className="text-white font-bold">Time</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((item: any) => (
+                <TableRow key={item.id} className="odd:bg-muted/50">
+                  <TableCell className="font-medium">
+                    {item.className}
+                  </TableCell>
+                  <TableCell>{item.days}</TableCell>
+                  <TableCell>{item.time}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
         <p className="mt-4 text-center text-sm">{data[0]?.holidays}</p>
       </div>
     </>

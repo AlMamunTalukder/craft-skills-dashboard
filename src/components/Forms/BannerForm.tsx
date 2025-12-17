@@ -1,9 +1,8 @@
-"use client";
+ 
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
@@ -12,14 +11,9 @@ import {
   Globe, 
   PanelTop, 
   Tag,
-  Calendar,
   Clock,
-  FileText,
-  Megaphone,
-  Type
 } from "lucide-react";
 
-// Define interfaces
 interface BannerInfo {
   title: string;
   subtitle: string;
@@ -40,8 +34,6 @@ interface SiteData {
   whatsapp?: string;
   youtube?: string;
   telegram?: string;
-  logoLight: string;
-  logoDark: string;
   totalsTeachers?: number;
   totalCourses?: number;
   totalBatches?: number;

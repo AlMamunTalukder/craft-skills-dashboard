@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import { getAllFolders } from "@/queries/gallery/folder";
 import { useQuery } from "@tanstack/react-query";

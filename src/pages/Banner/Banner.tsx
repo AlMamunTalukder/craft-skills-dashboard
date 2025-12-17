@@ -1,9 +1,10 @@
-"use client";
+ 
 
 import { Card, CardContent } from "@/components/ui/card";
 import { PanelTop, Calendar, Tag, FileText, Clock, Megaphone } from "lucide-react";
 import { useEffect, useState } from "react";
-import TableHeader from "../Tables/TableHeader";
+import TableTopBar from "../Tables/TableTopBar";
+
 
 export default function Banner() {
   const [data, setData] = useState<any>(null);
@@ -30,7 +31,7 @@ export default function Banner() {
   return (
     <div className="py-10 space-y-8">
       {/* Page header */}
-      <TableHeader
+      <TableTopBar
         title="Banner"
         href="/banner/update"
         linkTitle="Update Banner"

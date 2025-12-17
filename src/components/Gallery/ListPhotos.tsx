@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import FolderButton from "@/components/dashboard/Gallery/FolderButton";
 import ListFolderButton from "@/components/dashboard/Gallery/ListFolderButton";

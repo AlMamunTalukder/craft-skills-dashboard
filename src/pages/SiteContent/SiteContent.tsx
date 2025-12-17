@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -18,7 +18,8 @@ import {
   Trophy,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import TableHeader from "../Tables/TableHeader";
+import TableTopBar from "../Tables/TableTopBar";
+
 
 export default function SiteContent() {
   const [data, setData] = useState<any>(null);
@@ -52,7 +53,7 @@ export default function SiteContent() {
 
       {/* Page header */}
 
-      <TableHeader
+      <TableTopBar
         title="Site Content"
         href="/sitecontent/update"
         linkTitle="Update Site Content"

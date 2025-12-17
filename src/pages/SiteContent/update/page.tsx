@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import FormHeader from "@/components/Forms/FormHeader";
 import SiteContentForm from "@/components/Forms/SiteContentForm";

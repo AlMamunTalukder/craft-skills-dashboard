@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import SubmitButton from "@/components/FormInputs/SubmitButton";
 import TextInput from "@/components/FormInputs/TextInput";

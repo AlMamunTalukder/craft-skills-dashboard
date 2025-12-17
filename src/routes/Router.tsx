@@ -9,7 +9,11 @@ import UpdateSiteContentPage from "@/pages/SiteContent/update/page";
 import Banner from "@/pages/Banner/Banner";
 import UpdateBanner from "@/pages/Banner/update/page";
 import ClassSchedule from "@/pages/ClassSchedule/ClassSchedule";
-import UpdateClassSchedule from "@/pages/ClassSchedule/update/UpdateClassSchedule";
+import UpdateClassSchedule from "@/pages/ClassSchedule/update/page";
+import NewSeminar from "@/pages/Seminar/new/page";
+import UpdateSeminar from "@/pages/Seminar/update/[id]/page";
+import SeminarList from "@/pages/Seminar/list/page";
+
 
 
 const router = createBrowserRouter([
@@ -57,6 +61,22 @@ const router = createBrowserRouter([
         path: "class-schedule/update",
         element: <UpdateClassSchedule />
       },
+      {
+        path: "seminar/list",
+        element: <SeminarList />
+      },
+      {
+        path: "seminar/new",
+        element: <NewSeminar />
+      },
+      {
+        path: "seminar/update/:id",
+        element: <UpdateSeminar />
+      },
+      // {
+      //   path: "seminar/:id",
+      //   element: <SeminarDetailsPage />
+      // },
 
     ],
   },

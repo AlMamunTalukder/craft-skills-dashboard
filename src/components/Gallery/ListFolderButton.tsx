@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import { DeleteConfirmationDialog } from "@/components/shared/DeleteConfirmationDialog";
 import { Button } from "@/components/ui/button";

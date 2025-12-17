@@ -1,4 +1,4 @@
-"use client";
+ 
 
 import BannerForm from "@/components/Forms/BannerForm";
 import FormHeader from "@/components/Forms/FormHeader";
@@ -74,7 +74,7 @@ export default function UpdateBanner() {
       <FormHeader
         href="/banner"
         parent="Banner"
-        title="Update Banner"
+        title="Banner"
         editingId={data._id || data.id}
         loading={loading}
       />
