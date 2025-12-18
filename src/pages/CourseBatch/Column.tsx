@@ -1,16 +1,24 @@
-// src/pages/Admission/columns.tsx
+// src/pages/CourseBatch/Column.tsx
+import { useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, Copy } from "lucide-react";
+import { Edit, Copy, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import type { AdmissionBatch } from "@/types";
+import DeleteDialog from "@/components/common/DeleteDialog";
 
 export const batchColumns = (
-  onDelete: (id: string) => void,
-  onStatusToggle: (id: string, isActive: boolean) => void
+  onDelete: (id: string) => Promise<void>,
+  onStatusToggle: (id: string, isActive: boolean) => Promise<void>,
+  refreshBatches: () => void // Add this parameter
 ): ColumnDef<AdmissionBatch>[] => [
+  {
+    accessorKey: "sl",
+    header: "SL",
+    cell: ({ row }) => <span>{row.index + 1}</span>,
+  },
   {
     accessorKey: "code",
     header: "Code",
@@ -27,16 +35,20 @@ export const batchColumns = (
     cell: ({ row }) => {
       const dateStr = row.original.registrationStart;
       if (!dateStr) return <span className="text-gray-500">-</span>;
-      
+
       try {
         const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return <span className="text-red-500">Invalid</span>;
-        
+        if (isNaN(date.getTime()))
+          return <span className="text-red-500">Invalid</span>;
+
         return (
           <div className="text-sm">
             <div>{date.toLocaleDateString("en-US")}</div>
             <div className="text-muted-foreground">
-              {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              {date.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
           </div>
         );
@@ -51,16 +63,20 @@ export const batchColumns = (
     cell: ({ row }) => {
       const dateStr = row.original.registrationEnd;
       if (!dateStr) return <span className="text-gray-500">-</span>;
-      
+
       try {
         const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return <span className="text-red-500">Invalid</span>;
-        
+        if (isNaN(date.getTime()))
+          return <span className="text-red-500">Invalid</span>;
+
         return (
           <div className="text-sm">
             <div>{date.toLocaleDateString("en-US")}</div>
             <div className="text-muted-foreground">
-              {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              {date.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
           </div>
         );
@@ -75,9 +91,9 @@ export const batchColumns = (
     cell: ({ row }) => {
       const batch = row.original;
       const batchId = batch._id || batch.id;
-      
+
       if (!batchId) return null;
-      
+
       return (
         <Switch
           checked={batch.isActive || false}
@@ -93,42 +109,83 @@ export const batchColumns = (
     cell: ({ row }) => {
       const batch = row.original;
       const batchId = batch._id || batch.id;
-      
+      const [isDeleting, setIsDeleting] = useState(false);
+
       if (!batchId) return null;
-      
+
+      // In Column.tsx, update the duplicate function:
       const handleDuplicate = async () => {
         try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/admission/batches`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: `${batch.name} (Copy)`,
-              code: `${batch.code}-${Date.now()}`,
-              description: batch.description,
-              registrationStart: batch.registrationStart,
-              registrationEnd: batch.registrationEnd,
-              facebookSecretGroup: batch.facebookSecretGroup,
-              messengerSecretGroup: batch.messengerSecretGroup,
-              isActive: false,
-            }),
+          // Get social fields with proper fallbacks
+          const facebookField = batch.facebookSecretGroup || "";
+          const messengerField = batch.messengerSecretGroup || "";
+
+          console.log("Social fields being used:", {
+            facebook: facebookField,
+            messenger: messengerField,
+            batchHasFacebook: "facebookSecretGroup" in batch,
+            batchHasMessenger: "messengerSecretGroup" in batch,
           });
-          
-          if (!response.ok) throw new Error("Failed to duplicate");
-          
+
+          const duplicateData = {
+            name: `${batch.name || "Batch"} (Copy)`,
+            code: `${batch.code || "BATCH"}-${Date.now()}`,
+            description: batch.description || "",
+            registrationStart:
+              batch.registrationStart || new Date().toISOString(),
+            registrationEnd:
+              batch.registrationEnd ||
+              new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            facebookSecretGroup: facebookField,
+            messengerSecretGroup: messengerField,
+            isActive: false,
+          };
+
+          console.log("Sending to API:", duplicateData);
+
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/course-batches`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(duplicateData),
+            }
+          );
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.message || "Failed to duplicate");
+          }
+
           toast.success("Batch duplicated successfully");
-          window.location.reload();
+          refreshBatches();
         } catch (error: any) {
-          toast.error(error.message);
+          console.error("Duplicate error:", error);
+          toast.error(error.message || "Failed to duplicate batch");
         }
       };
-      
+
+      const handleDeleteConfirm = async () => {
+        setIsDeleting(true);
+        try {
+          await onDelete(batchId);
+          // onDelete already triggers refresh via setRefreshTrigger
+        } finally {
+          setIsDeleting(false);
+        }
+      };
+
       return (
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" asChild>
-            <Link to={`/admission/batch/edit/${batchId}`}>
+          {/* Edit Button */}
+          <Button size="sm" variant="ghost" asChild title="Edit">
+            <Link to={`/course-batches/edit/${batchId}`}>
               <Edit className="h-4 w-4" />
             </Link>
           </Button>
+
+          {/* Duplicate Button */}
           <Button
             size="sm"
             variant="ghost"
@@ -137,14 +194,23 @@ export const batchColumns = (
           >
             <Copy className="h-4 w-4" />
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onDelete(batchId)}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+
+          {/* Delete Button with Dialog */}
+          <DeleteDialog
+            onConfirm={handleDeleteConfirm}
+            title="Delete Batch?"
+            description={`Are you sure you want to delete "${batch.name}"? This action cannot be undone.`}
+            isLoading={isDeleting}
           >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+              title="Delete"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </DeleteDialog>
         </div>
       );
     },

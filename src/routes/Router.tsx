@@ -77,6 +77,22 @@ const router = createBrowserRouter([
         element: <UpdateSeminar />
       },
       {
+        path: "courses",
+        element: <BatchList />
+      },
+      {
+        path: "courses",
+        element: <BatchList />
+      },
+      {
+        path: "courses/new",
+        element: <BatchList />
+      },
+      {
+        path: "courses/edit/:id",
+        element: <BatchList />
+      },
+      {
         path: "course-batches",
         element: <BatchList />
       },

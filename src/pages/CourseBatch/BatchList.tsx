@@ -1,8 +1,8 @@
-// src/pages/Admission/BatchList.tsx
-import { useState, useEffect } from "react";
+// src/pages/CourseBatch/BatchList.tsx
+import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, RefreshCw, Plus } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -12,16 +12,19 @@ import TableTopBar from "../Tables/TableTopBar";
 export default function BatchList() {
   const [batches, setBatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Add this
   const navigate = useNavigate();
 
-  const fetchBatches = async () => {
+  // Use useCallback to prevent unnecessary re-renders
+  const fetchBatches = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/course-batches`
-      ); // Changed from /admission/batches
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches`);
 
-      if (!response.ok) throw new Error("Failed to fetch batches");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to fetch batches");
+      }
 
       const { data, success } = await response.json();
 
@@ -37,59 +40,62 @@ export default function BatchList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchBatches();
+  }, [fetchBatches, refreshTrigger]); // Add refreshTrigger to dependencies
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this batch?")) {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/course-batches/${id}`,
-          {
-            // Changed endpoint
-            method: "DELETE",
-          }
-        );
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}`, {
+        method: "DELETE",
+      });
 
-        if (!response.ok) throw new Error("Failed to delete batch");
-
-        toast.success("Batch deleted successfully");
-        fetchBatches(); // Refresh list
-      } catch (error: any) {
-        console.error("Error deleting batch:", error);
-        toast.error(error.message);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete batch");
       }
+
+      toast.success("Batch deleted successfully");
+      setRefreshTrigger(prev => prev + 1); // Trigger refresh without reload
+      return Promise.resolve();
+    } catch (error: any) {
+      console.error("Error deleting batch:", error);
+      toast.error(error.message);
+      return Promise.reject(error);
     }
   };
 
   const handleStatusToggle = async (id: string, isActive: boolean) => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/course-batches/${id}/status`,
-        {
-          // Changed endpoint
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ isActive }),
-        }
-      );
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}/status`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isActive }),
+      });
 
-      if (!response.ok) throw new Error("Failed to update status");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update status");
+      }
 
       toast.success("Status updated successfully");
-      fetchBatches(); // Refresh list
+      setRefreshTrigger(prev => prev + 1); // Also refresh after status toggle
     } catch (error: any) {
       console.error("Error updating status:", error);
       toast.error(error.message);
     }
   };
 
-  useEffect(() => {
-    fetchBatches();
-  }, []);
+  // Create a function that can be passed to columns for refreshing
+  const refreshBatches = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
 
-  const columns = batchColumns(handleDelete, handleStatusToggle);
+  const columns = batchColumns(handleDelete, handleStatusToggle, refreshBatches);
 
   return (
     <div className="container mx-auto py-6">
@@ -103,7 +109,6 @@ export default function BatchList() {
         showExport={true}
       />
       <Card>
-        
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center h-64">
@@ -114,7 +119,7 @@ export default function BatchList() {
             <div className="text-center py-12">
               <p className="text-gray-500">No batches found.</p>
               <Button
-                onClick={() => navigate("/course-batches/new")} // Fixed navigation
+                onClick={() => navigate("/course-batches/new")}
                 className="mt-4"
               >
                 Create Your First Batch

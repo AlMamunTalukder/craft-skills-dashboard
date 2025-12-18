@@ -11,7 +11,7 @@ import { Loader2, Calendar, Facebook, MessageCircle } from "lucide-react";
 import { batchSchema, type BatchFormData } from "@/api/coursebatch.schema";
 
 interface BatchFormProps {
-  initialValues?: Partial<BatchFormData>;
+  initialValues?: any;
   onSubmit: (data: BatchFormData) => Promise<void>;
   isSubmitting?: boolean;
 }

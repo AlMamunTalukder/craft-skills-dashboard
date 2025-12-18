@@ -47,7 +47,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImageIcon, Loader2, Trash2, Upload } from "lucide-react";
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import CustomPagination from "./CustomPagination";
-import { DeleteConfirmationDialog } from "./DeleteConfirmationDialog";
+import { DeleteConfirmationDialog } from "./DeleteDialog";
 import toast from "react-hot-toast";
 import { Badge } from "../ui/badge";
 

@@ -77,8 +77,8 @@ const navData = [
     isActive: false,
     items: [
       {
-        title: "Course List",
-        url: "/list",
+        title: "Courses",
+        url: "/courses",
         isActive: false,
       },
       

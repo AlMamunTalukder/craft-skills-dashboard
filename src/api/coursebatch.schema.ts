@@ -17,12 +17,6 @@ export const batchSchema = z.object({
     .url("Must be a valid URL")
     .optional()
     .or(z.literal("")),
-  // Remove isActive from the form schema since it's not needed in create page
 });
 
 export type BatchFormData = z.infer<typeof batchSchema>;
-
-// Create a separate type for API (with isActive)
-export type BatchApiData = BatchFormData & {
-  isActive?: boolean;
-};

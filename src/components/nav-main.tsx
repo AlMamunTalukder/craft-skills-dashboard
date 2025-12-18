@@ -109,6 +109,7 @@ export function NavMain({
                     <SidebarMenuButton
                       tooltip={item.title}
                       isActive={item.isActive}
+                      className="cursor-pointer "
                     >
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
@@ -149,6 +150,7 @@ export function NavMain({
                 tooltip={item.title}
                 onClick={(e) => handleItemClick(e, item)}
                 isActive={item.isActive}
+                className="cursor-pointer"
               >
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
