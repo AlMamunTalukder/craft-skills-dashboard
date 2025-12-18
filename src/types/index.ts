@@ -92,3 +92,22 @@ export const seminarToSimpleFormData = (seminar: Seminar | null): any => {
     telegramGroup: seminar.telegramGroup || "",
   };
 };
+
+// src/types/admission.types.ts
+export interface AdmissionBatch {
+  _id?: string;
+  id?: string;
+  name: string;
+  code: string | number;
+  description?: string;
+  registrationStart: string; // ISO string
+  registrationEnd: string; // ISO string
+  isActive?: boolean;
+  facebookSecretGroup?: string;
+  messengerSecretGroup?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  students?: any[]; // For future use
+}
+
+export type CreateBatchDto = Omit<AdmissionBatch, '_id' | 'id' | 'createdAt' | 'updatedAt'>;

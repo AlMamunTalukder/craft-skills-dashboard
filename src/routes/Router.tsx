@@ -13,6 +13,9 @@ import UpdateClassSchedule from "@/pages/ClassSchedule/update/page";
 import NewSeminar from "@/pages/Seminar/new/page";
 import UpdateSeminar from "@/pages/Seminar/update/[id]/page";
 import SeminarList from "@/pages/Seminar/list/page";
+import BatchList from "@/pages/CourseBatch/BatchList";
+import CreateBatch from "@/pages/CourseBatch/new/CreateBatch";
+import UpdateBatch from "@/pages/CourseBatch/edit/[id]/UpdateBatch";
 
 
 
@@ -73,11 +76,18 @@ const router = createBrowserRouter([
         path: "seminar/update/:id",
         element: <UpdateSeminar />
       },
-      // {
-      //   path: "seminar/:id",
-      //   element: <SeminarDetailsPage />
-      // },
-
+      {
+        path: "course-batches",
+        element: <BatchList />
+      },
+      {
+        path: "course-batches/new",
+        element: <CreateBatch />
+      },
+      {
+        path: "course-batches/edit/:id",
+        element: <UpdateBatch />
+      },
     ],
   },
 ]);

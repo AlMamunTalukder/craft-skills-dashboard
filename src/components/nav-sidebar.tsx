@@ -69,7 +69,7 @@ const navData = [
     url: "/seminar/list",
     icon: Megaphone,
     isActive: false,
-  },
+  }, 
   {
     title: "Courses",
     url: "#",
@@ -77,18 +77,14 @@ const navData = [
     isActive: false,
     items: [
       {
-        title: "List",
-        url: "/genesis",
+        title: "Course List",
+        url: "/list",
         isActive: false,
       },
-      {
-        title: "Add",
-        url: "/explorer",
-        isActive: false,
-      },
+      
       {
         title: "Course Batch",
-        url: "/quantum",
+        url: "/course-batches",
         isActive: false,
       },
     ],
