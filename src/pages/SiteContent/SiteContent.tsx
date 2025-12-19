@@ -4,11 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Mail,
   Phone,
-  MapPin,
   Facebook,
   Youtube,
   Link2,
-  Image as ImageIcon,
   Group,
   MessageCircle,
   Send,

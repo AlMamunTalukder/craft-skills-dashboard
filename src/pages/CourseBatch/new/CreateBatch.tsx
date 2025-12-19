@@ -1,9 +1,9 @@
 // src/pages/CourseBatch/new/CreateBatch.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BatchForm from "@/components/Forms/BatchForm";
+import BatchForm from "@/components/Forms/Course/BatchForm";
 import toast from "react-hot-toast";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { BatchFormData } from "@/api/coursebatch.schema";
 

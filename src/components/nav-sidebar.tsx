@@ -91,21 +91,10 @@ const navData = [
   },
   {
     title: "Coupons",
-    url: "#",
+    url: "coupons",
     icon: Percent,
     isActive: false,
-    items: [
-      {
-        title: "List",
-        url: "/genesis",
-        isActive: false,
-      },
-      {
-        title: "Add",
-        url: "/explorer",
-        isActive: false,
-      },
-    ],
+    
   },
   {
     title: "Attendance",
@@ -130,24 +119,24 @@ const navData = [
       },
     ],
   },
-  {
-    title: "File Manager",
-    url: "#",
-    icon: File,
-    isActive: false,
-    items: [
-      {
-        title: "Photos",
-        url: "/genesis",
-        isActive: false,
-      },
-      {
-        title: "Folders",
-        url: "/explorer",
-        isActive: false,
-      },
-    ],
-  },
+  // {
+  //   title: "File Manager",
+  //   url: "#",
+  //   icon: File,
+  //   isActive: false,
+  //   items: [
+  //     {
+  //       title: "Photos",
+  //       url: "/genesis",
+  //       isActive: false,
+  //     },
+  //     {
+  //       title: "Folders",
+  //       url: "/explorer",
+  //       isActive: false,
+  //     },
+  //   ],
+  // },
   {
     title: "Database Backup",
     url: "/design",

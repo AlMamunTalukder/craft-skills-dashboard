@@ -6,13 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { 
-  Upload, 
-  X, 
   Globe, 
   Mail, 
   Phone, 
@@ -26,11 +22,9 @@ import {
   Send,
   Type,
   Link,
-  BarChart3,
-  Palette
+  BarChart3
 } from "lucide-react";
 
-// Define the interface for site content data
 interface SiteContentData {
   _id?: string;
   id?: string;

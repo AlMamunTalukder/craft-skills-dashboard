@@ -1,13 +1,11 @@
-import React from "react";
-import CloseButton from "../FormInputs/CloseButton";
+
 import SubmitButton from "../FormInputs/SubmitButton";
 
 export default function FormFooter({
-  href,
+
   editingId,
   loading,
-  title,
-  parent,
+  title
 }: {
   href: string;
   editingId: string | undefined;

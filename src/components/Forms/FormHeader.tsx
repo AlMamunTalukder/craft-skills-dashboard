@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import CloseButton from "../FormInputs/CloseButton";
 import { useNavigate } from "react-router-dom";
-import SubmitButton from "../FormInputs/SubmitButton";
 
 type FormHeaderProps = {
   title: string;
@@ -17,7 +16,6 @@ type FormHeaderProps = {
 export default function FormHeader({
   title,
   editingId,
-  loading,
   href,
   parent,
 }: FormHeaderProps) {

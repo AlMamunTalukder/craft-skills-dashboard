@@ -2,7 +2,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, Eye } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Seminar } from "@/types";
 

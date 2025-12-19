@@ -18,6 +18,8 @@ import CreateBatch from "@/pages/CourseBatch/new/CreateBatch";
 import UpdateBatch from "@/pages/CourseBatch/edit/[id]/UpdateBatch";
 import CourseList from "@/pages/Course/CourseList";
 import CreateCourse from "@/pages/Course/new/CreateCourse";
+import CouponList from "@/pages/Coupon/CouponList";
+import CreateCoupon from "@/pages/Coupon/new/NewCoupon";
 
 const router = createBrowserRouter([
   {
@@ -100,6 +102,18 @@ const router = createBrowserRouter([
       {
         path: "course-batches/edit/:id",
         element: <UpdateBatch />,
+      },
+      {
+        path: "coupons",
+        element: <CouponList />,
+      },
+      {
+        path: "coupons/new",
+        element: <CreateCoupon />,
+      },
+      {
+        path: "coupons/edit/:id",
+        element: <CreateCoupon />,
       },
     ],
   },
