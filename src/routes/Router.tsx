@@ -16,8 +16,8 @@ import SeminarList from "@/pages/Seminar/list/page";
 import BatchList from "@/pages/CourseBatch/BatchList";
 import CreateBatch from "@/pages/CourseBatch/new/CreateBatch";
 import UpdateBatch from "@/pages/CourseBatch/edit/[id]/UpdateBatch";
-
-
+import CourseList from "@/pages/Course/CourseList";
+import CreateCourse from "@/pages/Course/new/CreateCourse";
 
 const router = createBrowserRouter([
   {
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
         <Main />
       </ProtectedRoute>
     ),
-    children: [ 
+    children: [
       {
         path: "dashboard",
         element: <Home />,
@@ -45,7 +45,7 @@ const router = createBrowserRouter([
         element: <SiteContent />,
       },
       {
-        path: "sitecontent/update", 
+        path: "sitecontent/update",
         element: <UpdateSiteContentPage />,
       },
       {
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: "banner/update",
-        element: <UpdateBanner />
+        element: <UpdateBanner />,
       },
       {
         path: "class-schedule",
@@ -62,47 +62,44 @@ const router = createBrowserRouter([
       },
       {
         path: "class-schedule/update",
-        element: <UpdateClassSchedule />
+        element: <UpdateClassSchedule />,
       },
       {
         path: "seminar/list",
-        element: <SeminarList />
+        element: <SeminarList />,
       },
       {
         path: "seminar/new",
-        element: <NewSeminar />
+        element: <NewSeminar />,
       },
       {
         path: "seminar/update/:id",
-        element: <UpdateSeminar />
+        element: <UpdateSeminar />,
       },
+      
       {
         path: "courses",
-        element: <BatchList />
-      },
-      {
-        path: "courses",
-        element: <BatchList />
+        element: <CourseList />,
       },
       {
         path: "courses/new",
-        element: <BatchList />
+        element: <CreateCourse />,
       },
       {
         path: "courses/edit/:id",
-        element: <BatchList />
+        element: <CreateCourse />,
       },
       {
         path: "course-batches",
-        element: <BatchList />
+        element: <BatchList />,
       },
       {
         path: "course-batches/new",
-        element: <CreateBatch />
+        element: <CreateBatch />,
       },
       {
         path: "course-batches/edit/:id",
-        element: <UpdateBatch />
+        element: <UpdateBatch />,
       },
     ],
   },

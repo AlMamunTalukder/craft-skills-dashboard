@@ -111,3 +111,17 @@ export interface AdmissionBatch {
 }
 
 export type CreateBatchDto = Omit<AdmissionBatch, '_id' | 'id' | 'createdAt' | 'updatedAt'>;
+
+export interface Course {
+  _id?: string;
+  id?: string;
+  name: string;
+  description?: string;
+  price: number;
+  discount?: number;
+  paymentCharge?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type CreateCourseDto = Omit<Course, '_id' | 'id' | 'createdAt' | 'updatedAt'>;
