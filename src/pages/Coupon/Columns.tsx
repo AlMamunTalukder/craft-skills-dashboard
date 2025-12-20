@@ -1,7 +1,7 @@
 // src/pages/Coupon/Columns.tsx
 import type { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Copy, CheckCircle, XCircle } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +11,6 @@ import DeleteDialog from '@/components/common/DeleteDialog';
 
 export const couponColumns = (
   onDelete: (id: string) => Promise<void>,
-  onToggleStatus: (id: string, isActive: boolean) => Promise<void>,
   refreshCoupons: () => void
 ): ColumnDef<Coupon>[] => [
   {
@@ -64,9 +63,21 @@ export const couponColumns = (
       const coupon = row.original;
       const couponId = coupon._id || coupon.id;
       
-      const handleToggle = async (checked: boolean) => {
+      const handleToggleStatus = async (checked: boolean) => {
         try {
-          await onToggleStatus(couponId!, checked);
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/coupons/${couponId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ isActive: checked }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to update coupon status');
+          }
+
+          toast.success(`Coupon ${checked ? 'activated' : 'deactivated'}`);
+          refreshCoupons();
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -76,7 +87,7 @@ export const couponColumns = (
         <div className="flex items-center gap-2">
           <Switch
             checked={coupon.isActive}
-            onCheckedChange={handleToggle}
+            onCheckedChange={handleToggleStatus}
           />
           <Badge variant={coupon.isActive ? 'default' : 'secondary'}>
             {coupon.isActive ? 'Active' : 'Inactive'}
@@ -134,8 +145,6 @@ export const couponColumns = (
       
       if (!couponId) return null;
       
-      
-      
       return (
         <div className="flex items-center gap-2">
           <Button size="sm" variant="ghost" asChild title="Edit">
@@ -143,8 +152,6 @@ export const couponColumns = (
               <Edit className="h-4 w-4" />
             </Link>
           </Button>
-          
-         
           
           <DeleteDialog
             onConfirm={() => onDelete(couponId)}

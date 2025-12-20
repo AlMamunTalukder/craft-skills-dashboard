@@ -6,7 +6,6 @@ import { useLocation } from "react-router-dom";
 import {
   BookCheck,
   Database,
-  File,
   Hand,
   LayoutDashboard,
   LayoutGrid,

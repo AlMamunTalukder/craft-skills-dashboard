@@ -1,5 +1,3 @@
- 
-
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Mail,
@@ -18,7 +16,6 @@ import {
 import { useEffect, useState } from "react";
 import TableTopBar from "../Tables/TableTopBar";
 
-
 export default function SiteContent() {
   const [data, setData] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -26,6 +23,8 @@ export default function SiteContent() {
   const filteredData = statusFilter
     ? data.filter((item: any) => String(item.status) === statusFilter)
     : data;
+
+    console.log(filteredData)
 
   useEffect(() => {
     const loadData = async () => {

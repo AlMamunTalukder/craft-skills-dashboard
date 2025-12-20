@@ -108,72 +108,72 @@ export default function SiteContentForm({ initialValues }: Props) {
   };
 
   // Remove logo
-  const handleRemoveLogo = (logoType: 'light' | 'dark') => {
-    setFormData((prev) => ({
-      ...prev,
-      [logoType === 'light' ? 'logoLight' : 'logoDark']: "",
-    }));
-    toast.success(`${logoType === 'light' ? 'Light' : 'Dark'} logo removed!`);
-  };
+  // const handleRemoveLogo = (logoType: 'light' | 'dark') => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [logoType === 'light' ? 'logoLight' : 'logoDark']: "",
+  //   }));
+  //   toast.success(`${logoType === 'light' ? 'Light' : 'Dark'} logo removed!`);
+  // };
 
- const handleDirectUpload = async (e: React.ChangeEvent<HTMLInputElement>, logoType: 'light' | 'dark') => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+//  const handleDirectUpload = async (e: React.ChangeEvent<HTMLInputElement>, logoType: 'light' | 'dark') => {
+//   const file = e.target.files?.[0];
+//   if (!file) return;
 
-  // Validate file type
-  const validTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
-  if (!validTypes.includes(file.type)) {
-    toast.error('Please select a valid image file (JPEG, PNG, SVG, WebP)');
-    return;
-  }
+//   // Validate file type
+//   const validTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
+//   if (!validTypes.includes(file.type)) {
+//     toast.error('Please select a valid image file (JPEG, PNG, SVG, WebP)');
+//     return;
+//   }
 
-  // Validate file size (2MB max)
-  if (file.size > 2 * 1024 * 1024) {
-    toast.error('Image size should be less than 2MB');
-    return;
-  }
+//   // Validate file size (2MB max)
+//   if (file.size > 2 * 1024 * 1024) {
+//     toast.error('Image size should be less than 2MB');
+//     return;
+//   }
 
-  setUploading(logoType);
+//   setUploading(logoType);
 
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
+//   try {
+//     const formData = new FormData();
+//     formData.append('file', file);
 
-    // This should now work with the correct endpoint
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
-      method: 'POST',
-      credentials: 'include',
-      body: formData,
-    });
+//     // This should now work with the correct endpoint
+//     const response = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+//       method: 'POST',
+//       credentials: 'include',
+//       body: formData,
+//     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      throw new Error(errorData?.message || `Upload failed with status: ${response.status}`);
-    }
+//     if (!response.ok) {
+//       const errorData = await response.json().catch(() => null);
+//       throw new Error(errorData?.message || `Upload failed with status: ${response.status}`);
+//     }
 
-    const result = await response.json();
+//     const result = await response.json();
     
-    // Get the URL from the response
-    const imageUrl = result.data?.url;
+//     // Get the URL from the response
+//     const imageUrl = result.data?.url;
 
-    if (imageUrl) {
-      setFormData((prev) => ({
-        ...prev,
-        [logoType === 'light' ? 'logoLight' : 'logoDark']: imageUrl,
-      }));
-      toast.success(`${logoType === 'light' ? 'Light' : 'Dark'} logo uploaded successfully!`);
-    } else {
-      console.log('Upload response:', result);
-      throw new Error('No image URL returned from server');
-    }
-  } catch (error) {
-    console.error('Upload error:', error);
-    toast.error(error instanceof Error ? error.message : 'Failed to upload image. Please try again.');
-  } finally {
-    setUploading(null);
-    e.target.value = '';
-  }
-};
+//     if (imageUrl) {
+//       setFormData((prev) => ({
+//         ...prev,
+//         [logoType === 'light' ? 'logoLight' : 'logoDark']: imageUrl,
+//       }));
+//       toast.success(`${logoType === 'light' ? 'Light' : 'Dark'} logo uploaded successfully!`);
+//     } else {
+//       console.log('Upload response:', result);
+//       throw new Error('No image URL returned from server');
+//     }
+//   } catch (error) {
+//     console.error('Upload error:', error);
+//     toast.error(error instanceof Error ? error.message : 'Failed to upload image. Please try again.');
+//   } finally {
+//     setUploading(null);
+//     e.target.value = '';
+//   }
+// };
 
   return (
     <div className="space-y-6">
@@ -448,209 +448,11 @@ export default function SiteContentForm({ initialValues }: Props) {
           </CardContent>
         </Card>
 
-        {/* Logo URLs Section - DIRECT UPLOAD ONLY */}
-        {/* <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Palette className="w-5 h-5 text-primary" />
-              <CardTitle>Brand Logos</CardTitle>
-            </div>
-            <CardDescription>
-              Upload logos for light and dark mode themes
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="text-base font-medium flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                      Light Mode Logo
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Displayed on light backgrounds
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => document.getElementById('lightLogoUpload')?.click()}
-                      disabled={uploading === 'light'}
-                      className="gap-2"
-                    >
-                      <Upload className="w-4 h-4" />
-                      {uploading === 'light' ? 'Uploading...' : 'Upload'}
-                    </Button>
-                    {formData.logoLight && (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleRemoveLogo('light')}
-                        disabled={uploading === 'light'}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                
-                <input
-                  type="file"
-                  id="lightLogoUpload"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={(e) => handleDirectUpload(e, 'light')}
-                  disabled={uploading === 'light'}
-                />
-                
-                {formData.logoLight ? (
-                  <div className="border-2 border-dashed border-green-200 dark:border-green-800 rounded-xl p-4 bg-green-50 dark:bg-green-900/20">
-                    <div className="flex flex-col items-center">
-                      <Badge variant="secondary" className="mb-3">
-                        Current Logo Preview
-                      </Badge>
-                      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm w-full">
-                        <img
-                          src={formData.logoLight}
-                          alt="Light Logo Preview"
-                          className="h-32 object-contain mx-auto"
-                        />
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-3 text-center break-all max-w-full">
-                        {formData.logoLight}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 text-center bg-gray-50 dark:bg-gray-900/50">
-                    <div className="flex flex-col items-center justify-center space-y-3">
-                      <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                        <Upload className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">No light logo uploaded</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Recommended: SVG or PNG with transparent background
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                <Input
-                  id="logoLight"
-                  name="logoLight"
-                  value={formData.logoLight || ''}
-                  onChange={handleChange}
-                  className="hidden"
-                />
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="text-base font-medium flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-gray-800 dark:bg-gray-400" />
-                      Dark Mode Logo
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Displayed on dark backgrounds
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => document.getElementById('darkLogoUpload')?.click()}
-                      disabled={uploading === 'dark'}
-                      className="gap-2"
-                    >
-                      <Upload className="w-4 h-4" />
-                      {uploading === 'dark' ? 'Uploading...' : 'Upload'}
-                    </Button>
-                    {formData.logoDark && (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleRemoveLogo('dark')}
-                        disabled={uploading === 'dark'}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                
-                <input
-                  type="file"
-                  id="darkLogoUpload"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={(e) => handleDirectUpload(e, 'dark')}
-                  disabled={uploading === 'dark'}
-                />
-                
-                {formData.logoDark ? (
-                  <div className="border-2 border-dashed border-blue-200 dark:border-blue-800 rounded-xl p-4 bg-blue-50 dark:bg-blue-900/20">
-                    <div className="flex flex-col items-center">
-                      <Badge variant="secondary" className="mb-3">
-                        Current Logo Preview
-                      </Badge>
-                      <div className="bg-gray-900 p-6 rounded-lg shadow-sm w-full">
-                        <img
-                          src={formData.logoDark}
-                          alt="Dark Logo Preview"
-                          className="h-32 object-contain mx-auto"
-                        />
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-3 text-center break-all max-w-full">
-                        {formData.logoDark}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 text-center bg-gray-50 dark:bg-gray-900/50">
-                    <div className="flex flex-col items-center justify-center space-y-3">
-                      <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                        <Upload className="w-8 h-8 text-gray-400" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">No dark logo uploaded</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Recommended: SVG or PNG with transparent background
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                <Input
-                  id="logoDark"
-                  name="logoDark"
-                  value={formData.logoDark || ''}
-                  onChange={handleChange}
-                  className="hidden"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card> */}
-
+        
         {/* Submit Section */}
        
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                {/* <p className="font-medium">Ready to update your site configuration?</p>
-                <p className="text-sm text-muted-foreground">
-                  All changes will be applied immediately after saving
-                </p> */}
-              </div>
+              
               <Button 
                 type="submit" 
                 disabled={loading || uploading !== null} 

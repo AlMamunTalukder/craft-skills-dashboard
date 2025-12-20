@@ -72,13 +72,13 @@ export default function BannerForm({ initialValues }: Props) {
       });
       
       if (response.ok) {
-        const result = await response.json();
+        // const result = await response.json();
         toast.success("Banner content updated successfully.");
         setTimeout(() => {
           navigate("/banner");
         }, 1000);
       } else {
-        const errorData = await response.json();
+        // const errorData = await response.json();
         throw new Error('Failed to update banner content');
       }
     } catch (error) {
@@ -119,13 +119,13 @@ export default function BannerForm({ initialValues }: Props) {
     }
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value ? new Date(value).toISOString() : "",
-    }));
-  };
+  // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     [name]: value ? new Date(value).toISOString() : "",
+  //   }));
+  // };
 
   return (
     <div className="space-y-6">

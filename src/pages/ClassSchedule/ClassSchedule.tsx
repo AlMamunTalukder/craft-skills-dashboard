@@ -1,5 +1,3 @@
- 
-
 import { useEffect, useState } from "react";
 import TableTopBar from "../Tables/TableTopBar";
 
@@ -15,6 +13,7 @@ import {
 const ClassSchedule = () => {
   const [data, setData] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  console.log(statusFilter);
 
   useEffect(() => {
     const loadData = async () => {
@@ -49,7 +48,9 @@ const ClassSchedule = () => {
           <Table>
             <TableHeader>
               <TableRow className="bg-purple-700 text-white text-center">
-                <TableHead className="pl-4 text-white font-bold">Class</TableHead>
+                <TableHead className="pl-4 text-white font-bold">
+                  Class
+                </TableHead>
                 <TableHead className="text-white font-bold">Day</TableHead>
                 <TableHead className="text-white font-bold">Time</TableHead>
               </TableRow>

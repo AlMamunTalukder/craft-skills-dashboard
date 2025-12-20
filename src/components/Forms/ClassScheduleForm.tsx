@@ -58,13 +58,13 @@ export default function ClassScheduleForm({ initialValues }: Props) {
       );
 
         if (res.ok) {
-        const result = await res.json();
+        // const result = await res.json();
         toast.success("Banner content updated successfully.");
         setTimeout(() => {
           navigate("/class-schedule");
         }, 1000);
       } else {
-        const errorData = await res.json();
+        // const errorData = await res.json();
         throw new Error('Failed to update banner content');
       }
     } catch {
