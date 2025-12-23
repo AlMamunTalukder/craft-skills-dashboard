@@ -5,6 +5,7 @@ import * as React from "react";
 import { useLocation } from "react-router-dom";
 import {
   BookCheck,
+  Contact,
   Database,
   File,
   Hand,
@@ -12,6 +13,7 @@ import {
   LayoutGrid,
   Megaphone,
   Percent,
+  Users,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -137,6 +139,36 @@ const navData = [
   //     },
   //   ],
   // },
+  {
+    title: "Users",
+    url: "#",
+    icon: Users,
+    isActive: false,
+    items: [
+      {
+        title: "Users",
+        url: "/genesis",
+        isActive: false,
+      },
+      {
+        title: "Teacher",
+        url: "/explorer",
+        isActive: false,
+      },
+      {
+        title: "Admin",
+        url: "/quantum",
+        isActive: false,
+      },
+    ],
+  },
+  {
+    title: "Contact",
+    url: "#",
+    icon: Contact,
+    isActive: false,
+  },
+ 
   {
     title: "Database Backup",
     url: "/design",
