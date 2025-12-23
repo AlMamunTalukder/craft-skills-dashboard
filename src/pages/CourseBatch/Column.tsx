@@ -12,7 +12,7 @@ import DeleteDialog from "@/components/common/DeleteDialog";
 export const batchColumns = (
   onDelete: (id: string) => Promise<void>,
   onStatusToggle: (id: string, isActive: boolean) => Promise<void>,
-  refreshBatches: () => void // Add this parameter
+  refreshBatches: () => void 
 ): ColumnDef<AdmissionBatch>[] => [
   {
     accessorKey: "sl",

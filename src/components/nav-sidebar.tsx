@@ -7,7 +7,6 @@ import {
   BookCheck,
   Contact,
   Database,
-  File,
   Hand,
   LayoutDashboard,
   LayoutGrid,

@@ -1,5 +1,3 @@
- 
-
 import { useEffect, useState } from "react";
 import TableTopBar from "../Tables/TableTopBar";
 
@@ -11,10 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ClassSchedule = () => {
   const [data, setData] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  console.log(statusFilter);
 
   useEffect(() => {
     const loadData = async () => {
@@ -26,11 +26,8 @@ const ClassSchedule = () => {
     loadData();
   }, []);
 
-  //     loadData();
-  //   }, []);
-
   if (!data) {
-    return <div className="text-center mt-10 text-gray-500">Loading...</div>;
+    return <div className="text-center mt-10 text-gray-500"><Skeleton/></div>;
   }
   return (
     <>
@@ -45,18 +42,26 @@ const ClassSchedule = () => {
           onStatusFilter={setStatusFilter}
         />
 
-        <div className="w-full border rounded-md overflow-hidden">
+        <div className="w-full border rounded-md overflow-hidden text-center">
           <Table>
             <TableHeader>
-              <TableRow className="bg-purple-700 text-white text-center">
-                <TableHead className="pl-4 text-white font-bold">Class</TableHead>
-                <TableHead className="text-white font-bold">Day</TableHead>
-                <TableHead className="text-white font-bold">Time</TableHead>
+              <TableRow className=" text-white ">
+                <TableHead className="pl-4 text-white font-bold text-center">
+                  SL. No.
+                </TableHead>
+                <TableHead className="pl-4 text-white font-bold text-center">
+                  Class
+                </TableHead>
+                <TableHead className="text-white font-bold text-center">Day</TableHead>
+                <TableHead className="text-white font-bold text-center">Time</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((item: any) => (
+              {data.map((item: any, index:any) => (
                 <TableRow key={item.id} className="odd:bg-muted/50">
+                  <TableCell className="font-medium">
+                    {index+1}
+                  </TableCell>
                   <TableCell className="font-medium">
                     {item.className}
                   </TableCell>

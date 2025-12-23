@@ -65,33 +65,12 @@ export default function CouponList() {
     }
   };
 
-  const handleToggleStatus = async (id: string, isActive: boolean) => {
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/coupons/${id}/status`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update coupon status');
-      }
-
-      toast.success(`Coupon ${isActive ? 'activated' : 'deactivated'}`);
-      setRefreshTrigger(prev => prev + 1);
-      return Promise.resolve();
-    } catch (error: any) {
-      toast.error(error.message);
-      return Promise.reject(error);
-    }
-  };
-
   const refreshCoupons = () => {
     setRefreshTrigger(prev => prev + 1);
   };
 
-  const columns = couponColumns(handleDelete, handleToggleStatus, refreshCoupons);
+  // Pass only 2 arguments: onDelete and refreshCoupons
+  const columns = couponColumns(handleDelete, refreshCoupons);
 
   return (
     <div className="container mx-auto py-6">

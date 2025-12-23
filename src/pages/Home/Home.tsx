@@ -31,11 +31,11 @@ import { useEffect, useState } from "react";
 const Home = () => {
 
   const [data, setData] = useState<any>(null);
-      const [statusFilter, setStatusFilter] = useState<string | null>(null);
+      // const [statusFilter, setStatusFilter] = useState<string | null>(null);
   
-      const filteredData = statusFilter
-          ? data.filter((item: any) => String(item.status) === statusFilter)
-          : data;
+      // const filteredData = statusFilter
+      //     ? data.filter((item: any) => String(item.status) === statusFilter)
+      //     : data;
   
       useEffect(() => {
           const loadData = async () => {
@@ -80,29 +80,29 @@ const Home = () => {
     },
   ];
 
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: "Live Q&A Session",
-      date: "2024-01-15",
-      time: "14:00",
-      type: "workshop",
-    },
-    {
-      id: 2,
-      title: "New Course Launch",
-      date: "2024-01-20",
-      time: "10:00",
-      type: "launch",
-    },
-    {
-      id: 3,
-      title: "Student Meetup",
-      date: "2024-01-25",
-      time: "16:00",
-      type: "meetup",
-    },
-  ];
+  // const upcomingEvents = [
+  //   {
+  //     id: 1,
+  //     title: "Live Q&A Session",
+  //     date: "2024-01-15",
+  //     time: "14:00",
+  //     type: "workshop",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "New Course Launch",
+  //     date: "2024-01-20",
+  //     time: "10:00",
+  //     type: "launch",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Student Meetup",
+  //     date: "2024-01-25",
+  //     time: "16:00",
+  //     type: "meetup",
+  //   },
+  // ];
 
   
 

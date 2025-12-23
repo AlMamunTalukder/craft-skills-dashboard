@@ -52,7 +52,6 @@ export default function DataTable<TData, TValue>({
   columns,
   data,
   searchPlaceholder = "Search",
-  dateField = "createdAt", // Default to 'createdAt'
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState({});

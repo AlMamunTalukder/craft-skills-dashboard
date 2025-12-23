@@ -63,7 +63,7 @@ export default function SeminarFormPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const result = await response.json();
+      // const result = await response.json();
       
       toast.success(
         isEditing 

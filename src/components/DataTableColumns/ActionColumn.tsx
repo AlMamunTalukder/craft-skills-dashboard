@@ -1,5 +1,3 @@
- 
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Eye, MoreHorizontal, Pencil, Trash } from "lucide-react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 type ActionColumnProps = {
   row: any;
@@ -40,19 +38,16 @@ type ActionColumnProps = {
 };
 
 export default function ActionColumn({
-  row,
   model,
   editEndpoint,
   id = "",
   deleteFunction,
   extraMutation,
   showDetails = false,
-  showDelete = true,
   showEdit = true,
-  extraActionLabel = "Extra Action",
 }: ActionColumnProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const router = useNavigate();
+  // const router = useNavigate();
 
   async function handleDelete() {
     if (!id) {

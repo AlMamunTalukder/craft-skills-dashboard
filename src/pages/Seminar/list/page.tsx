@@ -15,6 +15,8 @@ export default function SeminarList() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
+   console.log(setSearchTerm)
+
   const fetchSeminars = useCallback(async () => {
     try {
       setLoading(true);

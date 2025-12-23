@@ -303,7 +303,7 @@
 // };
 
 // export default GlobalImageSelector;
-import React from 'react';
+// import React from 'react';
 
 const GlobalImageSelector = () => {
   return (

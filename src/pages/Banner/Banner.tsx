@@ -1,14 +1,12 @@
- 
-
 import { Card, CardContent } from "@/components/ui/card";
-import { PanelTop, Calendar, Tag, FileText, Clock, Megaphone } from "lucide-react";
+import { PanelTop, Tag, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import TableTopBar from "../Tables/TableTopBar";
-
 
 export default function Banner() {
   const [data, setData] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  console.log(statusFilter)
 
   useEffect(() => {
     const loadData = async () => {
@@ -36,19 +34,19 @@ export default function Banner() {
         href="/banner/update"
         linkTitle="Update Banner"
         data={data}
-        model="site" 
+        model="site"
         onStatusFilter={setStatusFilter}
       />
 
       {/* Seminar Banner Card */}
       <Card className="shadow-md border border-muted">
         <CardContent className="space-y-6">
-          <SectionHeader 
-            icon={<PanelTop className="text-blue-600" />} 
-            title="Seminar Banner" 
+          <SectionHeader
+            icon={<PanelTop className="text-blue-600" />}
+            title="Seminar Banner"
             subtitle="Home page banner information"
           />
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* <InfoItem
               icon={<Megaphone className="w-5 h-5" />}
@@ -88,12 +86,12 @@ export default function Banner() {
       {/* Admission Banner Card */}
       <Card className="shadow-md border border-muted">
         <CardContent className="space-y-6 ">
-          <SectionHeader 
-            icon={<Tag className="text-green-600" />} 
-            title="Admission Banner" 
+          <SectionHeader
+            icon={<Tag className="text-green-600" />}
+            title="Admission Banner"
             subtitle="Admission page banner information"
           />
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* <InfoItem
               icon={<Megaphone className="w-5 h-5" />}
@@ -163,7 +161,7 @@ function InfoItem({
   icon,
   label,
   value,
-  highlight = false
+  highlight = false,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -176,8 +174,14 @@ function InfoItem({
         {icon}
         <span>{label}</span>
       </div>
-      <div className={`p-3 rounded-lg ${highlight ? 'bg-primary/10 border border-primary/20 font-semibold' : 'bg-muted/20'}`}>
-        <p className={highlight ? 'text-primary' : ''}>{value}</p>
+      <div
+        className={`p-3 rounded-lg ${
+          highlight
+            ? "bg-primary/10 border border-primary/20 font-semibold"
+            : "bg-muted/20"
+        }`}
+      >
+        <p className={highlight ? "text-primary" : ""}>{value}</p>
       </div>
     </div>
   );

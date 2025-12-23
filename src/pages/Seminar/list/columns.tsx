@@ -1,10 +1,11 @@
 // src/pages/Seminar/list/columns.tsx
-import type { ColumnDef } from "@tanstack/react-table";
+
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Seminar } from "@/types";
+import type { ColumnDef } from "@tanstack/react-table";
 
 export const SeminarColumns = (
   onDelete: (id: string) => void,
@@ -18,7 +19,9 @@ export const SeminarColumns = (
   {
     accessorKey: "title",
     header: "Title",
-    cell: ({ row }) => <span className="font-medium">{row.original.title}</span>,
+    cell: ({ row }) => (
+      <span className="font-medium">{row.original.title}</span>
+    ),
   },
   {
     accessorKey: "date",
@@ -26,21 +29,28 @@ export const SeminarColumns = (
     cell: ({ row }) => {
       const dateStr = row.original.date;
       if (!dateStr) return <span className="text-gray-500">-</span>;
-      
+
       try {
         const date = new Date(dateStr);
         if (isNaN(date.getTime())) {
           return <span className="text-red-500">Invalid date</span>;
         }
-        
+
         return (
           <div className="text-sm">
             <div>{date.toLocaleDateString("en-US", { weekday: "long" })}</div>
             <div className="text-muted-foreground">
-              {date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+              {date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
             </div>
             <div className="text-muted-foreground">
-              {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              {date.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
           </div>
         );
@@ -55,9 +65,9 @@ export const SeminarColumns = (
     cell: ({ row }) => {
       const seminar = row.original;
       const seminarId = seminar._id || seminar.id;
-      
+
       if (!seminarId) return null;
-      
+
       return (
         <Switch
           checked={seminar.isActive || false}
@@ -73,16 +83,12 @@ export const SeminarColumns = (
     cell: ({ row }) => {
       const seminar = row.original;
       const seminarId = seminar._id || seminar.id;
-      
+
       if (!seminarId) return null;
-      
+
       return (
         <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant="ghost"
-            asChild
-          >
+          <Button size="sm" variant="ghost" asChild>
             <Link to={`/seminar/update/${seminarId}`}>
               <Edit className="h-4 w-4" />
             </Link>
