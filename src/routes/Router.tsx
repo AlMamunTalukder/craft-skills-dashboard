@@ -20,6 +20,12 @@ import CourseList from "@/pages/Course/CourseList";
 import CreateCourse from "@/pages/Course/new/CreateCourse";
 import CouponList from "@/pages/Coupon/CouponList";
 import CreateCoupon from "@/pages/Coupon/new/NewCoupon";
+import AttendanceList from "@/pages/Attendence/AttendanceList";
+import CreateAttendance from "@/pages/Attendence/new/CreateAttendance";
+import UserList from "@/pages/Users/Users/UserList";
+import AdminList from "@/pages/Users/Admin/AdminList";
+import TeacherList from "@/pages/Users/Teacher/TeacherList";
+import CreateUser from "@/pages/Users/Teacher/CreateUser";
 
 const router = createBrowserRouter([
   {
@@ -114,6 +120,41 @@ const router = createBrowserRouter([
       {
         path: "coupons/edit/:id",
         element: <CreateCoupon />,
+      },
+      // Attendance
+      {
+        path: "attendance",
+        element: <AttendanceList />,
+      },
+      {
+        path: "attendance/new",
+        element: <CreateAttendance />,
+      },
+      {
+        path: "coupons/edit/:id",
+        element: <CreateAttendance />,
+      },
+      // Users
+      {
+        path: "users",
+        element: <UserList />,
+      },
+      {
+        path: "admin",
+        element: <AdminList />,
+      },
+      {
+        path: "teacher",
+        element: <TeacherList />,
+      },
+      {
+        path: "teacher/new",
+        element: <CreateUser />,
+      },
+      
+      {
+        path: "coupons/edit/:id",
+        element: <CreateAttendance />,
       },
     ],
   },

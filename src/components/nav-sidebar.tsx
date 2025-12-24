@@ -7,11 +7,14 @@ import {
   BookCheck,
   Contact,
   Database,
+  GraduationCap,
   Hand,
   LayoutDashboard,
   LayoutGrid,
   Megaphone,
   Percent,
+  Shield,
+  User,
   Users,
 } from "lucide-react";
 
@@ -99,68 +102,35 @@ const navData = [
   },
   {
     title: "Attendance",
-    url: "#",
+    url: "attendance",
     icon: Hand,
-    isActive: false,
-    items: [
-      {
-        title: "Main Class ",
-        url: "/genesis",
-        isActive: false,
-      },
-      {
-        title: "Special Class",
-        url: "/explorer",
-        isActive: false,
-      },
-      {
-        title: "Guest Class",
-        url: "/quantum",
-        isActive: false,
-      },
-    ],
+    
   },
-  // {
-  //   title: "File Manager",
-  //   url: "#",
-  //   icon: File,
-  //   isActive: false,
-  //   items: [
-  //     {
-  //       title: "Photos",
-  //       url: "/genesis",
-  //       isActive: false,
-  //     },
-  //     {
-  //       title: "Folders",
-  //       url: "/explorer",
-  //       isActive: false,
-  //     },
-  //   ],
-  // },
   {
-    title: "Users",
-    url: "#",
-    icon: Users,
-    isActive: false,
-    items: [
-      {
-        title: "Users",
-        url: "/genesis",
-        isActive: false,
-      },
-      {
-        title: "Teacher",
-        url: "/explorer",
-        isActive: false,
-      },
-      {
-        title: "Admin",
-        url: "/quantum",
-        isActive: false,
-      },
-    ],
-  },
+      title: "Users",
+      icon: Users,
+      isActive: false,
+      items: [
+        {
+          title: "Users",
+          url: "/users",
+          icon: User,
+          isActive: false,
+        },
+        {
+          title: "Admins",
+          url: "/admin",
+          icon: Shield,
+          isActive: false,
+        },
+        {
+          title: "Teachers",
+          url: "/teacher",
+          icon: GraduationCap,
+          isActive: false,
+        },
+      ],
+    },
   {
     title: "Contact",
     url: "#",

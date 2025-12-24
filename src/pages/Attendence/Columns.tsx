@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import type { Coupon } from '@/api/coupon.schema';
 import DeleteDialog from '@/components/common/DeleteDialog';
 
-export const couponColumns = (
+export const Columns = (
   onDelete: (id: string) => Promise<void>,
   refreshCoupons: () => void
 ): ColumnDef<Coupon>[] => [
@@ -89,9 +89,9 @@ export const couponColumns = (
             checked={coupon.isActive}
             onCheckedChange={handleToggleStatus}
           />
-          {/* <Badge variant={coupon.isActive ? 'default' : 'secondary'}>
+          <Badge variant={coupon.isActive ? 'default' : 'secondary'}>
             {coupon.isActive ? 'Active' : 'Inactive'}
-          </Badge> */}
+          </Badge>
         </div>
       );
     },
@@ -126,12 +126,12 @@ export const couponColumns = (
       return (
         <div>
           <span>{usedCount} / {maxUsage}</span>
-          {/* <div className="w-full bg-gray-200 rounded-full h-1.5">
+          <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div 
               className="bg-green-600 h-1.5 rounded-full" 
               style={{ width: `${(usedCount / maxUsage) * 100}%` }}
             ></div>
-          </div> */}
+          </div>
         </div>
       );
     },
