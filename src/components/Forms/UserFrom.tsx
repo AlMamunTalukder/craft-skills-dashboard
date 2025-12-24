@@ -35,16 +35,16 @@ export default function UserForm({
   const [showPassword, setShowPassword] = useState(false);
   
   // Ensure status has a default value
-  const defaultFormValues = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    password: "",
-    role: defaultRole,
-    status: "active" as const, // Explicitly set as const
-    image: "",
-  };
+//   const defaultFormValues = {
+//     firstName: "",
+//     lastName: "",
+//     email: "",
+//     phone: "",
+//     password: "",
+//     role: defaultRole,
+//     status: "active" as const, 
+//     image: "",
+//   };
 
   const form = useForm<UserFormData>({
   resolver: zodResolver(userSchema),
