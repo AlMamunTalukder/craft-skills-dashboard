@@ -193,13 +193,11 @@ export default function UserForm({
                 {form.formState.errors.password && (
                   <p className="text-sm text-red-500">{form.formState.errors.password.message}</p>
                 )}
-                <p className="text-xs text-muted-foreground">
-                  Password must contain uppercase, lowercase, and numbers
-                </p>
+              
               </div>
 
               {/* Image URL */}
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="image">Profile Image URL</Label>
                 <div className="relative">
                   <Image className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -213,7 +211,7 @@ export default function UserForm({
                 {form.formState.errors.image && (
                   <p className="text-sm text-red-500">{form.formState.errors.image.message}</p>
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* Role and Status */}
@@ -273,18 +271,7 @@ export default function UserForm({
             </div>
 
             {/* Validation Note */}
-            <div className="rounded-lg bg-muted/50 p-4 border">
-              <h4 className="font-medium mb-2 flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Important Note
-              </h4>
-              <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• Either email or phone must be provided</li>
-                <li>• Password must be at least 6 characters</li>
-                <li>• Password must contain uppercase, lowercase, and numbers</li>
-                <li>• Phone number must be in valid format</li>
-              </ul>
-            </div>
+           
 
             {/* Submit Button */}
             <div className="pt-4 flex justify-end border-t">

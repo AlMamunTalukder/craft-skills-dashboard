@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -43,18 +42,8 @@ export default function PasswordResetModal({
       return;
     }
 
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-
-    // Password complexity check
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
-    
-    if (!hasUpperCase || !hasLowerCase || !hasNumbers) {
-      toast.error("Password must contain uppercase, lowercase, and numbers");
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
@@ -105,21 +94,15 @@ export default function PasswordResetModal({
   };
 
   // Check if password is valid
-  const isPasswordValid = password.length >= 6;
-  const hasUpperCase = /[A-Z]/.test(password);
-  const hasLowerCase = /[a-z]/.test(password);
-  const hasNumbers = /\d/.test(password);
+  const isPasswordValid = password.length >= 8;
   const isPasswordMatch = password === confirmPassword;
-  const isPasswordComplex = hasUpperCase && hasLowerCase && hasNumbers;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Reset Password for {userName}</DialogTitle>
-          <DialogDescription>
-            Enter a new password for this user. Password must be at least 6 characters with uppercase, lowercase, and numbers.
-          </DialogDescription>
+         
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -131,7 +114,7 @@ export default function PasswordResetModal({
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter new password (min 6 characters)"
+                placeholder="Enter new password (min 8 characters)"
                 className="pr-10"
               />
               <Button
@@ -151,17 +134,10 @@ export default function PasswordResetModal({
             {password.length > 0 && (
               <div className="space-y-1">
                 <p className={`text-xs ${isPasswordValid ? 'text-green-500' : 'text-red-500'}`}>
-                  {isPasswordValid ? '✓ At least 6 characters' : '✗ At least 6 characters'}
+                  {isPasswordValid ? '✓ At least 8 characters' : '✗ At least 8 characters'}
                 </p>
-                <p className={`text-xs ${hasUpperCase ? 'text-green-500' : 'text-red-500'}`}>
-                  {hasUpperCase ? '✓ Contains uppercase letter' : '✗ Needs uppercase letter'}
-                </p>
-                <p className={`text-xs ${hasLowerCase ? 'text-green-500' : 'text-red-500'}`}>
-                  {hasLowerCase ? '✓ Contains lowercase letter' : '✗ Needs lowercase letter'}
-                </p>
-                <p className={`text-xs ${hasNumbers ? 'text-green-500' : 'text-red-500'}`}>
-                  {hasNumbers ? '✓ Contains number' : '✗ Needs number'}
-                </p>
+              
+               
               </div>
             )}
           </div>
@@ -192,7 +168,7 @@ export default function PasswordResetModal({
           </Button>
           <Button 
             onClick={handleReset} 
-            disabled={isLoading || !isPasswordValid || !isPasswordComplex || !isPasswordMatch}
+            disabled={isLoading || !isPasswordValid || !isPasswordMatch}
           >
             {isLoading ? "Resetting..." : "Reset Password"}
           </Button>

@@ -153,8 +153,8 @@ const router = createBrowserRouter([
       },
       
       {
-        path: "coupons/edit/:id",
-        element: <CreateAttendance />,
+        path: "teacher/:id",
+        element: <CreateUser />,
       },
     ],
   },

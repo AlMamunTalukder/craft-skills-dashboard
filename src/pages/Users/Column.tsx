@@ -181,7 +181,7 @@ export const userColumns = (
       return (
         <div className="flex items-center gap-2">
           <Button size="sm" variant="ghost" asChild title="Edit">
-            <Link to={`/users/edit/${userId}`}>
+            <Link to={`/teacher/${userId}`}>
               <Edit className="h-4 w-4" />
             </Link>
           </Button>

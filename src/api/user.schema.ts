@@ -43,11 +43,11 @@ const userBaseSchema = {
   
   status: z.enum(['active', 'inactive', 'banned']),
   
-  image: z
-    .string()
-    .url('Invalid image URL')
-    .optional()
-    .or(z.literal('')),
+  // image: z
+  //   .string()
+  //   .url('Invalid image URL')
+  //   .optional()
+  //   .or(z.literal('')),
 };
 
 // For form submission - with validation
