@@ -10,8 +10,7 @@ import Banner from "@/pages/Banner/Banner";
 import UpdateBanner from "@/pages/Banner/update/page";
 import ClassSchedule from "@/pages/ClassSchedule/ClassSchedule";
 import UpdateClassSchedule from "@/pages/ClassSchedule/update/page";
-import NewSeminar from "@/pages/Seminar/new/page";
-import UpdateSeminar from "@/pages/Seminar/update/[id]/page";
+import NewSeminar from "@/pages/Seminar/SeminarFormPage/SeminarFormPage";
 import SeminarList from "@/pages/Seminar/list/page";
 import BatchList from "@/pages/CourseBatch/BatchList";
 import CreateBatch from "@/pages/CourseBatch/new/CreateBatch";
@@ -26,6 +25,7 @@ import UserList from "@/pages/Users/Users/UserList";
 import AdminList from "@/pages/Users/Admin/AdminList";
 import TeacherList from "@/pages/Users/Teacher/TeacherList";
 import CreateUser from "@/pages/Users/Teacher/CreateUser";
+import SeminarDetailsPage from "@/pages/Seminar/list/details/SeminarDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +72,7 @@ const router = createBrowserRouter([
         path: "class-schedule/update",
         element: <UpdateClassSchedule />,
       },
+      // Seminar
       {
         path: "seminar/list",
         element: <SeminarList />,
@@ -82,9 +83,13 @@ const router = createBrowserRouter([
       },
       {
         path: "seminar/update/:id",
-        element: <UpdateSeminar />,
+        element: <NewSeminar />,
       },
-      
+      {
+        path: "seminar/list/details/:id",
+        element: <SeminarDetailsPage />,
+      },
+      // Courses
       {
         path: "courses",
         element: <CourseList />,

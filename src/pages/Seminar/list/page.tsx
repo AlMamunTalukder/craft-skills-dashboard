@@ -15,21 +15,21 @@ export default function SeminarList() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-   console.log(setSearchTerm)
+  // console.log(setSearchTerm);
 
   const fetchSeminars = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`${import.meta.env.VITE_API_URL}/seminars`);
-      
+
       if (!response.ok) throw new Error("Failed to fetch seminars");
-      
+
       const { data, success } = await response.json();
-      
+
       if (!success || !Array.isArray(data)) {
         throw new Error("Invalid response format");
       }
-      
+
       setSeminars(data);
     } catch (error: any) {
       console.error("Error fetching seminars:", error);
@@ -40,36 +40,49 @@ export default function SeminarList() {
     }
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this seminar?")) {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/seminars/${id}`, {
+  // In your SeminarList page.tsx
+  const handleDelete = async (id: string): Promise<void> => {
+    try {
+      // Call the API to actually delete from database
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/seminars/${id}`,
+        {
           method: "DELETE",
-        });
-        
-        if (!response.ok) throw new Error("Failed to delete seminar");
-        
-        toast.success("Seminar deleted successfully");
-        fetchSeminars(); // Refresh the list
-      } catch (error: any) {
-        console.error("Error deleting seminar:", error);
-        toast.error(error.message);
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete seminar");
       }
+
+      // Show success toast
+      toast.success("Seminar deleted successfully");
+
+      // Refresh the list by fetching again
+      await fetchSeminars();
+    } catch (error: any) {
+      console.error("Error deleting seminar:", error);
+      toast.error(error.message);
+      throw error; // Important: Re-throw so ActionColumn can show error
     }
   };
 
   const handleStatusToggle = async (id: string, isActive: boolean) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/seminars/${id}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ isActive }),
-      });
-      
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/seminars/${id}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ isActive }),
+        }
+      );
+
       if (!response.ok) throw new Error("Failed to update status");
-      
+
       toast.success("Status updated successfully");
       fetchSeminars(); // Refresh the list
     } catch (error: any) {
@@ -97,35 +110,16 @@ export default function SeminarList() {
 
   return (
     <div className="container mx-auto py-6">
+      <TableTopBar
+        title="Seminars"
+        linkTitle="Add New Seminar"
+        href="/seminar/new"
+        data={seminars}
+        model="Seminar"
+        showImport={false}
+        showExport={true}
+      />
       <Card>
-        <CardHeader className="pb-3">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <CardTitle className="flex items-center gap-2">
-                Seminars
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={fetchSeminars}
-                  disabled={loading}
-                  className="h-8 w-8 p-0"
-                  title="Refresh"
-                >
-                  <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
-                </Button>
-              </CardTitle>
-            </div>
-            <TableTopBar
-              title="Seminars"
-              linkTitle="Add New Seminar"
-              href="/seminar/new"
-              data={seminars}
-              model="Seminar"
-              showImport={false}
-              showExport={true}
-            />
-          </div>
-        </CardHeader>
         <CardContent>
           {loading ? (
             <div className="flex items-center justify-center h-64">
@@ -136,16 +130,19 @@ export default function SeminarList() {
             <div className="text-center py-12">
               <p className="text-gray-500">No seminars found.</p>
               {seminars.length === 0 && (
-                <Button onClick={() => navigate("/seminar/new")} className="mt-4">
+                <Button
+                  onClick={() => navigate("/seminar/new")}
+                  className="mt-4"
+                >
                   Create Your First Seminar
                 </Button>
               )}
             </div>
           ) : (
-            <DataTable 
-              data={filteredSeminars} 
-              columns={seminarColumns} 
-              searchable={true} 
+            <DataTable
+              data={filteredSeminars}
+              columns={seminarColumns}
+              searchable={true}
             />
           )}
         </CardContent>

@@ -1,27 +1,52 @@
 // src/pages/Seminar/list/columns.tsx
 
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
 import type { Seminar } from "@/types";
+import { Switch } from "@/components/ui/switch";
 import type { ColumnDef } from "@tanstack/react-table";
+import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 
 export const SeminarColumns = (
-  onDelete: (id: string) => void,
+  onDelete: (id: string) => Promise<void>,
   onStatusToggle: (id: string, isActive: boolean) => void
 ): ColumnDef<Seminar>[] => [
   {
     accessorKey: "sl",
     header: "SL",
-    cell: ({ row }) => <span>{row.original.sl || "-"}</span>,
+    cell: ({ row }) => <span>{row.index + 1}</span>,
   },
   {
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => (
-      <span className="font-medium">{row.original.title}</span>
+      <>
+      {row.original.title}
+      </>
+      
     ),
+  },
+   {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => {
+      const course = row.original;
+      return <span>{course.description}</span>;
+    },
+  },
+
+   {
+    accessorKey: "participants",
+    header: "Participants",
+    cell: ({ row }) => {
+      const participants = row.original.participants;
+      const count = Array.isArray(participants) ? participants.length : 0;
+
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{count}</span>
+          
+        </div>
+      );
+    },
   },
   {
     accessorKey: "date",
@@ -77,6 +102,7 @@ export const SeminarColumns = (
       );
     },
   },
+ 
   {
     id: "actions",
     header: "Actions",
@@ -88,19 +114,17 @@ export const SeminarColumns = (
 
       return (
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" asChild>
-            <Link to={`/seminar/update/${seminarId}`}>
-              <Edit className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() => onDelete(seminarId)}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          
+          <ActionColumn
+            row={row}
+            model="seminar"
+            showDetails={true}
+            editEndpoint={`/seminar/update/${seminarId}`}
+            id={seminarId}
+            deleteFunction={onDelete}
+            showDelete={true}
+            showEdit={true}
+          />
         </div>
       );
     },
