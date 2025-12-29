@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import type { AdmissionBatch } from "@/types";
 import DeleteDialog from "@/components/common/DeleteDialog";
+import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 
 export const batchColumns = (
   onDelete: (id: string) => Promise<void>,
@@ -215,4 +216,30 @@ export const batchColumns = (
       );
     },
   },
+  {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const seminar = row.original;
+        const seminarId = seminar._id || seminar.id;
+  
+        if (!seminarId) return null;
+  
+        return (
+          <div className="flex items-center gap-2">
+            
+            <ActionColumn
+              row={row}
+              model="seminar"
+              showDetails={true}
+              editEndpoint={`/seminar/update/${seminarId}`}
+              id={seminarId}
+              deleteFunction={onDelete}
+              showDelete={true}
+              showEdit={true}
+            />
+          </div>
+        );
+      },
+    },
 ];
