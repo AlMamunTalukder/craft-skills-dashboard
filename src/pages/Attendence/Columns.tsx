@@ -1,83 +1,89 @@
-// src/pages/Coupon/Columns.tsx
+// src/pages/Attendance/columns.tsx
 import type { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import type { Coupon } from '@/api/coupon.schema';
 import DeleteDialog from '@/components/common/DeleteDialog';
 
-export const Columns = (
+export const attendanceColumns = (
   onDelete: (id: string) => Promise<void>,
-  refreshCoupons: () => void
-): ColumnDef<Coupon>[] => [
+  refreshAttendances: () => void
+): ColumnDef<any>[] => [
   {
     accessorKey: 'sl',
     header: 'SL',
     cell: ({ row }) => <span className="font-medium">{row.index + 1}</span>,
   },
   {
-    accessorKey: 'code',
-    header: 'Coupon Code',
+    accessorKey: 'batchCode',
+    header: 'Batch Code',
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <span className="font-mono px-2 py-1 rounded text-sm">
-          {row.original.code}
-        </span>
+      <div className="font-medium">{row.original.batchCode}</div>
+    ),
+  },
+  {
+    accessorKey: 'totalClasses',
+    header: 'Total Classes',
+    cell: ({ row }) => (
+      <div className="text-center font-medium">{row.original.totalClasses}</div>
+    ),
+  },
+  {
+    accessorKey: 'mainClasses',
+    header: 'Main Classes',
+    cell: ({ row }) => (
+      <div className="text-center">
+        <Badge variant="default">{row.original.mainClasses}</Badge>
       </div>
     ),
   },
   {
-    accessorKey: 'discountType',
-    header: 'Type',
-    cell: ({ row }) => {
-      const type = row.original.discountType;
-      return (
-        <Badge variant={type === 'PERCENTAGE' ? 'default' : 'secondary'}>
-          {type === 'PERCENTAGE' ? 'Percentage' : 'Fixed Amount'}
-        </Badge>
-      );
-    },
+    accessorKey: 'specialClasses',
+    header: 'Special Classes',
+    cell: ({ row }) => (
+      <div className="text-center">
+        <Badge variant="secondary">{row.original.specialClasses}</Badge>
+      </div>
+    ),
   },
   {
-    accessorKey: 'discount',
-    header: 'Discount',
-    cell: ({ row }) => {
-      const coupon = row.original;
-      return (
-        <div className="font-medium">
-          {coupon.discountType === 'PERCENTAGE' 
-            ? `${coupon.discount}%`
-            : `৳${coupon.discount.toLocaleString()}`
-          }
-        </div>
-      );
-    },
+    accessorKey: 'guestClasses',
+    header: 'Guest Classes',
+    cell: ({ row }) => (
+      <div className="text-center">
+        <Badge variant="outline">{row.original.guestClasses}</Badge>
+      </div>
+    ),
   },
   {
     accessorKey: 'isActive',
     header: 'Status',
     cell: ({ row }) => {
-      const coupon = row.original;
-      const couponId = coupon._id || coupon.id;
+      const attendance = row.original;
+      const attendanceId = attendance._id || attendance.id;
       
       const handleToggleStatus = async (checked: boolean) => {
         try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/coupons/${couponId}/status`, {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/attendance/${attendanceId}/status`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
             body: JSON.stringify({ isActive: checked }),
           });
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to update coupon status');
+          const result = await response.json();
+
+          if (!result.success) {
+            throw new Error(result.message || 'Failed to update attendance status');
           }
 
-          toast.success(`Coupon ${checked ? 'activated' : 'deactivated'}`);
-          refreshCoupons();
+          toast.success(`Attendance routine ${checked ? 'activated' : 'deactivated'}`);
+          refreshAttendances();
         } catch (error: any) {
           toast.error(error.message);
         }
@@ -86,77 +92,51 @@ export const Columns = (
       return (
         <div className="flex items-center gap-2">
           <Switch
-            checked={coupon.isActive}
+            checked={attendance.isActive}
             onCheckedChange={handleToggleStatus}
           />
-          <Badge variant={coupon.isActive ? 'default' : 'secondary'}>
-            {coupon.isActive ? 'Active' : 'Inactive'}
+          <Badge variant={attendance.isActive ? 'default' : 'secondary'}>
+            {attendance.isActive ? 'Active' : 'Inactive'}
           </Badge>
         </div>
       );
     },
   },
   {
-    accessorKey: 'validFrom',
-    header: 'Valid From',
+    accessorKey: 'createdAt',
+    header: 'Created At',
     cell: ({ row }) => {
-      const date = row.original.validFrom;
+      const date = row.original.createdAt;
       return date ? new Date(date).toLocaleDateString() : 'N/A';
-    },
-  },
-  {
-    accessorKey: 'validTo',
-    header: 'Valid To',
-    cell: ({ row }) => {
-      const date = row.original.validTo;
-      return date ? new Date(date).toLocaleDateString() : 'N/A';
-    },
-  },
-  {
-    accessorKey: 'maxUsage',
-    header: 'Max Usage',
-    cell: ({ row }) => {
-      const maxUsage = row.original.maxUsage;
-      const usedCount = row.original.usedCount || 0;
-      
-      if (!maxUsage) {
-        return <span className="text-gray-500">Unlimited</span>;
-      }
-      
-      return (
-        <div>
-          <span>{usedCount} / {maxUsage}</span>
-          <div className="w-full bg-gray-200 rounded-full h-1.5">
-            <div 
-              className="bg-green-600 h-1.5 rounded-full" 
-              style={{ width: `${(usedCount / maxUsage) * 100}%` }}
-            ></div>
-          </div>
-        </div>
-      );
     },
   },
   {
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      const coupon = row.original;
-      const couponId = coupon._id || coupon.id;
+      const attendance = row.original;
+      const attendanceId = attendance._id || attendance.id;
       
-      if (!couponId) return null;
+      if (!attendanceId) return null;
       
       return (
         <div className="flex items-center gap-2">
+          <Button size="sm" variant="ghost" asChild title="View">
+            <Link to={`/attendance/${attendanceId}`}>
+              <Eye className="h-4 w-4" />
+            </Link>
+          </Button>
+          
           <Button size="sm" variant="ghost" asChild title="Edit">
-            <Link to={`/coupons/edit/${couponId}`}>
+            <Link to={`/attendance/edit/${attendanceId}`}>
               <Edit className="h-4 w-4" />
             </Link>
           </Button>
           
           <DeleteDialog
-            onConfirm={() => onDelete(couponId)}
-            title="Delete Coupon?"
-            description={`Are you sure you want to delete coupon "${coupon.code}"? This action cannot be undone.`}
+            onConfirm={() => onDelete(attendanceId)}
+            title="Delete Attendance Routine?"
+            description={`Are you sure you want to delete attendance routine for batch ${attendance.batchCode}? This action cannot be undone.`}
           >
             <Button
               size="sm"

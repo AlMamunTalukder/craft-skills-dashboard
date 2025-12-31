@@ -1,11 +1,10 @@
-// src/pages/Coupon/CreateCoupon.tsx
+// src/pages/Attendance/CreateAttendance.tsx
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
-import type { CouponFormData } from '@/api/coupon.schema';
-import CouponForm from '@/components/Forms/CouponForm';
+import AttendanceFormModal from '../_components/AttendanceFormModal';
 
 export default function CreateAttendance() {
   const { id } = useParams();
@@ -13,84 +12,77 @@ export default function CreateAttendance() {
   const [loading, setLoading] = useState(!!id);
   const [saving, setSaving] = useState(false);
   const [initialData, setInitialData] = useState<any>(null);
+  const [showFormModal, setShowFormModal] = useState(true);
   const isEditing = !!id;
 
+  // Fetch attendance data if editing
   useEffect(() => {
     if (!id) {
       setLoading(false);
       return;
     }
 
-    const fetchCoupon = async () => {
+    const fetchAttendance = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/coupons/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/attendance/${id}`, {
+          credentials: 'include',
+        });
         
-        if (!response.ok) throw new Error('Failed to load coupon');
+        const result = await response.json();
         
-        const { data, success } = await response.json();
+        if (!result.success) throw new Error(result.message || 'Failed to load attendance routine');
         
-        if (!success) throw new Error('Invalid response');
-        
-        // Format dates for datetime-local input
-        const formatDateForInput = (dateString: string) => {
-          if (!dateString) return "";
-          const date = new Date(dateString);
-          if (isNaN(date.getTime())) return "";
-          
-          const offset = date.getTimezoneOffset() * 60000;
-          const localDate = new Date(date.getTime() - offset);
-          return localDate.toISOString().slice(0, 16);
-        };
-
-        const formattedCoupon = {
-          ...data,
-          validFrom: formatDateForInput(data.validFrom),
-          validTo: formatDateForInput(data.validTo),
-        };
-        
-        setInitialData(formattedCoupon);
+        setInitialData(result.data);
+        setShowFormModal(true);
       } catch (error: any) {
-        console.error('Error loading coupon:', error);
+        console.error('Error loading attendance:', error);
         toast.error(error.message);
-        navigate('/coupons');
+        navigate('/attendance');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCoupon();
+    fetchAttendance();
   }, [id, navigate]);
 
-  const handleSubmit = async (formData: CouponFormData) => {
+  const handleSubmit = async (formData: any) => {
     try {
       setSaving(true);
       
       const url = isEditing 
-        ? `${import.meta.env.VITE_API_URL}/coupons/${id}`
-        : `${import.meta.env.VITE_API_URL}/coupons`;
+        ? `${import.meta.env.VITE_API_URL}/attendance/${id}`
+        : `${import.meta.env.VITE_API_URL}/attendance`;
       
       const method = isEditing ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to save');
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to save');
       }
 
-      toast.success(isEditing ? 'Coupon updated' : 'Coupon created');
-      navigate('/coupons');
+      toast.success(isEditing ? 'Attendance routine updated' : 'Attendance routine created');
+      navigate('/attendance');
     } catch (error: any) {
-    //   console.error('Error saving coupon:', error);
       toast.error(error.message);
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleCloseModal = () => {
+    navigate('/attendance');
   };
 
   if (loading) {
@@ -107,19 +99,21 @@ export default function CreateAttendance() {
   return (
     <div className="container mx-auto py-6">
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="outline" size="sm" onClick={() => navigate('/coupons')}>
+        <Button variant="outline" size="sm" onClick={() => navigate('/attendance')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Coupons
+          Back to Attendance
         </Button>
         <h1 className="text-2xl font-bold">
-          {isEditing ? 'Edit Coupon' : 'Create New Coupon'}
+          {isEditing ? 'Edit Attendance Routine' : 'Create Attendance Routine'}
         </h1>
       </div>
 
-      <CouponForm
-        initialValues={initialData}
+      <AttendanceFormModal
+        isOpen={showFormModal}
+        onClose={handleCloseModal}
         onSubmit={handleSubmit}
         isSubmitting={saving}
+        initialValues={initialData}
       />
     </div>
   );

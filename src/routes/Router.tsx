@@ -84,7 +84,7 @@ const router = createBrowserRouter([
         path: "seminar/update/:id",
         element: <UpdateSeminar />,
       },
-      
+
       {
         path: "courses",
         element: <CourseList />,
@@ -122,6 +122,7 @@ const router = createBrowserRouter([
         element: <CreateCoupon />,
       },
       // Attendance
+      // In your router configuration
       {
         path: "attendance",
         element: <AttendanceList />,
@@ -131,7 +132,7 @@ const router = createBrowserRouter([
         element: <CreateAttendance />,
       },
       {
-        path: "coupons/edit/:id",
+        path: "attendance/edit/:id",
         element: <CreateAttendance />,
       },
       // Users
@@ -151,7 +152,7 @@ const router = createBrowserRouter([
         path: "teacher/new",
         element: <CreateUser />,
       },
-      
+
       {
         path: "teacher/:id",
         element: <CreateUser />,
