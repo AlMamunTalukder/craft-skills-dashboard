@@ -22,6 +22,7 @@ import {
 import { Eye, MoreHorizontal, Pencil, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 // import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom"; 
 
 type ActionColumnProps = {
   row: any;
@@ -64,7 +65,7 @@ export default function ActionColumn({
     try {
       await deleteFunction(id);
       // router.refresh();
-      window.location.reload();
+      // window.location.reload();
       toast.success(`${model} deleted successfully`, {
         id: toastId,
       });
@@ -90,7 +91,41 @@ export default function ActionColumn({
         <DropdownMenuLabel className="text-xs font-semibold text-gray-500">
           Actions
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
+      
+
+        {showDetails && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link
+                to={`/${model}/list/details/${id}`}
+                className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
+              >
+                <Eye className="w-4 h-4 text-gray-500" />
+                <span>Details</span>
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+
+        
+
+        {showEdit && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link
+                to={editEndpoint}
+                className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
+              >
+                <Pencil className="w-4 h-4 text-gray-500" />
+                <span>Edit</span>
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+
+          <DropdownMenuSeparator />
 
         {/* Delete with AlertDialog */}
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -126,47 +161,19 @@ export default function ActionColumn({
           </AlertDialogContent>
         </AlertDialog>
 
-        {showDetails && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild className="cursor-pointer">
-              <link
-                href={`/dashboard/${model}/list/${id}`}
-                className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
-              >
-                <Eye className="w-4 h-4 text-gray-500" />
-                <span>Details</span>
-              </link>
-            </DropdownMenuItem>
-          </>
-        )}
-
-        {showEdit && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild className="cursor-pointer">
-              <link
-                href={editEndpoint}
-                className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
-              >
-                <Pencil className="w-4 h-4 text-gray-500" />
-                <span>Edit</span>
-              </link>
-            </DropdownMenuItem>
-          </>
-        )}
+        
 
         {extraMutation && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="cursor-pointer">
-              <link
-                href={`/dashboard/${model}/extra/${id}`}
+              <Link
+                to={`/dashboard/${model}/extra/${id}`}
                 className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
               >
                 {/* Add an icon or text if necessary */}
                 <span>Extra</span>
-              </link>
+              </Link>
             </DropdownMenuItem>
           </>
         )}

@@ -71,7 +71,7 @@ export default function SeminarFormPage() {
           : "Seminar created successfully"
       );
       
-      navigate("/seminars");
+      navigate("/seminar/list");
     } catch (error: any) {
       console.error('Error saving seminar:', error);
       toast.error(error.message || "Failed to save seminar");

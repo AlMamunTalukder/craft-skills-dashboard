@@ -20,22 +20,25 @@ export interface Seminar {
   participants?: any[];
 }
 
-export type CreateSeminarDto = Omit<Seminar, '_id' | 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateSeminarDto = Omit<
+  Seminar,
+  "_id" | "id" | "createdAt" | "updatedAt"
+>;
 
 // Type conversion methods
 export const seminarToFormData = (seminar: Seminar | null): any => {
   if (!seminar) return undefined;
-  
+
   // Format dates for datetime-local input (YYYY-MM-DDTHH:mm)
   const formatDateForInput = (dateString: string) => {
     if (!dateString) return "";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "";
-    
+
     // Convert to local timezone for input
     const offset = date.getTimezoneOffset() * 60000;
     const localDate = new Date(date.getTime() - offset);
-    
+
     return localDate.toISOString().slice(0, 16);
   };
 
@@ -76,13 +79,15 @@ export const formDataToCreateDto = (formData: any): CreateSeminarDto => {
 // Simple version without timezone handling
 export const seminarToSimpleFormData = (seminar: Seminar | null): any => {
   if (!seminar) return undefined;
-  
+
   return {
     sl: seminar.sl || "",
     title: seminar.title || "",
     description: seminar.description || "",
     date: seminar.date ? seminar.date.slice(0, 16) : "",
-    registrationDeadline: seminar.registrationDeadline ? seminar.registrationDeadline.slice(0, 16) : "",
+    registrationDeadline: seminar.registrationDeadline
+      ? seminar.registrationDeadline.slice(0, 16)
+      : "",
     link: seminar.link || "",
     facebookSecretGroup: seminar.facebookSecretGroup || "",
     whatsappSecretGroup: seminar.whatsappSecretGroup || "",
@@ -110,7 +115,10 @@ export interface AdmissionBatch {
   students?: any[]; // For future use
 }
 
-export type CreateBatchDto = Omit<AdmissionBatch, '_id' | 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateBatchDto = Omit<
+  AdmissionBatch,
+  "_id" | "id" | "createdAt" | "updatedAt"
+>;
 
 export interface Course {
   _id?: string;
@@ -124,4 +132,23 @@ export interface Course {
   updatedAt?: string;
 }
 
-export type CreateCourseDto = Omit<Course, '_id' | 'id' | 'createdAt' | 'updatedAt'>;
+export type CreateCourseDto = Omit<
+  Course,
+  "_id" | "id" | "createdAt" | "updatedAt"
+>;
+
+
+
+
+export interface Participant {
+  _id: string;
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  occupation: string;
+  address: string;
+  registeredAt: string;
+  seminarId: string;
+}
