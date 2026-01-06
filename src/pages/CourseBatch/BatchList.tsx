@@ -12,7 +12,7 @@ import TableTopBar from "../Tables/TableTopBar";
 export default function BatchList() {
   const [batches, setBatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshTrigger, setRefreshTrigger] = useState(0); // Add this
+  const [refreshTrigger, setRefreshTrigger] = useState(0); 
   const navigate = useNavigate();
 
   // Use useCallback to prevent unnecessary re-renders

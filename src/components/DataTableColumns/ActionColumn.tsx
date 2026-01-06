@@ -98,7 +98,7 @@ export default function ActionColumn({
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild className="cursor-pointer">
               <Link
-                to={`/${model}/list/details/${id}`}
+                to={`/${model}/details/${id}`}
                 className="flex items-center gap-2 hover:bg-gray-100 transition-colors"
               >
                 <Eye className="w-4 h-4 text-gray-500" />

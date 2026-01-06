@@ -194,7 +194,7 @@ export default function SeminarDetailsPage() {
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <CardTitle className="text-2xl font-bold">Participants</CardTitle>
+              <CardTitle className="text-2xl font-bold">{seminar.sl} Seninar Batch Participants Details</CardTitle>
               <p className="text-gray-600 mt-1">
                 {participantCount} registered participant{participantCount !== 1 ? 's' : ''}
               </p>

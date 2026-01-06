@@ -14,17 +14,18 @@ export const SeminarColumns = (
     header: "SL",
     cell: ({ row }) => <span>{row.index + 1}</span>,
   },
+
   {
     accessorKey: "title",
     header: "Title",
-    cell: ({ row }) => (
-      <>
-      {row.original.title}
-      </>
-      
-    ),
+    cell: ({ row }) => <>{row.original.title}</>,
   },
-   {
+  {
+    accessorKey: "sl",
+    header: "Batch No.",
+    cell: ({ row }) => <>{row.original.sl}</>,
+  },
+  {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => {
@@ -33,7 +34,7 @@ export const SeminarColumns = (
     },
   },
 
-   {
+  {
     accessorKey: "participants",
     header: "Participants",
     cell: ({ row }) => {
@@ -43,7 +44,6 @@ export const SeminarColumns = (
       return (
         <div className="flex items-center gap-2">
           <span className="font-medium">{count}</span>
-          
         </div>
       );
     },
@@ -102,7 +102,7 @@ export const SeminarColumns = (
       );
     },
   },
- 
+
   {
     id: "actions",
     header: "Actions",
@@ -114,7 +114,6 @@ export const SeminarColumns = (
 
       return (
         <div className="flex items-center gap-2">
-          
           <ActionColumn
             row={row}
             model="seminar"

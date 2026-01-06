@@ -53,7 +53,7 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <Label htmlFor="sl">Serial Number</Label>
+                <Label htmlFor="sl">Seminar Batch</Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input

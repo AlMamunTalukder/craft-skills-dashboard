@@ -3,11 +3,9 @@ import { useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Edit, Copy, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Copy } from "lucide-react";
 import toast from "react-hot-toast";
 import type { AdmissionBatch } from "@/types";
-import DeleteDialog from "@/components/common/DeleteDialog";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 
 export const batchColumns = (
@@ -180,11 +178,11 @@ export const batchColumns = (
       return (
         <div className="flex items-center gap-2">
           {/* Edit Button */}
-          <Button size="sm" variant="ghost" asChild title="Edit">
+          {/* <Button size="sm" variant="ghost" asChild title="Edit">
             <Link to={`/course-batches/edit/${batchId}`}>
               <Edit className="h-4 w-4" />
             </Link>
-          </Button>
+          </Button> */}
 
           {/* Duplicate Button */}
           <Button
@@ -197,7 +195,7 @@ export const batchColumns = (
           </Button>
 
           {/* Delete Button with Dialog */}
-          <DeleteDialog
+          {/* <DeleteDialog
             onConfirm={handleDeleteConfirm}
             title="Delete Batch?"
             description={`Are you sure you want to delete "${batch.name}"? This action cannot be undone.`}
@@ -211,7 +209,7 @@ export const batchColumns = (
             >
               <Trash2 className="h-4 w-4" />
             </Button>
-          </DeleteDialog>
+          </DeleteDialog> */}
         </div>
       );
     },
@@ -220,20 +218,20 @@ export const batchColumns = (
       id: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const seminar = row.original;
-        const seminarId = seminar._id || seminar.id;
+        const coursebatches = row.original;
+        const coursebatchesId = coursebatches._id || coursebatches.id;
   
-        if (!seminarId) return null;
+        if (!coursebatchesId) return null;
   
         return (
           <div className="flex items-center gap-2">
             
             <ActionColumn
               row={row}
-              model="seminar"
+              model="course-batches"
               showDetails={true}
-              editEndpoint={`/seminar/update/${seminarId}`}
-              id={seminarId}
+              editEndpoint={`/course-batches/edit/${coursebatchesId}`}
+              id={coursebatchesId}
               deleteFunction={onDelete}
               showDelete={true}
               showEdit={true}

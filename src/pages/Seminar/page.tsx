@@ -1,8 +1,8 @@
 // src/pages/Seminar/list/page.tsx
 import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import TableTopBar from "@/pages/Tables/TableTopBar";
