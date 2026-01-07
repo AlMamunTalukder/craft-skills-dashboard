@@ -1,29 +1,19 @@
 // src/pages/Seminar/list/details/page.tsx
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
-  AlertCircle, 
-  Calendar, 
-  Clock, 
+  AlertCircle,
   Users, 
-  Mail, 
-  Phone, 
-  MessageSquare, 
   ChevronLeft,
-  Link as LinkIcon,
-  Edit,
-  ExternalLink
 } from "lucide-react";
-import { format } from "date-fns";
+// import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { participantColumns } from "./columns";
 
-// Define the Seminar type based on your schema
 interface Seminar {
   _id: string;
   sl?: string;
@@ -46,7 +36,7 @@ interface Seminar {
 
 export default function SeminarDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [seminar, setSeminar] = useState<Seminar | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -91,33 +81,33 @@ export default function SeminarDetailsPage() {
     fetchSeminar();
   }, [id]);
 
-  const handleDelete = async () => {
-    if (!seminar || !id) return;
+  // const handleDelete = async () => {
+  //   if (!seminar || !id) return;
     
-    if (!window.confirm(`Are you sure you want to delete "${seminar.title}"?`)) {
-      return;
-    }
+  //   if (!window.confirm(`Are you sure you want to delete "${seminar.title}"?`)) {
+  //     return;
+  //   }
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/seminars/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/seminars/${id}`,
+  //       {
+  //         method: "DELETE",
+  //       }
+  //     );
 
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.message || "Failed to delete seminar");
-      }
+  //     if (!response.ok) {
+  //       const result = await response.json();
+  //       throw new Error(result.message || "Failed to delete seminar");
+  //     }
 
-      toast.success("Seminar deleted successfully");
-      navigate("/seminar/list");
-    } catch (err: any) {
-      console.error("Error deleting seminar:", err);
-      toast.error(err.message || "Failed to delete seminar");
-    }
-  };
+  //     toast.success("Seminar deleted successfully");
+  //     navigate("/seminar/list");
+  //   } catch (err: any) {
+  //     console.error("Error deleting seminar:", err);
+  //     toast.error(err.message || "Failed to delete seminar");
+  //   }
+  // };
 
   if (loading) {
     return (
@@ -153,23 +143,23 @@ export default function SeminarDetailsPage() {
   }
 
   // Format dates
-  const seminarDate = seminar.date ? new Date(seminar.date) : null;
-  const formattedDate = seminarDate ? format(seminarDate, "MMMM d, yyyy") : "";
-  const formattedTime = seminarDate ? format(seminarDate, "h:mm a") : "";
+  // const seminarDate = seminar.date ? new Date(seminar.date) : null;
+  // const formattedDate = seminarDate ? format(seminarDate, "MMMM d, yyyy") : "";
+  // const formattedTime = seminarDate ? format(seminarDate, "h:mm a") : "";
 
-  const registrationDeadline = seminar.registrationDeadline
-    ? new Date(seminar.registrationDeadline)
-    : null;
-  const formattedDeadline = registrationDeadline
-    ? format(registrationDeadline, "MMMM d, yyyy h:mm a")
-    : "";
+  // const registrationDeadline = seminar.registrationDeadline
+  //   ? new Date(seminar.registrationDeadline)
+  //   : null;
+  // const formattedDeadline = registrationDeadline
+  //   ? format(registrationDeadline, "MMMM d, yyyy h:mm a")
+  //   : "";
 
-  const createdAt = seminar.createdAt
-    ? format(new Date(seminar.createdAt), "MMMM d, yyyy")
-    : "";
-  const updatedAt = seminar.updatedAt
-    ? format(new Date(seminar.updatedAt), "MMMM d, yyyy")
-    : "";
+  // const createdAt = seminar.createdAt
+  //   ? format(new Date(seminar.createdAt), "MMMM d, yyyy")
+  //   : "";
+  // const updatedAt = seminar.updatedAt
+  //   ? format(new Date(seminar.updatedAt), "MMMM d, yyyy")
+  //   : "";
 
   const participantCount = seminar.participants?.length || 0;
 
@@ -182,12 +172,8 @@ export default function SeminarDetailsPage() {
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Seminars
           </Link>
-        </Button>
-        
-       
+        </Button>       
       </div>
-
-     
 
       {/* Participants Section */}
       <Card>

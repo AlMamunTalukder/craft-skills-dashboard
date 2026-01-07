@@ -1,152 +1,184 @@
-// src/pages/Attendance/columns.tsx
-import type { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/ui/button';
-import { Edit, Trash2, Eye, CheckCircle, XCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import DeleteDialog from '@/components/common/DeleteDialog';
+// src/pages/Attendance/BatchAttendanceColumns.tsx
+import type { ColumnDef } from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { Eye, BarChart3, Users, BookOpen } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
-export const attendanceColumns = (
-  onDelete: (id: string) => Promise<void>,
-  refreshAttendances: () => void
+export const batchAttendanceColumns = (
+  onViewDetails: (batch: any) => void
 ): ColumnDef<any>[] => [
   {
-    accessorKey: 'sl',
-    header: 'SL',
-    cell: ({ row }) => <span className="font-medium">{row.index + 1}</span>,
+    accessorKey: "sl",
+    header: "SL",
+    cell: ({ row }) => <span>{row.index + 1}</span>,
   },
   {
-    accessorKey: 'batchCode',
-    header: 'Batch Code',
-    cell: ({ row }) => (
-      <div className="font-medium">{row.original.batchCode}</div>
-    ),
-  },
-  {
-    accessorKey: 'totalClasses',
-    header: 'Total Classes',
-    cell: ({ row }) => (
-      <div className="text-center font-medium">{row.original.totalClasses}</div>
-    ),
-  },
-  {
-    accessorKey: 'mainClasses',
-    header: 'Main Classes',
-    cell: ({ row }) => (
-      <div className="text-center">
-        <Badge variant="default">{row.original.mainClasses}</Badge>
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'specialClasses',
-    header: 'Special Classes',
-    cell: ({ row }) => (
-      <div className="text-center">
-        <Badge variant="secondary">{row.original.specialClasses}</Badge>
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'guestClasses',
-    header: 'Guest Classes',
-    cell: ({ row }) => (
-      <div className="text-center">
-        <Badge variant="outline">{row.original.guestClasses}</Badge>
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'isActive',
-    header: 'Status',
+    accessorKey: "batch",
+    header: "Batch",
     cell: ({ row }) => {
-      const attendance = row.original;
-      const attendanceId = attendance._id || attendance.id;
-      
-      const handleToggleStatus = async (checked: boolean) => {
-        try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/attendance/${attendanceId}/status`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({ isActive: checked }),
-          });
-
-          const result = await response.json();
-
-          if (!result.success) {
-            throw new Error(result.message || 'Failed to update attendance status');
-          }
-
-          toast.success(`Attendance routine ${checked ? 'activated' : 'deactivated'}`);
-          refreshAttendances();
-        } catch (error: any) {
-          toast.error(error.message);
-        }
-      };
-      
+      const batch = row.original;
       return (
-        <div className="flex items-center gap-2">
-          <Switch
-            checked={attendance.isActive}
-            onCheckedChange={handleToggleStatus}
-          />
-          <Badge variant={attendance.isActive ? 'default' : 'secondary'}>
-            {attendance.isActive ? 'Active' : 'Inactive'}
-          </Badge>
+        <div>
+          <div className="font-medium">{batch.name}</div>
+          <div className="text-sm text-gray-500">Code: {batch.code}</div>
         </div>
       );
     },
   },
   {
-    accessorKey: 'createdAt',
-    header: 'Created At',
+    accessorKey: "totalClasses",
+    header: "Total Classes",
     cell: ({ row }) => {
-      const date = row.original.createdAt;
-      return date ? new Date(date).toLocaleDateString() : 'N/A';
+      const stats = row.original.attendanceStats;
+      const total = stats?.totalClasses?.total || 0;
+      const attended = stats?.attendedClasses?.total || 0;
+      
+      return (
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4 text-gray-500" />
+            <span>{total} classes</span>
+          </div>
+          <div className="text-sm text-green-600">
+            {attended} attended
+          </div>
+        </div>
+      );
     },
   },
   {
-    id: 'actions',
-    header: 'Actions',
+  accessorKey: "mainClassPresent",
+  header: "Main Classes",
+  cell: ({ row }) => {
+    const stats = row.original.attendanceStats;
+    const attended = stats?.mainClasses?.attended || 0;
+    const total = stats?.mainClasses?.total || 0;
+    const rate = stats?.mainClasses?.rate || 0;
+    
+    // Show breakdown if available
+    const hasBreakdown = stats?.mainClasses?.regular || stats?.mainClasses?.problemSolving || stats?.mainClasses?.practice;
+    
+    return (
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <div>
+            <span className="font-medium">{attended}/{total}</span>
+            <Badge className="ml-2" variant={rate >= 75 ? "default" : "destructive"}>
+              {rate.toFixed(1)}%
+            </Badge>
+          </div>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-6 text-xs"
+            onClick={() => onViewDetails(row.original)}
+          >
+            <Eye className="h-3 w-3 mr-1" />
+            Details
+          </Button>
+        </div>
+        
+        {hasBreakdown && (
+          <div className="text-xs text-gray-500 grid grid-cols-3 gap-1">
+            {stats.mainClasses.regular > 0 && (
+              <div>Regular: {stats.mainClasses.regular}</div>
+            )}
+            {stats.mainClasses.problemSolving > 0 && (
+              <div>Problem: {stats.mainClasses.problemSolving}</div>
+            )}
+            {stats.mainClasses.practice > 0 && (
+              <div>Practice: {stats.mainClasses.practice}</div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  },
+},
+  {
+    accessorKey: "specialClasses",
+    header: "Special Classes",
     cell: ({ row }) => {
-      const attendance = row.original;
-      const attendanceId = attendance._id || attendance.id;
+      const stats = row.original.attendanceStats;
+      const total = stats?.totalClasses?.special || 0;
+      const attended = stats?.attendedClasses?.special || 0;
+      const rate = stats?.attendanceRate?.special || 0;
       
-      if (!attendanceId) return null;
+      return (
+        <div className="space-y-1">
+          <div className="flex justify-between">
+            <span>Total: {total}</span>
+            <Badge className={
+              rate >= 80 ? "bg-green-100 text-green-800" :
+              rate >= 60 ? "bg-yellow-100 text-yellow-800" :
+              "bg-red-100 text-red-800"
+            }>
+              {rate.toFixed(1)}%
+            </Badge>
+          </div>
+          <div className="text-sm text-green-600">
+            Present: {attended}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "guestClasses",
+    header: "Guest Classes",
+    cell: ({ row }) => {
+      const stats = row.original.attendanceStats;
+      const total = stats?.totalClasses?.guest || 0;
+      const attended = stats?.attendedClasses?.guest || 0;
+      const rate = stats?.attendanceRate?.guest || 0;
+      
+      return (
+        <div className="space-y-1">
+          <div className="flex justify-between">
+            <span>Total: {total}</span>
+            <Badge className={
+              rate >= 80 ? "bg-green-100 text-green-800" :
+              rate >= 60 ? "bg-yellow-100 text-yellow-800" :
+              "bg-red-100 text-red-800"
+            }>
+              {rate.toFixed(1)}%
+            </Badge>
+          </div>
+          <div className="text-sm text-green-600">
+            Present: {attended}
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const batch = row.original;
       
       return (
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" asChild title="View">
-            <Link to={`/attendance/${attendanceId}`}>
-              <Eye className="h-4 w-4" />
-            </Link>
-          </Button>
-          
-          <Button size="sm" variant="ghost" asChild title="Edit">
-            <Link to={`/attendance/edit/${attendanceId}`}>
-              <Edit className="h-4 w-4" />
-            </Link>
-          </Button>
-          
-          <DeleteDialog
-            onConfirm={() => onDelete(attendanceId)}
-            title="Delete Attendance Routine?"
-            description={`Are you sure you want to delete attendance routine for batch ${attendance.batchCode}? This action cannot be undone.`}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => onViewDetails(batch)}
+            title="View Student Attendance"
           >
-            <Button
-              size="sm"
-              variant="ghost"
-              className="text-red-600 hover:text-red-700 hover:bg-red-50"
-              title="Delete"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </DeleteDialog>
+            <Eye className="h-4 w-4 mr-2" />
+            Details
+          </Button>
+          
+          <Button
+            size="sm"
+            variant="ghost"
+            asChild
+            title="View Batch Statistics"
+          >
+            <a href={`/attendance/batch/${batch._id || batch.id}/statistics`}>
+              <BarChart3 className="h-4 w-4" />
+            </a>
+          </Button>
         </div>
       );
     },

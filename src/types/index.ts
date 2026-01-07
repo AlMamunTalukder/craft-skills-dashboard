@@ -152,3 +152,64 @@ export interface Participant {
   registeredAt: string;
   seminarId: string;
 }
+
+
+// src/types/attendance.ts
+export interface AttendanceRecord {
+  _id: string;
+  id?: string;
+  studentId: string | { $oid: string };
+  batchId: string;
+  className: string;
+  sessionType: 'regular' | 'problemSolving' | 'practice' | 'guest' | 'special' | 'exam' | 'revision';
+  attended: boolean;
+  date: string | Date;
+  markedAt: string | Date;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+  __v?: number;
+  studentName?: string;
+  studentEmail?: string;
+  studentPhone?: string;
+}
+
+export interface AttendanceStats {
+  totalClasses: {
+    main: number;
+    special: number;
+    guest: number;
+    total: number;
+  };
+  attendedClasses: {
+    main: number;
+    special: number;
+    guest: number;
+    total: number;
+  };
+  attendanceRate: {
+    main: number;
+    special: number;
+    guest: number;
+    overall: number;
+  };
+  bySessionType: {
+    [key: string]: {
+      total: number;
+      attended: number;
+      attendanceRate: number;
+    };
+  };
+  recentAttendance: AttendanceRecord[];
+}
+
+export interface StudentAttendance {
+  studentId: string;
+  name: string;
+  email: string;
+  phone: string;
+  totalClasses: number;
+  attendedClasses: number;
+  attendanceRate: number;
+  lastAttendance?: string;
+  details: AttendanceRecord[];
+}

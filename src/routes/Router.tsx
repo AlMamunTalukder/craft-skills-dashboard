@@ -27,6 +27,7 @@ import CreateUser from "@/pages/Users/Teacher/CreateUser";
 import CourseBatchDetails from "@/pages/CourseBatch/details/CourseBatchDetails";
 import SeminarFormPage from "@/pages/Seminar/SeminarFormPage/SeminarFormPage";
 import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
+import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
 
 const router = createBrowserRouter([
   {
@@ -147,6 +148,16 @@ const router = createBrowserRouter([
         path: "attendance/edit/:id",
         element: <CreateAttendance />,
       },
+      {
+        path: "attendance/batches",
+        element: <BatchAttendanceDashboard />,
+      },
+      // {
+      //   path: "attendance/batch/:id",
+      //   element: <BatchAttendanceDetails />,
+      // },
+
+    
       // Users
       {
         path: "users",
