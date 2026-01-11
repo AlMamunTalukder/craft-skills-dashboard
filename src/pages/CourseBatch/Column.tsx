@@ -1,9 +1,6 @@
 // src/pages/CourseBatch/Column.tsx
-import { useState } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
 import toast from "react-hot-toast";
 import type { AdmissionBatch } from "@/types";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
@@ -11,7 +8,7 @@ import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 export const batchColumns = (
   onDelete: (id: string) => Promise<void>,
   onStatusToggle: (id: string, isActive: boolean) => Promise<void>,
-  refreshBatches: () => void 
+  refreshBatches: () => void
 ): ColumnDef<AdmissionBatch>[] => [
   {
     accessorKey: "sl",
@@ -102,45 +99,37 @@ export const batchColumns = (
       );
     },
   },
+
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const batch = row.original;
-      const batchId = batch._id || batch.id;
-      const [isDeleting, setIsDeleting] = useState(false);
+      const coursebatches = row.original;
+      const coursebatchesId = coursebatches._id || coursebatches.id;
 
-      if (!batchId) return null;
+      if (!coursebatchesId) return null;
 
-      // In Column.tsx, update the duplicate function:
       const handleDuplicate = async () => {
         try {
           // Get social fields with proper fallbacks
-          const facebookField = batch.facebookSecretGroup || "";
-          const messengerField = batch.messengerSecretGroup || "";
-
-          console.log("Social fields being used:", {
-            facebook: facebookField,
-            messenger: messengerField,
-            batchHasFacebook: "facebookSecretGroup" in batch,
-            batchHasMessenger: "messengerSecretGroup" in batch,
-          });
+          const facebookField = coursebatches.facebookSecretGroup || "";
+          const messengerField = coursebatches.messengerSecretGroup || "";
 
           const duplicateData = {
-            name: `${batch.name || "Batch"} (Copy)`,
-            code: `${batch.code || "BATCH"}-${Date.now()}`,
-            description: batch.description || "",
+            name: `${coursebatches.name || "Batch"} (Copy)`,
+            code: `${coursebatches.code || "BATCH"}-${Date.now()}`,
+            description: coursebatches.description || "",
             registrationStart:
-              batch.registrationStart || new Date().toISOString(),
+              coursebatches.registrationStart || new Date().toISOString(),
             registrationEnd:
-              batch.registrationEnd ||
+              coursebatches.registrationEnd ||
               new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
             facebookSecretGroup: facebookField,
             messengerSecretGroup: messengerField,
             isActive: false,
           };
 
-          console.log("Sending to API:", duplicateData);
+          // console.log("Sending to API:", duplicateData);
 
           const response = await fetch(
             `${import.meta.env.VITE_API_URL}/course-batches`,
@@ -160,84 +149,26 @@ export const batchColumns = (
           toast.success("Batch duplicated successfully");
           refreshBatches();
         } catch (error: any) {
-          console.error("Duplicate error:", error);
+          // console.error("Duplicate error:", error);
           toast.error(error.message || "Failed to duplicate batch");
         }
       };
-
-      const handleDeleteConfirm = async () => {
-        setIsDeleting(true);
-        try {
-          await onDelete(batchId);
-          // onDelete already triggers refresh via setRefreshTrigger
-        } finally {
-          setIsDeleting(false);
-        }
-      };
-
       return (
         <div className="flex items-center gap-2">
-          {/* Edit Button */}
-          {/* <Button size="sm" variant="ghost" asChild title="Edit">
-            <Link to={`/course-batches/edit/${batchId}`}>
-              <Edit className="h-4 w-4" />
-            </Link>
-          </Button> */}
-
-          {/* Duplicate Button */}
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleDuplicate}
-            title="Duplicate"
-          >
-            <Copy className="h-4 w-4" />
-          </Button>
-
-          {/* Delete Button with Dialog */}
-          {/* <DeleteDialog
-            onConfirm={handleDeleteConfirm}
-            title="Delete Batch?"
-            description={`Are you sure you want to delete "${batch.name}"? This action cannot be undone.`}
-            isLoading={isDeleting}
-          >
-            <Button
-              size="sm"
-              variant="ghost"
-              className="text-red-600 hover:text-red-700 hover:bg-red-50"
-              title="Delete"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </DeleteDialog> */}
+          <ActionColumn
+            row={row}
+            model="course-batches"
+            showDetails={true}
+            editEndpoint={`/course-batches/edit/${coursebatchesId}`}
+            id={coursebatchesId}
+            deleteFunction={onDelete}
+            showDelete={true}
+            showEdit={true}
+            duplicateFunction={handleDuplicate}
+            showDuplicate={true}
+          />
         </div>
       );
     },
   },
-  {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => {
-        const coursebatches = row.original;
-        const coursebatchesId = coursebatches._id || coursebatches.id;
-  
-        if (!coursebatchesId) return null;
-  
-        return (
-          <div className="flex items-center gap-2">
-            
-            <ActionColumn
-              row={row}
-              model="course-batches"
-              showDetails={true}
-              editEndpoint={`/course-batches/edit/${coursebatchesId}`}
-              id={coursebatchesId}
-              deleteFunction={onDelete}
-              showDelete={true}
-              showEdit={true}
-            />
-          </div>
-        );
-      },
-    },
 ];

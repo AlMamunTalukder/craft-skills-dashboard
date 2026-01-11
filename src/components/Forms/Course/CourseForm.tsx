@@ -109,11 +109,12 @@ export default function CourseForm({
                   )}
                 </div>
 
-                <div className="space-y-2">
+                 <div className="space-y-2">
                   <Label htmlFor="discount">Discount (%)</Label>
                   <Input
                     id="discount"
                     type="number"
+                    step="any"
                     {...form.register("discount", { valueAsNumber: true })}
                     placeholder="10"
                   />

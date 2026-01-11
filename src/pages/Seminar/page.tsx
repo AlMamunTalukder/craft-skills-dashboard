@@ -1,4 +1,4 @@
-// src/pages/Seminar/list/page.tsx
+// src/pages/Seminar/page.tsx
 import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,8 +14,9 @@ export default function SeminarList() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // console.log(setSearchTerm);
+  console.log(setSearchTerm);
 
   const fetchSeminars = useCallback(async () => {
     try {
@@ -62,9 +63,9 @@ export default function SeminarList() {
       // Refresh the list by fetching again
       await fetchSeminars();
     } catch (error: any) {
-      console.error("Error deleting seminar:", error);
+      // console.error("Error deleting seminar:", error);
       toast.error(error.message);
-      throw error; // Important: Re-throw so ActionColumn can show error
+      throw error;
     }
   };
 
@@ -84,7 +85,7 @@ export default function SeminarList() {
       if (!response.ok) throw new Error("Failed to update status");
 
       toast.success("Status updated successfully");
-      fetchSeminars(); // Refresh the list
+      fetchSeminars();
     } catch (error: any) {
       console.error("Error updating status:", error);
       toast.error(error.message);
@@ -105,8 +106,15 @@ export default function SeminarList() {
     );
   });
 
-  // Create the columns by calling the function
-  const seminarColumns = SeminarColumns(handleDelete, handleStatusToggle);
+  const refreshSeminar = async () => {
+    await fetchSeminars(); 
+  };
+
+  const seminarColumns = SeminarColumns(
+    handleDelete,
+    handleStatusToggle,
+    refreshSeminar
+  );
 
   return (
     <div className="container mx-auto py-6">

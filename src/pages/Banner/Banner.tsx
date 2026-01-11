@@ -6,7 +6,7 @@ import TableTopBar from "../Tables/TableTopBar";
 export default function Banner() {
   const [data, setData] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  console.log(statusFilter)
+  console.log(statusFilter);
 
   useEffect(() => {
     const loadData = async () => {
@@ -48,38 +48,12 @@ export default function Banner() {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* <InfoItem
-              icon={<Megaphone className="w-5 h-5" />}
-              label="Title"
-              value={data.homeBannerInfo?.title || "N/A"}
-              highlight
-            />
-            <InfoItem
-              icon={<FileText className="w-5 h-5" />}
-              label="Subtitle"
-              value={data.homeBannerInfo?.subtitle || "N/A"}
-            /> */}
             <InfoItem
               icon={<Clock className="w-5 h-5" />}
               label="Description"
               value={data.homeBannerInfo?.description || "N/A"}
             />
-            {/* <InfoItem
-              icon={<Calendar className="w-5 h-5" />}
-              label="Additional Info"
-              value={data.homeBannerInfo?.otherInfo || "N/A"}
-            /> */}
           </div>
-
-          {/* <div className="mt-4 pt-4 border-t">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              <span>Deadline: </span>
-              <span className="font-medium">
-                {data.seminarDeadline ? new Date(data.seminarDeadline).toLocaleDateString() : "Not set"}
-              </span>
-            </div>
-          </div> */}
         </CardContent>
       </Card>
 
@@ -91,40 +65,13 @@ export default function Banner() {
             title="Admission Banner"
             subtitle="Admission page banner information"
           />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* <InfoItem
-              icon={<Megaphone className="w-5 h-5" />}
-              label="Title"
-              value={data.admissionBannerInfo?.title || "N/A"}
-              highlight
-            />
-            <InfoItem
-              icon={<FileText className="w-5 h-5" />}
-              label="Subtitle"
-              value={data.admissionBannerInfo?.subtitle || "N/A"}
-            /> */}
             <InfoItem
               icon={<Clock className="w-5 h-5" />}
               label="Description"
               value={data.admissionBannerInfo?.description || "N/A"}
             />
-            {/* <InfoItem
-              icon={<Calendar className="w-5 h-5" />}
-              label="Additional Info"
-              value={data.admissionBannerInfo?.otherInfo || "N/A"}
-            /> */}
           </div>
-
-          {/* <div className="mt-4 pt-4 border-t">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              <span>Deadline: </span>
-              <span className="font-medium">
-                {data.admissionDeadline ? new Date(data.admissionDeadline).toLocaleDateString() : "Not set"}
-              </span>
-            </div>
-          </div> */}
         </CardContent>
       </Card>
     </div>

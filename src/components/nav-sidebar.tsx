@@ -7,6 +7,7 @@ import {
   BookCheck,
   Contact,
   Database,
+  FileText,
   GraduationCap,
   Hand,
   LayoutDashboard,
@@ -70,7 +71,7 @@ const navData = [
   },
   {
     title: "Seminar",
-    url: "/seminar/list",
+    url: "/seminar",
     icon: Megaphone,
     isActive: false,
   }, 
@@ -104,6 +105,12 @@ const navData = [
     title: "Attendance",
     url: "attendance",
     icon: Hand,
+    
+  },
+  {
+    title: "PDF",
+    url: "pdf",
+    icon: FileText, 
     
   },
   {

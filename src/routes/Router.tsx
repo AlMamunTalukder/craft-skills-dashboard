@@ -15,7 +15,7 @@ import BatchList from "@/pages/CourseBatch/BatchList";
 import CreateBatch from "@/pages/CourseBatch/new/CreateBatch";
 import UpdateBatch from "@/pages/CourseBatch/edit/[id]/UpdateBatch";
 import CourseList from "@/pages/Course/CourseList";
-import CreateCourse from "@/pages/Course/new/CreateCourse";
+import Course from "@/pages/Course/Course";
 import CouponList from "@/pages/Coupon/CouponList";
 import CreateCoupon from "@/pages/Coupon/new/NewCoupon";
 import AttendanceList from "@/pages/Attendence/AttendanceList";
@@ -28,6 +28,7 @@ import CourseBatchDetails from "@/pages/CourseBatch/details/CourseBatchDetails";
 import SeminarFormPage from "@/pages/Seminar/SeminarFormPage/SeminarFormPage";
 import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
 import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
+import PDF from "@/pages/PDF/PDF";
 
 const router = createBrowserRouter([
   {
@@ -76,7 +77,7 @@ const router = createBrowserRouter([
       },
       // Seminar
       {
-        path: "seminar/list",
+        path: "seminar",
         element: <SeminarList />,
       },
       {
@@ -98,11 +99,11 @@ const router = createBrowserRouter([
       },
       {
         path: "courses/new",
-        element: <CreateCourse />,
+        element: <Course />,
       },
       {
         path: "courses/edit/:id",
-        element: <CreateCourse />,
+        element: <Course />,
       },
       // course-batch
       {
@@ -179,6 +180,11 @@ const router = createBrowserRouter([
       {
         path: "teacher/:id",
         element: <CreateUser />,
+      },
+      // PDF
+      {
+        path: "pdf",
+        element: <PDF />,
       },
     ],
   },

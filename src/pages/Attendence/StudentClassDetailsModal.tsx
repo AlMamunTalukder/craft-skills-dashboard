@@ -1,5 +1,5 @@
 // src/pages/Attendance/StudentClassDetailsModal.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,11 +16,8 @@ import {
   BookOpen,
   GraduationCap,
   UsersRound,
-  Calendar,
   CheckCircle,
   XCircle,
-  Clock,
-  Hash,
 } from "lucide-react";
 import { format } from "date-fns";
 

@@ -1,32 +1,49 @@
-// src/components/Forms/SeminarForm.tsx
-import { zodResolver } from "@hookform/resolvers/zod";
+// src/components/Forms/SeminarForm.tsx - FIXED DATE FORMAT ISSUE
+import { useEffect } from "react";
+import type { Seminar } from "@/types";
 import { useForm } from "react-hook-form";
-import { Calendar, FileText, Link as LinkIcon, Loader2, Users, MessageSquare, Facebook, MessageCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { seminarSchema, type SeminarFormData } from "@/api/seminar.schema";
-import type { Seminar } from "@/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, FileText, Loader2, Users, MessageSquare, Facebook, MessageCircle } from "lucide-react";
 
 interface SeminarFormProps {
   initialValues?: Partial<Seminar>; 
   onSubmit: (data: SeminarFormData) => Promise<void>;
-  isSubmitting?: boolean; // Rename from 'loading' to 'isSubmitting'
+  isSubmitting?: boolean;
 }
+
+
+const formatDateForInput = (dateString: string | Date | undefined): string => {
+  if (!dateString) return new Date().toISOString().slice(0, 16);
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return new Date().toISOString().slice(0, 16);
+    }
+    
+    // Format: YYYY-MM-DDTHH:mm (required for datetime-local input)
+    return date.toISOString().slice(0, 16);
+  } catch {
+    return new Date().toISOString().slice(0, 16);
+  }
+};
 
 export default function SeminarForm({ initialValues, onSubmit, isSubmitting = false }: SeminarFormProps) {
   const form = useForm<SeminarFormData>({
     resolver: zodResolver(seminarSchema),
-    defaultValues: initialValues || {
+    defaultValues: {
       sl: "",
       title: "",
       description: "",
       date: new Date().toISOString().slice(0, 16),
       registrationDeadline: new Date().toISOString().slice(0, 16),
-      link: "",
       facebookSecretGroup: "",
       whatsappSecretGroup: "",
       messengerSecretGroup: "",
@@ -35,6 +52,25 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
       telegramGroup: "",
     },
   });
+
+  // ✅ Update form when initialValues change (for edit mode)
+  useEffect(() => {
+    if (initialValues) {
+      form.reset({
+        sl: initialValues.sl || "",
+        title: initialValues.title || "",
+        description: initialValues.description || "",
+        date: formatDateForInput(initialValues.date),
+        registrationDeadline: formatDateForInput(initialValues.registrationDeadline),
+        facebookSecretGroup: initialValues.facebookSecretGroup || "",
+        whatsappSecretGroup: initialValues.whatsappSecretGroup || "",
+        messengerSecretGroup: initialValues.messengerSecretGroup || "",
+        facebookPublicGroup: initialValues.facebookPublicGroup || "",
+        whatsappPublicGroup: initialValues.whatsappPublicGroup || "",
+        telegramGroup: initialValues.telegramGroup || "",
+      });
+    }
+  }, [initialValues, form]);
 
   const handleSubmit = async (data: SeminarFormData) => {
     await onSubmit(data);
@@ -53,13 +89,13 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <Label htmlFor="sl">Seminar Batch</Label>
+                <Label htmlFor="sl">Seminar Batch No</Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="sl"
                     {...form.register("sl")}
-                    placeholder="e.g., ১৭ নং সেমিনার"
+                    placeholder="e.g., ১৭"
                     className="pl-10"
                   />
                 </div>
@@ -129,21 +165,7 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="link">Registration Link</Label>
-                <div className="relative">
-                  <LinkIcon className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="link"
-                    {...form.register("link")}
-                    placeholder="https://example.com/register"
-                    className="pl-10"
-                  />
-                </div>
-                {form.formState.errors.link && (
-                  <p className="text-sm text-red-500">{form.formState.errors.link.message}</p>
-                )}
-              </div>
+             
             </div>
 
             {/* Social Media Groups */}

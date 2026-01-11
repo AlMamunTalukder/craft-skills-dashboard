@@ -1,28 +1,32 @@
- 
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { 
-  Globe, 
-  Mail, 
-  Phone, 
-  Users, 
-  BookOpen, 
-  Layers, 
-  TrendingUp, 
-  Facebook, 
-  Youtube, 
-  MessageSquare, 
+import {
+  Globe,
+  Mail,
+  Phone,
+  Users,
+  BookOpen,
+  Layers,
+  TrendingUp,
+  Facebook,
+  Youtube,
+  MessageSquare,
   Send,
   Type,
   Link,
-  BarChart3
+  BarChart3,
 } from "lucide-react";
 
 interface SiteContentData {
@@ -52,46 +56,54 @@ interface Props {
 export default function SiteContentForm({ initialValues }: Props) {
   const [formData, setFormData] = useState<SiteContentData>(initialValues);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState<string | null>(null); 
+  const [uploading, setUploading] = useState<string | null>(null);
   const navigate = useNavigate();
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  
-  try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(formData),
-    });
-    
-    console.log('Update response status:', response.status);
-    
-    if (response.ok) {
-      const result = await response.json();
-      console.log('Update successful:', result);
-      toast.success("Site content updated successfully.");
-      setTimeout(() => {
-        navigate("/site-content");
-      }, 1000);
-    } else {
-      const errorData = await response.json();
-      console.error('Update failed:', errorData);
-      throw new Error('Failed to update site content');
-    }
-  } catch (error) {
-    console.error('Error updating site content:', error);
-    toast.error(error instanceof Error ? error.message : "Failed to update site content. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+  console.log(setUploading);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formData),
+      });
+
+      // console.log('Update response status:', response.status);
+
+      if (response.ok) {
+        // const result = await response.json();
+        // console.log('Update successful:', result);
+        toast.success("Site content updated successfully.");
+        setTimeout(() => {
+          navigate("/site-content");
+        }, 1000);
+      } else {
+        // const errorData = await response.json();
+        // console.error('Update failed:', errorData);
+        throw new Error("Failed to update site content");
+      }
+    } catch (error) {
+      // console.error('Error updating site content:', error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to update site content. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -107,90 +119,22 @@ export default function SiteContentForm({ initialValues }: Props) {
     }));
   };
 
-  // Remove logo
-  // const handleRemoveLogo = (logoType: 'light' | 'dark') => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [logoType === 'light' ? 'logoLight' : 'logoDark']: "",
-  //   }));
-  //   toast.success(`${logoType === 'light' ? 'Light' : 'Dark'} logo removed!`);
-  // };
-
-//  const handleDirectUpload = async (e: React.ChangeEvent<HTMLInputElement>, logoType: 'light' | 'dark') => {
-//   const file = e.target.files?.[0];
-//   if (!file) return;
-
-//   // Validate file type
-//   const validTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
-//   if (!validTypes.includes(file.type)) {
-//     toast.error('Please select a valid image file (JPEG, PNG, SVG, WebP)');
-//     return;
-//   }
-
-//   // Validate file size (2MB max)
-//   if (file.size > 2 * 1024 * 1024) {
-//     toast.error('Image size should be less than 2MB');
-//     return;
-//   }
-
-//   setUploading(logoType);
-
-//   try {
-//     const formData = new FormData();
-//     formData.append('file', file);
-
-//     // This should now work with the correct endpoint
-//     const response = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
-//       method: 'POST',
-//       credentials: 'include',
-//       body: formData,
-//     });
-
-//     if (!response.ok) {
-//       const errorData = await response.json().catch(() => null);
-//       throw new Error(errorData?.message || `Upload failed with status: ${response.status}`);
-//     }
-
-//     const result = await response.json();
-    
-//     // Get the URL from the response
-//     const imageUrl = result.data?.url;
-
-//     if (imageUrl) {
-//       setFormData((prev) => ({
-//         ...prev,
-//         [logoType === 'light' ? 'logoLight' : 'logoDark']: imageUrl,
-//       }));
-//       toast.success(`${logoType === 'light' ? 'Light' : 'Dark'} logo uploaded successfully!`);
-//     } else {
-//       console.log('Upload response:', result);
-//       throw new Error('No image URL returned from server');
-//     }
-//   } catch (error) {
-//     console.error('Upload error:', error);
-//     toast.error(error instanceof Error ? error.message : 'Failed to upload image. Please try again.');
-//   } finally {
-//     setUploading(null);
-//     e.target.value = '';
-//   }
-// };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Site Configuration</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Site Configuration
+          </h1>
           <p className="text-muted-foreground">
             Update your website content, branding, and social media links
           </p>
         </div>
-        
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Brand Identity Section */}
         <Card>
-          
           <CardContent>
             <div className="space-y-4 py-3">
               <div className="space-y-2">
@@ -201,13 +145,12 @@ export default function SiteContentForm({ initialValues }: Props) {
                 <Textarea
                   id="tagline"
                   name="tagline"
-                  value={formData.tagline || ''}
+                  value={formData.tagline || ""}
                   onChange={handleChange}
                   placeholder="Enter your compelling site tagline..."
                   rows={3}
                   className="min-h-[100px]"
                 />
-               
               </div>
             </div>
           </CardContent>
@@ -215,7 +158,6 @@ export default function SiteContentForm({ initialValues }: Props) {
 
         {/* Contact Information Section */}
         <Card>
-          
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-5">
               <div className="space-y-3">
@@ -228,7 +170,7 @@ export default function SiteContentForm({ initialValues }: Props) {
                     id="email"
                     name="email"
                     type="email"
-                    value={formData.email || ''}
+                    value={formData.email || ""}
                     onChange={handleChange}
                     placeholder="contact@example.com"
                     className="pl-10"
@@ -246,7 +188,7 @@ export default function SiteContentForm({ initialValues }: Props) {
                   <Input
                     id="phone1"
                     name="phone1"
-                    value={formData.phone1 || ''}
+                    value={formData.phone1 || ""}
                     onChange={handleChange}
                     placeholder="+1 (555) 123-4567"
                     className="pl-10"
@@ -264,7 +206,7 @@ export default function SiteContentForm({ initialValues }: Props) {
                   <Input
                     id="phone2"
                     name="phone2"
-                    value={formData.phone2 || ''}
+                    value={formData.phone2 || ""}
                     onChange={handleChange}
                     placeholder="+1 (555) 987-6543"
                     className="pl-10"
@@ -298,7 +240,7 @@ export default function SiteContentForm({ initialValues }: Props) {
                   <Input
                     id="facebook"
                     name="facebook"
-                    value={formData.facebook || ''}
+                    value={formData.facebook || ""}
                     onChange={handleChange}
                     placeholder="https://facebook.com/yourpage"
                   />
@@ -312,7 +254,7 @@ export default function SiteContentForm({ initialValues }: Props) {
                   <Input
                     id="whatsapp"
                     name="whatsapp"
-                    value={formData.whatsapp || ''}
+                    value={formData.whatsapp || ""}
                     onChange={handleChange}
                     placeholder="https://wa.me/group-invite"
                   />
@@ -326,7 +268,7 @@ export default function SiteContentForm({ initialValues }: Props) {
                   <Input
                     id="telegram"
                     name="telegram"
-                    value={formData.telegram || ''}
+                    value={formData.telegram || ""}
                     onChange={handleChange}
                     placeholder="https://t.me/yourchannel"
                   />
@@ -335,14 +277,17 @@ export default function SiteContentForm({ initialValues }: Props) {
 
               <div className="space-y-4">
                 <div className="space-y-3">
-                  <Label htmlFor="facebookGroup" className="flex items-center gap-2">
+                  <Label
+                    htmlFor="facebookGroup"
+                    className="flex items-center gap-2"
+                  >
                     <Users className="w-4 h-4 text-blue-700" />
                     Facebook Group
                   </Label>
                   <Input
                     id="facebookGroup"
                     name="facebookGroup"
-                    value={formData.facebookGroup || ''}
+                    value={formData.facebookGroup || ""}
                     onChange={handleChange}
                     placeholder="https://facebook.com/groups/yourgroup"
                   />
@@ -356,7 +301,7 @@ export default function SiteContentForm({ initialValues }: Props) {
                   <Input
                     id="youtube"
                     name="youtube"
-                    value={formData.youtube || ''}
+                    value={formData.youtube || ""}
                     onChange={handleChange}
                     placeholder="https://youtube.com/@yourchannel"
                   />
@@ -380,7 +325,10 @@ export default function SiteContentForm({ initialValues }: Props) {
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-3">
-                <Label htmlFor="totalsTeachers" className="flex items-center gap-2">
+                <Label
+                  htmlFor="totalsTeachers"
+                  className="flex items-center gap-2"
+                >
                   <Users className="w-4 h-4" />
                   Total Teachers
                 </Label>
@@ -396,7 +344,10 @@ export default function SiteContentForm({ initialValues }: Props) {
               </div>
 
               <div className="space-y-3">
-                <Label htmlFor="totalCourses" className="flex items-center gap-2">
+                <Label
+                  htmlFor="totalCourses"
+                  className="flex items-center gap-2"
+                >
                   <BookOpen className="w-4 h-4" />
                   Total Courses
                 </Label>
@@ -412,7 +363,10 @@ export default function SiteContentForm({ initialValues }: Props) {
               </div>
 
               <div className="space-y-3">
-                <Label htmlFor="totalBatches" className="flex items-center gap-2">
+                <Label
+                  htmlFor="totalBatches"
+                  className="flex items-center gap-2"
+                >
                   <Layers className="w-4 h-4" />
                   Total Batches
                 </Label>
@@ -428,7 +382,10 @@ export default function SiteContentForm({ initialValues }: Props) {
               </div>
 
               <div className="space-y-3">
-                <Label htmlFor="successRate" className="flex items-center gap-2">
+                <Label
+                  htmlFor="successRate"
+                  className="flex items-center gap-2"
+                >
                   <TrendingUp className="w-4 h-4" />
                   Success Rate (%)
                 </Label>
@@ -448,36 +405,33 @@ export default function SiteContentForm({ initialValues }: Props) {
           </CardContent>
         </Card>
 
-        
         {/* Submit Section */}
-       
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              
-              <Button 
-                type="submit" 
-                disabled={loading || uploading !== null} 
-                size="lg"
-                className="gap-2 min-w-[200px]"
-              >
-                {loading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Updating...
-                  </>
-                ) : uploading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Globe className="w-4 h-4" />
-                    Update Site Configuration
-                  </>
-                )}
-              </Button>
-            </div>
-       
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Button
+            type="submit"
+            disabled={loading || uploading !== null}
+            size="lg"
+            className="gap-2 min-w-[200px]"
+          >
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                Updating...
+              </>
+            ) : uploading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Globe className="w-4 h-4" />
+                Update Site Configuration
+              </>
+            )}
+          </Button>
+        </div>
       </form>
     </div>
   );

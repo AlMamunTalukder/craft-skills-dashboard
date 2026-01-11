@@ -1,7 +1,7 @@
 // src/pages/Attendance/BatchAttendanceColumns.tsx
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { Eye, BarChart3, Users, BookOpen } from "lucide-react";
+import { Eye, BarChart3, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export const batchAttendanceColumns = (

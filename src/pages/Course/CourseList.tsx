@@ -33,7 +33,7 @@ export default function CourseList() {
 
       setCourses(data);
     } catch (error: any) {
-      console.error('Error fetching courses:', error);
+      // console.error('Error fetching courses:', error);
       toast.error(error.message);
       setCourses([]);
     } finally {
@@ -64,13 +64,9 @@ export default function CourseList() {
       return Promise.reject(error);
     }
   };
-
-  const refreshCourses = () => {
-    setRefreshTrigger(prev => prev + 1);
-  };
-
-  const columns = courseColumns(handleDelete, refreshCourses);
-
+  
+  const columns = courseColumns(handleDelete);
+ 
   return (
     <div className="container mx-auto py-6">
       <TableTopBar

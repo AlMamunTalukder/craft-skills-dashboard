@@ -1,6 +1,6 @@
-// src/pages/Seminar/list/participantColumns.tsx
-import { Button } from "@/components/ui/button";
-import { Eye, Mail, Phone, MessageSquare, MapPin, Briefcase } from "lucide-react";
+// src/pages/Seminar/participantColumns.tsx
+
+import { Mail, MessageSquare, MapPin } from "lucide-react";
 import type { Participant } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
 
@@ -17,7 +17,6 @@ export const participantColumns: ColumnDef<Participant>[] = [
       <>
       <div className="font-medium ">{row.original.name || "-"}</div>
       <div className="flex items-center gap-2">
-        {/* <Phone className="h-4 w-4 " /> */}
         {row.original.phone ? (
           <a 
             href={`tel:${row.original.phone}`}
@@ -51,25 +50,7 @@ export const participantColumns: ColumnDef<Participant>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "phone",
-  //   header: "Phone",
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center gap-2">
-  //       <Phone className="h-4 w-4 text-gray-400" />
-  //       {row.original.phone ? (
-  //         <a 
-  //           href={`tel:${row.original.phone}`}
-  //           className="text-gray-700"
-  //         >
-  //           {row.original.phone}
-  //         </a>
-  //       ) : (
-  //         <span className="text-gray-400">-</span>
-  //       )}
-  //     </div>
-  //   ),
-  // },
+
   {
     accessorKey: "whatsapp",
     header: "WhatsApp",
@@ -91,16 +72,7 @@ export const participantColumns: ColumnDef<Participant>[] = [
       </div>
     ),
   },
-  // {
-  //   accessorKey: "occupation",
-  //   header: "Occupation",
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center gap-2">
-  //       <Briefcase className="h-4 w-4 text-gray-400" />
-  //       <span>{row.original.occupation || "-"}</span>
-  //     </div>
-  //   ),
-  // },
+ 
   {
     accessorKey: "address",
     header: "Address",

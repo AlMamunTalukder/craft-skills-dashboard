@@ -1,23 +1,19 @@
 // src/pages/CourseBatch/details/page.tsx
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, ChevronLeft, Phone, Mail } from "lucide-react";
+import { Users, ChevronLeft} from "lucide-react";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { studentAdmissionColumns } from "./Column";
-import TableTopBar from "@/pages/Tables/TableTopBar";
 
 export default function CourseBatchDetails() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [batch, setBatch] = useState<any>(null);
   const [admissions, setAdmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [courseBatches, setcourseBatches] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,43 +54,6 @@ export default function CourseBatchDetails() {
     fetchData();
   }, [id]);
 
-  const getStatusCounts = () => {
-    const counts = {
-      pending: 0,
-      approved: 0,
-      rejected: 0,
-      waitlisted: 0,
-    };
-
-    admissions.forEach((admission) => {
-      if (admission.status && counts.hasOwnProperty(admission.status)) {
-        counts[admission.status as keyof typeof counts]++;
-      }
-    });
-
-    return counts;
-  };
-
-  const getPaymentCounts = () => {
-    const counts = {
-      pending: 0,
-      partial: 0,
-      paid: 0,
-      cancelled: 0,
-    };
-
-    admissions.forEach((admission) => {
-      if (
-        admission.paymentStatus &&
-        counts.hasOwnProperty(admission.paymentStatus)
-      ) {
-        counts[admission.paymentStatus as keyof typeof counts]++;
-      }
-    });
-
-    return counts;
-  };
-
   if (loading) {
     return (
       <div className="container mx-auto py-6 px-4">
@@ -124,20 +83,11 @@ export default function CourseBatchDetails() {
     );
   }
 
-  const statusCounts = getStatusCounts();
-  const paymentCounts = getPaymentCounts();
+
 
   return (
     <div className="container mx-auto py-6 px-4">
-      {/* <TableTopBar
-        title="Course Batch Details"
-        linkTitle=""
-        href="/course-batches"
-        data={courseBatches}
-        model="Batch"
-        showImport={false}
-        showExport={true}
-      /> */}
+      
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-4">
@@ -149,14 +99,9 @@ export default function CourseBatchDetails() {
           </Button>
           <div>
             <h1 className="text-2xl font-bold">{batch.name}</h1>
-            {/* <p className="text-gray-600">Code: {batch.code}</p> */}
           </div>
         </div>
-        {/* <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link to={`/course-batches/edit/${id}`}>Edit Batch</Link>
-          </Button>
-        </div> */}
+       
       </div>
 
       {/* Admissions Table */}
@@ -170,20 +115,7 @@ export default function CourseBatchDetails() {
                 {admissions.length} students registered in this batch
               </p>
             </div>
-            {/* <div className="flex items-center gap-2">
-              <Badge variant="outline" className="flex items-center gap-1">
-                <Mail className="h-3 w-3" />
-                <span>
-                  {admissions.filter((a) => a.email).length} with email
-                </span>
-              </Badge>
-              <Badge variant="outline" className="flex items-center gap-1">
-                <Phone className="h-3 w-3" />
-                <span>
-                  {admissions.filter((a) => a.phone).length} with phone
-                </span>
-              </Badge>
-            </div> */}
+           
           </div>
         </CardHeader>
         <CardContent>
@@ -211,115 +143,3 @@ export default function CourseBatchDetails() {
     </div>
   );
 }
-
-// import DataTable from "@/components/DataTableComponents/DataTable";
-// import TableTopBar from "@/pages/Tables/TableTopBar";
-// import React, { useState } from "react";
-
-// const CourseBatchDetails = () => {
-//     const [courseBatches, setcourseBatches] = useState<any[]>([]);
-//  const [loading, setLoading] = useState(true);
-//   const [refreshTrigger, setRefreshTrigger] = useState(0);
-//   const navigate = useNavigate();
-
-//   // Use useCallback to prevent unnecessary re-renders
-//   const fetchBatches = useCallback(async () => {
-//     try {
-//       setLoading(true);
-//       const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches`);
-
-//       if (!response.ok) {
-//         const errorData = await response.json();
-//         throw new Error(errorData.message || "Failed to fetch batches");
-//       }
-
-//       const { data, success } = await response.json();
-
-//       if (!success || !Array.isArray(data)) {
-//         throw new Error("Invalid response format");
-//       }
-
-//       setBatches(data);
-//     } catch (error: any) {
-//       console.error("Error fetching batches:", error);
-//       toast.error(error.message);
-//       setBatches([]);
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, []);
-
-//   useEffect(() => {
-//     fetchBatches();
-//   }, [fetchBatches, refreshTrigger]); // Add refreshTrigger to dependencies
-
-//   const handleDelete = async (id: string) => {
-//     try {
-//       const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}`, {
-//         method: "DELETE",
-//       });
-
-//       if (!response.ok) {
-//         const errorData = await response.json();
-//         throw new Error(errorData.message || "Failed to delete batch");
-//       }
-
-//       toast.success("Batch deleted successfully");
-//       setRefreshTrigger(prev => prev + 1); // Trigger refresh without reload
-//       return Promise.resolve();
-//     } catch (error: any) {
-//       console.error("Error deleting batch:", error);
-//       toast.error(error.message);
-//       return Promise.reject(error);
-//     }
-//   };
-
-//   const handleStatusToggle = async (id: string, isActive: boolean) => {
-//     try {
-//       const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}/status`, {
-//         method: "PUT",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ isActive }),
-//       });
-
-//       if (!response.ok) {
-//         const errorData = await response.json();
-//         throw new Error(errorData.message || "Failed to update status");
-//       }
-
-//       toast.success("Status updated successfully");
-//       setRefreshTrigger(prev => prev + 1); // Also refresh after status toggle
-//     } catch (error: any) {
-//       console.error("Error updating status:", error);
-//       toast.error(error.message);
-//     }
-//   };
-
-//   // Create a function that can be passed to columns for refreshing
-//   const refreshBatches = () => {
-//     setRefreshTrigger(prev => prev + 1);
-//   };
-
-//   const columns = batchColumns(handleDelete, handleStatusToggle, refreshBatches);
-//   return (
-//     <div>
-//       <div className="container mx-auto py-6">
-//         <TableTopBar
-//           title="Course Batche Details"
-//           linkTitle=""
-//           href="/course-batches/new"
-//           data={courseBatches}
-//           model="Batch"
-//           showImport={false}
-//           showExport={true}
-//         />
-//         name
-//         <DataTable data={batches} columns={columns} searchable={true} />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CourseBatchDetails;

@@ -1,5 +1,5 @@
 // src/pages/Attendance/BatchDashboard.tsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,11 +8,9 @@ import {
   BookOpen,
   GraduationCap,
   UsersRound,
-  Eye,
   BarChart3,
   Calendar,
   Search,
-  Filter,
 } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -33,86 +31,96 @@ export default function BatchAttendanceDashboard() {
     fetchBatchesWithAttendance();
   }, []);
 
- const fetchBatchesWithAttendance = async () => {
-  try {
-    setLoading(true);
-    
-    // Fetch batches from coursebatches
-    const batchesResponse = await fetch(`${import.meta.env.VITE_API_URL}/course-batches`);
-    const batchesResult = await batchesResponse.json();
+  const fetchBatchesWithAttendance = async () => {
+    try {
+      setLoading(true);
 
-    if (batchesResult.success) {
-      const batchesData = batchesResult.data;
-      
-      // Fetch ALL attendance records
-      const attendanceResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/attendances`
+      // Fetch batches from coursebatches
+      const batchesResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/course-batches`
       );
-      const attendanceResult = await attendanceResponse.json();
-      
-      let allAttendanceData = [];
-      if (attendanceResult.success) {
-        allAttendanceData = attendanceResult.data;
+      const batchesResult = await batchesResponse.json();
+
+      if (batchesResult.success) {
+        const batchesData = batchesResult.data;
+
+        // Fetch ALL attendance records
+        const attendanceResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/attendances`
+        );
+        const attendanceResult = await attendanceResponse.json();
+
+        let allAttendanceData = [];
+        if (attendanceResult.success) {
+          allAttendanceData = attendanceResult.data;
+        }
+
+        // Calculate statistics for each batch
+        const batchesWithStats = await Promise.all(
+          batchesData.map(async (batch: any) => {
+            const batchCode = batch.code;
+            const batchId = batch._id;
+
+            
+            const batchAttendance = allAttendanceData.filter(
+              (attendance: any) =>
+                attendance.batchId === batchCode ||
+                attendance.batchId === batchId
+            );
+
+            // Calculate statistics
+            const stats = calculateBatchStats(batchAttendance, batchCode);
+
+            // Get unique student IDs from attendance
+            const studentIds = [
+              ...new Set(
+                batchAttendance.map((a: any) =>
+                  typeof a.studentId === "object"
+                    ? a.studentId.$oid
+                    : a.studentId
+                )
+              ),
+            ];
+
+            // Fetch admissions for this batch to get total students
+            const admissionsResponse = await fetch(
+              `${import.meta.env.VITE_API_URL}/admissions/batch/${batchId}`
+            );
+            const admissionsResult = await admissionsResponse.json();
+
+            let totalStudents = 0;
+            if (admissionsResult.success) {
+              totalStudents = admissionsResult.data.length;
+            } else {
+              // Fallback to attendance data
+              totalStudents = studentIds.length;
+            }
+
+            return {
+              ...batch,
+              attendanceStats: stats,
+              totalRecords: batchAttendance.length,
+              totalStudents,
+              batchCode, 
+            };
+          })
+        );
+
+        setBatches(batchesWithStats);
+
+        // Calculate overall statistics
+        const overallStats = calculateOverallStats(batchesWithStats);
+        setAttendanceStats(overallStats);
+      } else {
+        throw new Error(batchesResult.message || "Failed to fetch batches");
       }
-
-      // Calculate statistics for each batch
-      const batchesWithStats = await Promise.all(
-        batchesData.map(async (batch: any) => {
-          const batchCode = batch.code; // Use batch code (e.g., "35")
-          const batchId = batch._id;
-          
-          // Filter attendance for this batch using batchId field
-          const batchAttendance = allAttendanceData.filter(
-            (attendance: any) => attendance.batchId === batchCode || attendance.batchId === batchId
-          );
-          
-          // Calculate statistics
-          const stats = calculateBatchStats(batchAttendance, batchCode);
-          
-          // Get unique student IDs from attendance
-          const studentIds = [...new Set(batchAttendance.map((a: any) => 
-            typeof a.studentId === 'object' ? a.studentId.$oid : a.studentId
-          ))];
-          
-          // Fetch admissions for this batch to get total students
-          const admissionsResponse = await fetch(
-            `${import.meta.env.VITE_API_URL}/admissions/batch/${batchId}`
-          );
-          const admissionsResult = await admissionsResponse.json();
-          
-          let totalStudents = 0;
-          if (admissionsResult.success) {
-            totalStudents = admissionsResult.data.length;
-          } else {
-            // Fallback to attendance data
-            totalStudents = studentIds.length;
-          }
-          
-          return {
-            ...batch,
-            attendanceStats: stats,
-            totalRecords: batchAttendance.length,
-            totalStudents,
-            batchCode // Add batch code for reference
-          };
-        })
-      );
-      
-      setBatches(batchesWithStats);
-      
-      // Calculate overall statistics
-      const overallStats = calculateOverallStats(batchesWithStats);
-      setAttendanceStats(overallStats);
-    } else {
-      throw new Error(batchesResult.message || "Failed to fetch batches");
+    } catch (error: any) {
+      console.error("Error fetching data:", error);
+      toast.error(error.message || "Failed to load attendance data");
+    } finally {
+      setLoading(false);
     }
-  } catch (error: any) {
-    console.error("Error fetching data:", error);
-    toast.error(error.message || "Failed to load attendance data");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const calculateBatchStats = (attendanceData: any[], batchId: string) => {
     const stats = {

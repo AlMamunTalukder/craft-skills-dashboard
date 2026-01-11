@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import type { CourseFormData } from '@/api/course.schema';
 import CourseForm from '@/components/Forms/Course/CourseForm';
 
-export default function CreateCourse() {
+export default function Course() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(!!id);
@@ -34,7 +34,7 @@ export default function CreateCourse() {
         
         setInitialData(data);
       } catch (error: any) {
-        console.error('Error loading course:', error);
+        // console.error('Error loading course:', error);
         toast.error(error.message);
         navigate('/courses');
       } finally {

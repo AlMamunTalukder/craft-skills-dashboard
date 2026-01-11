@@ -1,6 +1,6 @@
-// src/pages/Seminar/list/details/page.tsx
+// src/pages/Seminar/details/page.tsx
 import  { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,6 @@ import {
   Users, 
   ChevronLeft,
 } from "lucide-react";
-// import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { participantColumns } from "./columns";
@@ -36,7 +35,6 @@ interface Seminar {
 
 export default function SeminarDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  // const navigate = useNavigate();
   const [seminar, setSeminar] = useState<Seminar | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +68,7 @@ export default function SeminarDetailsPage() {
 
         setSeminar(result.data);
       } catch (err: any) {
-        console.error("Error fetching seminar:", err);
+        // console.error("Error fetching seminar:", err);
         setError(err.message || "Failed to load seminar");
         toast.error("Failed to load seminar details");
       } finally {
@@ -81,33 +79,7 @@ export default function SeminarDetailsPage() {
     fetchSeminar();
   }, [id]);
 
-  // const handleDelete = async () => {
-  //   if (!seminar || !id) return;
-    
-  //   if (!window.confirm(`Are you sure you want to delete "${seminar.title}"?`)) {
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch(
-  //       `${import.meta.env.VITE_API_URL}/seminars/${id}`,
-  //       {
-  //         method: "DELETE",
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       const result = await response.json();
-  //       throw new Error(result.message || "Failed to delete seminar");
-  //     }
-
-  //     toast.success("Seminar deleted successfully");
-  //     navigate("/seminar/list");
-  //   } catch (err: any) {
-  //     console.error("Error deleting seminar:", err);
-  //     toast.error(err.message || "Failed to delete seminar");
-  //   }
-  // };
+ 
 
   if (loading) {
     return (
@@ -131,7 +103,7 @@ export default function SeminarDetailsPage() {
             <h2 className="text-2xl font-bold mb-2">Seminar Not Found</h2>
             <p className="text-gray-600 mb-6">{error || "The seminar you're looking for doesn't exist."}</p>
             <Button asChild>
-              <Link to="/seminar/list">
+              <Link to="/seminar">
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 Back to Seminars
               </Link>
@@ -142,24 +114,7 @@ export default function SeminarDetailsPage() {
     );
   }
 
-  // Format dates
-  // const seminarDate = seminar.date ? new Date(seminar.date) : null;
-  // const formattedDate = seminarDate ? format(seminarDate, "MMMM d, yyyy") : "";
-  // const formattedTime = seminarDate ? format(seminarDate, "h:mm a") : "";
-
-  // const registrationDeadline = seminar.registrationDeadline
-  //   ? new Date(seminar.registrationDeadline)
-  //   : null;
-  // const formattedDeadline = registrationDeadline
-  //   ? format(registrationDeadline, "MMMM d, yyyy h:mm a")
-  //   : "";
-
-  // const createdAt = seminar.createdAt
-  //   ? format(new Date(seminar.createdAt), "MMMM d, yyyy")
-  //   : "";
-  // const updatedAt = seminar.updatedAt
-  //   ? format(new Date(seminar.updatedAt), "MMMM d, yyyy")
-  //   : "";
+  
 
   const participantCount = seminar.participants?.length || 0;
 
@@ -168,7 +123,7 @@ export default function SeminarDetailsPage() {
       {/* Header with actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <Button variant="outline" asChild className="w-fit">
-          <Link to="/seminar/list">
+          <Link to="/seminar">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Seminars
           </Link>

@@ -71,7 +71,7 @@ export default function SeminarFormPage() {
           : "Seminar created successfully"
       );
       
-      navigate("/seminar/list");
+      navigate("/seminar");
     } catch (error: any) {
       console.error('Error saving seminar:', error);
       toast.error(error.message || "Failed to save seminar");
@@ -97,7 +97,7 @@ export default function SeminarFormPage() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate("/seminar/list")}
+          onClick={() => navigate("/seminar")}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back

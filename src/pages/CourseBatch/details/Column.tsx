@@ -1,8 +1,6 @@
 // src/pages/CourseBatch/details/Column.tsx
 import type { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { Eye, Mail, Phone, MessageSquare } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Mail, Phone, MessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 
@@ -14,7 +12,7 @@ export type AdmissionStudent = {
   phone: string;
   whatsapp?: string;
   courseId: string | { $oid: string };
-  batchId: string | { $oid: string };
+  batchId: string | { $oid: string }; 
   paymentMethod: string;
   senderNumber: string;
   couponCode?: string;
@@ -55,12 +53,7 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
             <Phone className="h-3 w-3 text-gray-500" />
             <span className="text-sm">{student.phone}</span>
           </div>
-          {/* {student.whatsapp && (
-            <div className="flex items-center gap-2">
-              <MessageSquare className="h-3 w-3 text-green-500" />
-              <span className="text-sm">{student.whatsapp}</span>
-            </div>
-          )} */}
+         
         </div>
       );
     },
@@ -72,14 +65,7 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
       const student = row.original;
       return (
         <div className="space-y-1">
-          {/* <div className="flex items-center gap-2">
-            <Mail className="h-3 w-3 text-gray-500" />
-            <span className="text-sm">{student.email}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Phone className="h-3 w-3 text-gray-500" />
-            <span className="text-sm">{student.phone}</span>
-          </div> */}
+         
           {student.whatsapp && (
             <div className="flex items-center gap-2">
               <MessageSquare className="h-3 w-3 text-green-500" />
