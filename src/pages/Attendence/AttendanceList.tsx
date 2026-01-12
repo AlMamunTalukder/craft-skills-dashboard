@@ -1,19 +1,22 @@
-// src/pages/Attendance/BatchDashboard.tsx
+// src/pages/Attendance/BatchDashboard.tsx - Updated
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, RefreshCcw } from "lucide-react";
+import { BookOpen, Calendar } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import DataTable from "@/components/DataTableComponents/DataTable";
+
 import { batchAttendanceColumns } from "./Columns";
 
 export default function BatchAttendanceDashboard() {
   const [batches, setBatches] = useState<any[]>([]);
+  const [attendanceStats, setAttendanceStats] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedBatch, setSelectedBatch] = useState<any>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log(attendanceStats);
+  console.log(setSearchTerm);
 
   useEffect(() => {
     fetchBatchesWithAttendance();
@@ -23,76 +26,138 @@ export default function BatchAttendanceDashboard() {
     try {
       setLoading(true);
 
-      // Fetch batches from coursebatches
-      const batchesResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/course-batches`
-      );
-      const batchesResult = await batchesResponse.json();
-
-      if (batchesResult.success) {
-        const batchesData = batchesResult.data;
-
-        // Fetch ALL attendance records
-        const attendanceResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/attendances`
-        );
-        const attendanceResult = await attendanceResponse.json();
-
-        let allAttendanceData = [];
-        if (attendanceResult.success) {
-          allAttendanceData = attendanceResult.data;
+      // Use the public endpoint
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/attendances/batch-stats-public`,
+        {
+          credentials: "include", // Important for cookies
         }
+      );
 
-        // Calculate statistics for each batch
-        const batchesWithStats = await Promise.all(
-          batchesData.map(async (batch: any) => {
-            const batchCode = batch.code;
-            const batchId = batch._id;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-            const batchAttendance = allAttendanceData.filter(
-              (attendance: any) =>
-                attendance.batchId === batchCode ||
-                attendance.batchId === batchId
-            );
+      const result = await response.json();
 
-            
+      if (result.success) {
+        setBatches(result.data);
 
-            // Fetch admissions for this batch to get total students
-            const admissionsResponse = await fetch(
-              `${import.meta.env.VITE_API_URL}/admissions/batch/${batchId}`
-            );
-            const admissionsResult = await admissionsResponse.json();
-
-            let totalStudents = 0;
-            if (admissionsResult.success) {
-              totalStudents = admissionsResult.data.length;
-            } else {
-              
-            }
-
-            return {
-              ...batch,
-             
-            };
-          })
-        );
-
-        setBatches(batchesWithStats);
-
-       
+        // Calculate overall statistics from the batch data
+        const overallStats = calculateOverallStats(result.data);
+        setAttendanceStats(overallStats);
       } else {
-        throw new Error(batchesResult.message || "Failed to fetch batches");
+        throw new Error(result.message || "Failed to fetch batches");
       }
     } catch (error: any) {
       console.error("Error fetching data:", error);
       toast.error(error.message || "Failed to load attendance data");
+
+      // If public endpoint fails, try fallback
+      await fetchFallbackData();
     } finally {
       setLoading(false);
     }
   };
- const handleViewBatchDetails = (batch: any) => {
-    setSelectedBatch(batch);
-    setIsModalOpen(true);
+
+  const fetchFallbackData = async () => {
+    try {
+      // Try to get batches directly
+      const batchesResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/course-batches`,
+        {
+          credentials: "include",
+        }
+      );
+
+      if (!batchesResponse.ok) {
+        throw new Error(`HTTP error! status: ${batchesResponse.status}`);
+      }
+
+      const batchesResult = await batchesResponse.json();
+
+      if (batchesResult.success) {
+        // Calculate basic stats without attendance
+        const basicBatches = batchesResult.data.map((batch: any) => ({
+          ...batch,
+          attendanceStats: {
+            totalStudents: 0,
+            totalClasses: { main: 0, special: 0, guest: 0, total: 0 },
+            attendedClasses: { main: 0, special: 0, guest: 0, total: 0 },
+            attendanceRate: { main: 0, special: 0, guest: 0, overall: 0 },
+          },
+        }));
+
+        setBatches(basicBatches);
+
+        // Calculate basic overall stats
+        const overallStats = {
+          totalBatches: basicBatches.length,
+          totalStudents: 0,
+          totalClasses: { main: 0, special: 0, guest: 0, total: 0 },
+          attendedClasses: { main: 0, special: 0, guest: 0, total: 0 },
+          attendanceRate: { main: 0, special: 0, guest: 0, overall: 0 },
+        };
+
+        setAttendanceStats(overallStats);
+      }
+    } catch (fallbackError) {
+      console.error("Fallback fetch error:", fallbackError);
+    }
+  };
+
+  const calculateOverallStats = (batches: any[]) => {
+    const overall = {
+      totalBatches: batches.length,
+      totalStudents: 0,
+      totalClasses: { main: 0, special: 0, guest: 0, total: 0 },
+      attendedClasses: { main: 0, special: 0, guest: 0, total: 0 },
+      attendanceRate: { main: 0, special: 0, guest: 0, overall: 0 },
+    };
+
+    batches.forEach((batch) => {
+      // Sum total students
+      overall.totalStudents += batch.attendanceStats?.totalStudents || 0;
+
+      // Sum class statistics
+      overall.totalClasses.main +=
+        batch.attendanceStats?.totalClasses?.main || 0;
+      overall.totalClasses.special +=
+        batch.attendanceStats?.totalClasses?.special || 0;
+      overall.totalClasses.guest +=
+        batch.attendanceStats?.totalClasses?.guest || 0;
+      overall.totalClasses.total +=
+        batch.attendanceStats?.totalClasses?.total || 0;
+
+      overall.attendedClasses.main +=
+        batch.attendanceStats?.attendedClasses?.main || 0;
+      overall.attendedClasses.special +=
+        batch.attendanceStats?.attendedClasses?.special || 0;
+      overall.attendedClasses.guest +=
+        batch.attendanceStats?.attendedClasses?.guest || 0;
+      overall.attendedClasses.total +=
+        batch.attendanceStats?.attendedClasses?.total || 0;
+    });
+
+    // Calculate overall rates
+    overall.attendanceRate.main =
+      overall.totalClasses.main > 0
+        ? (overall.attendedClasses.main / overall.totalClasses.main) * 100
+        : 0;
+    overall.attendanceRate.special =
+      overall.totalClasses.special > 0
+        ? (overall.attendedClasses.special / overall.totalClasses.special) * 100
+        : 0;
+    overall.attendanceRate.guest =
+      overall.totalClasses.guest > 0
+        ? (overall.attendedClasses.guest / overall.totalClasses.guest) * 100
+        : 0;
+    overall.attendanceRate.overall =
+      overall.totalClasses.total > 0
+        ? (overall.attendedClasses.total / overall.totalClasses.total) * 100
+        : 0;
+
+    return overall;
   };
 
   const filteredBatches = batches.filter(
@@ -126,7 +191,7 @@ export default function BatchAttendanceDashboard() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={fetchBatchesWithAttendance}>
-            <RefreshCcw className="h-4 w-4 mr-2" />
+            <Calendar className="h-4 w-4 mr-2" />
             Refresh
           </Button>
         </div>
@@ -134,12 +199,29 @@ export default function BatchAttendanceDashboard() {
 
       {/* Batches Table */}
       <Card>
+        <CardHeader>
+          <CardTitle>Batch Attendance Summary</CardTitle>
+        </CardHeader>
         <CardContent>
-          <DataTable
-            data={filteredBatches}
-            columns={batchAttendanceColumns(handleViewBatchDetails)}
-            searchable={false}
-          />
+          {filteredBatches.length > 0 ? (
+            <DataTable
+              data={filteredBatches}
+              columns={batchAttendanceColumns()}
+              searchable={false}
+            />
+          ) : (
+            <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+              <BookOpen className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                No Batches Found
+              </h3>
+              <p className="text-gray-500 max-w-md mx-auto">
+                {searchTerm
+                  ? "No batches match your search."
+                  : "No batches available. Create batches to track attendance."}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

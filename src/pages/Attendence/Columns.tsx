@@ -1,11 +1,30 @@
-// src/pages/Attendance/BatchAttendanceColumns.tsx
+// src/pages/Attendance/Columns.tsx (or wherever your columns are)
 import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Eye, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+
+// Actions cell component
+const ActionsCell = ({ batch }: { batch: any }) => {
+
+  return (
+    <div className="flex items-center gap-2">
+      <Link to={`/attendance/batch/${batch._id}`} state={{ batch }}>
+        <Button
+          size="sm"
+          variant="outline"
+          title="View Student Attendance"
+        >
+          <Eye className="h-4 w-4 mr-2" />
+          Details
+        </Button>
+      </Link>
+    </div>
+  );
+};
 
 export const batchAttendanceColumns = (
-  onViewDetails: (batch: any) => void
 ): ColumnDef<any>[] => [
   {
     accessorKey: "sl",
@@ -21,6 +40,9 @@ export const batchAttendanceColumns = (
         <div>
           <div className="font-medium">{batch.name}</div>
           <div className="text-sm text-gray-500">Code: {batch.code}</div>
+          <div className="text-xs text-gray-400">
+            {batch.attendanceStats?.totalStudents || 0} students
+          </div>
         </div>
       );
     },
@@ -45,45 +67,30 @@ export const batchAttendanceColumns = (
     },
   },
   {
-    accessorKey: "mainClassPresent",
+    accessorKey: "mainClasses",
     header: "Main Classes",
     cell: ({ row }) => {
       const stats = row.original.attendanceStats;
-      const attended = stats?.mainClasses?.attended || 0;
-      const total = stats?.mainClasses?.total || 0;
-      const rate = stats?.mainClasses?.rate || 0;
-
-      // Show breakdown if available
-      const hasBreakdown =
-        stats?.mainClasses?.regular ||
-        stats?.mainClasses?.problemSolving ||
-        stats?.mainClasses?.practice;
+      const attended = stats?.attendedClasses?.main || 0;
+      const total = stats?.totalClasses?.main || 0;
+      const rate = stats?.attendanceRate?.main || 0;
 
       return (
-        <div className="space-y-2">
-          <div className="flex justify-between items-center">
-            <div>
-              <span className="font-medium">
-                {attended}/{total}
-              </span>
-              
-            </div>
-            
+        <div className="space-y-1">
+          <div className="flex justify-between">
+            <span>{attended}/{total}</span>
+            <Badge
+              className={
+                rate >= 80
+                  ? "bg-green-100 text-green-800"
+                  : rate >= 60
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-red-100 text-red-800"
+              }
+            >
+              {rate.toFixed(1)}%
+            </Badge>
           </div>
-
-          {hasBreakdown && (
-            <div className="text-xs text-gray-500 grid grid-cols-3 gap-1">
-              {stats.mainClasses.regular > 0 && (
-                <div>Regular: {stats.mainClasses.regular}</div>
-              )}
-              {stats.mainClasses.problemSolving > 0 && (
-                <div>Problem: {stats.mainClasses.problemSolving}</div>
-              )}
-              {stats.mainClasses.practice > 0 && (
-                <div>Practice: {stats.mainClasses.practice}</div>
-              )}
-            </div>
-          )}
         </div>
       );
     },
@@ -93,17 +100,26 @@ export const batchAttendanceColumns = (
     header: "Special Classes",
     cell: ({ row }) => {
       const stats = row.original.attendanceStats;
-      const total = stats?.totalClasses?.special || 0;
       const attended = stats?.attendedClasses?.special || 0;
+      const total = stats?.totalClasses?.special || 0;
       const rate = stats?.attendanceRate?.special || 0;
 
       return (
         <div className="space-y-1">
           <div className="flex justify-between">
-            <span>Total: {total}</span>
-           
+            <span>{attended}/{total}</span>
+            <Badge
+              className={
+                rate >= 80
+                  ? "bg-green-100 text-green-800"
+                  : rate >= 60
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-red-100 text-red-800"
+              }
+            >
+              {rate.toFixed(1)}%
+            </Badge>
           </div>
-          <div className="text-sm text-green-600">Present: {attended}</div>
         </div>
       );
     },
@@ -113,17 +129,26 @@ export const batchAttendanceColumns = (
     header: "Guest Classes",
     cell: ({ row }) => {
       const stats = row.original.attendanceStats;
-      const total = stats?.totalClasses?.guest || 0;
       const attended = stats?.attendedClasses?.guest || 0;
+      const total = stats?.totalClasses?.guest || 0;
       const rate = stats?.attendanceRate?.guest || 0;
 
       return (
         <div className="space-y-1">
           <div className="flex justify-between">
-            <span>Total: {total}</span>
-           
+            <span>{attended}/{total}</span>
+            <Badge
+              className={
+                rate >= 80
+                  ? "bg-green-100 text-green-800"
+                  : rate >= 60
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-red-100 text-red-800"
+              }
+            >
+              {rate.toFixed(1)}%
+            </Badge>
           </div>
-          <div className="text-sm text-green-600">Present: {attended}</div>
         </div>
       );
     },
@@ -133,21 +158,7 @@ export const batchAttendanceColumns = (
     header: "Actions",
     cell: ({ row }) => {
       const batch = row.original;
-
-      return (
-        <div className="flex items-center gap-2">
-          <a href={`/attendance/batch/${batch._id}`}>
-          <Button
-            size="sm"
-            variant="outline"
-            title="View Student Attendance"
-          >
-            <Eye className="h-4 w-4 mr-2" />
-            Details
-          </Button>
-          </a>
-        </div>
-      );
+      return <ActionsCell batch={batch} />;
     },
   },
 ];

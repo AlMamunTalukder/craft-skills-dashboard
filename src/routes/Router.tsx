@@ -157,7 +157,7 @@ const router = createBrowserRouter([
 
       // path="/attendance/batch/:batchId" element={<BatchDetailsPage />} 
       {
-        path: "attendance/batch/:id",
+        path: "attendance/batch/:batchId",
         element: <BatchDetailsPage />,
       },
 
