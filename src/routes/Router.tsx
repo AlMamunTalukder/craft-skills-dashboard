@@ -29,6 +29,7 @@ import SeminarFormPage from "@/pages/Seminar/SeminarFormPage/SeminarFormPage";
 import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
 import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
 import PDF from "@/pages/PDF/PDF";
+import BatchDetailsPage from "@/pages/Attendence/BatchDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -153,10 +154,12 @@ const router = createBrowserRouter([
         path: "attendance/batches",
         element: <BatchAttendanceDashboard />,
       },
-      // {
-      //   path: "attendance/batch/:id",
-      //   element: <BatchAttendanceDetails />,
-      // },
+
+      // path="/attendance/batch/:batchId" element={<BatchDetailsPage />} 
+      {
+        path: "attendance/batch/:id",
+        element: <BatchDetailsPage />,
+      },
 
     
       // Users

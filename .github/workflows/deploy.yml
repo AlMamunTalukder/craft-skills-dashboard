@@ -1,0 +1,46 @@
+name: React Admin Deployment with NGINX
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SSH Client
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
+
+      - name: Deploy React Admin to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            echo "Starting React deployment..."
+
+            # Go to project folder
+            cd /var/www/html/craft/admin || exit
+
+            # Pull latest code
+            git fetch --all
+            git reset --hard origin/main
+
+            # Install dependencies and build React
+            npm install
+            npm run build
+
+            # Replace old build folder with new one
+            sudo rm -rf /var/www/html/craft/admin/build
+            mv build /var/www/html/craft/admin/
+
+            # Reload NGINX to apply changes
+            sudo systemctl restart nginx
+
+            echo "Deployment completed successfully!"
