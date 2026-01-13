@@ -77,8 +77,7 @@ export const batchAttendanceColumns = (
 
       return (
         <div className="space-y-1">
-          <div className="flex justify-between">
-            <span>{attended}/{total}</span>
+          <div className="flex justify-between">         
             <Badge
               className={
                 rate >= 80
@@ -88,7 +87,7 @@ export const batchAttendanceColumns = (
                   : "bg-red-100 text-red-800"
               }
             >
-              {rate.toFixed(1)}%
+              {attended}/{total}
             </Badge>
           </div>
         </div>
@@ -107,7 +106,7 @@ export const batchAttendanceColumns = (
       return (
         <div className="space-y-1">
           <div className="flex justify-between">
-            <span>{attended}/{total}</span>
+           
             <Badge
               className={
                 rate >= 80
@@ -117,7 +116,7 @@ export const batchAttendanceColumns = (
                   : "bg-red-100 text-red-800"
               }
             >
-              {rate.toFixed(1)}%
+              {attended}/{total}
             </Badge>
           </div>
         </div>
@@ -136,7 +135,7 @@ export const batchAttendanceColumns = (
       return (
         <div className="space-y-1">
           <div className="flex justify-between">
-            <span>{attended}/{total}</span>
+           
             <Badge
               className={
                 rate >= 80
@@ -146,7 +145,7 @@ export const batchAttendanceColumns = (
                   : "bg-red-100 text-red-800"
               }
             >
-              {rate.toFixed(1)}%
+              {attended}/{total}
             </Badge>
           </div>
         </div>

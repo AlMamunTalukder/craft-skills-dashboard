@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import logo from "../../public/CHARTIFICATE-FINAL02.webp";
+// import logo from "../../public/CHARTIFICATE-FINAL02.webp";
 import AppForm from "./FormInputs/AppForm";
 import TextInput from "./FormInputs/TextInput";
 import SubmitButton from "./FormInputs/SubmitButton";
@@ -60,7 +60,7 @@ export function LoginForm({
         <CardContent className="md:p-6 ">
           <div className="flex flex-col items-center gap-2 text-center mb-4">
             <img
-              src={logo}
+              src="/CHARTIFICATE-FINAL02.webp"
               alt="Craft Skills Logo"
               className="h-14 w-[200px]"
             />

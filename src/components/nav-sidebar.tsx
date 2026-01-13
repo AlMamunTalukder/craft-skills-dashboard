@@ -21,7 +21,7 @@ import {
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-import logo from "../../public/logo.png";
+// import logo from "../../public/logo.png";
 import {
   Sidebar,
   SidebarContent,
@@ -156,7 +156,7 @@ const navData = [
 const userData = {
   name: "Craft Skills",
   email: "craft@gmail.com",
-  avatar: "/public/logo.png",
+  avatar: "/logo.png",
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -208,7 +208,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <div className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                 <img
-                  src={logo}
+                  src="/logo.png"
                   className="rounded-lg"
                   alt="Craft Skills Logo"
                 />

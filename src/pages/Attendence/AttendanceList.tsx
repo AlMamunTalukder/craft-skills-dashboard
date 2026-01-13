@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Calendar } from "lucide-react";
+import { BookOpen, RefreshCcw } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import DataTable from "@/components/DataTableComponents/DataTable";
@@ -184,14 +184,14 @@ export default function BatchAttendanceDashboard() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Batch Attendance Dashboard</h1>
+          <h1 className="text-2xl font-bold">Batch Attendance </h1>
           <p className="text-gray-600 mt-1">
             Track attendance statistics for all batches
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={fetchBatchesWithAttendance}>
-            <Calendar className="h-4 w-4 mr-2" />
+            <RefreshCcw className="h-4 w-4 mr-2" />
             Refresh
           </Button>
         </div>

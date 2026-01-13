@@ -14,7 +14,7 @@ import {
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import DataTable from "@/components/DataTableComponents/DataTable";
-import StudentClassDetailsModal from "./StudentClassDetailsModal";
+import StudentClassDetailsModal from "../StudentDetailsModal/StudentClassDetailsModal";
 
 export default function BatchDetailsPageV2() {
   const { batchId } = useParams();
@@ -369,11 +369,8 @@ export default function BatchDetailsPageV2() {
         return (
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <span className="font-medium">
-                {attended}/{total}
-              </span>
               <span
-                className={`text-xs px-2 py-1 rounded ${
+                className={`text-xs px-2 py-1 rounded font-medium ${
                   rate >= 80
                     ? "bg-green-100 text-green-800"
                     : rate >= 60
@@ -381,7 +378,7 @@ export default function BatchDetailsPageV2() {
                     : "bg-red-100 text-red-800"
                 }`}
               >
-                {rate.toFixed(1)}%
+                {attended}/{total}
               </span>
             </div>
             <div className="text-xs text-gray-500">
@@ -408,9 +405,6 @@ export default function BatchDetailsPageV2() {
         return (
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <span className="font-medium">
-                {attended}/{total}
-              </span>
               <span
                 className={`text-xs px-2 py-1 rounded ${
                   rate >= 80
@@ -420,7 +414,9 @@ export default function BatchDetailsPageV2() {
                     : "bg-red-100 text-red-800"
                 }`}
               >
-                {rate.toFixed(1)}%
+                <span className="font-medium">
+                  {attended}/{total}
+                </span>
               </span>
             </div>
           </div>
@@ -439,9 +435,6 @@ export default function BatchDetailsPageV2() {
         return (
           <div className="space-y-1">
             <div className="flex justify-between items-center">
-              <span className="font-medium">
-                {attended}/{total}
-              </span>
               <span
                 className={`text-xs px-2 py-1 rounded ${
                   rate >= 80
@@ -451,7 +444,9 @@ export default function BatchDetailsPageV2() {
                     : "bg-red-100 text-red-800"
                 }`}
               >
-                {rate.toFixed(1)}%
+                <span className="font-medium">
+                  {attended}/{total}
+                </span>
               </span>
             </div>
           </div>
@@ -468,11 +463,8 @@ export default function BatchDetailsPageV2() {
         const rate = stats?.overallRate || 0;
 
         return (
-          <div className="space-y-1">
+          <div className="">
             <div className="flex justify-between items-center">
-              <span className="font-bold">
-                {attended}/{total}
-              </span>
               <span
                 className={`text-xs px-2 py-1 rounded font-bold ${
                   rate >= 80
@@ -482,12 +474,14 @@ export default function BatchDetailsPageV2() {
                     : "bg-red-100 text-red-800"
                 }`}
               >
-                {rate.toFixed(1)}%
+                <span className="font-bold">
+                  {attended}/{total}
+                </span>
               </span>
             </div>
-            <div className="text-xs text-center font-medium">
+            {/* <div className="text-xs text-center font-medium">
               {stats?.result || "Pending"}
-            </div>
+            </div> */}
           </div>
         );
       },
@@ -521,7 +515,7 @@ export default function BatchDetailsPageV2() {
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
             <p className="text-gray-600">Loading batch details...</p>
-            <p className="text-sm text-gray-500 mt-2">Batch ID: {batchId}</p>
+            {/* <p className="text-sm text-gray-500 mt-2">Batch ID: {batchId}</p> */}
           </div>
         </div>
       </div>
@@ -623,8 +617,6 @@ export default function BatchDetailsPageV2() {
           </CardContent>
         </Card>
       </div>
-
-   
 
       {/* Students Table */}
       <Card>

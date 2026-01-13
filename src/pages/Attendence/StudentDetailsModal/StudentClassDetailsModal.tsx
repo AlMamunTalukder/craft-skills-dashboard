@@ -25,59 +25,60 @@ interface StudentClassDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   student: any;
-  initialTab: 'main' | 'special' | 'guest';
+  initialTab: "main" | "special" | "guest";
 }
 
-export default function StudentClassDetailsModal({ 
-  isOpen, 
-  onClose, 
-  student, 
-  initialTab 
+export default function StudentClassDetailsModal({
+  isOpen,
+  onClose,
+  student,
+  initialTab,
 }: StudentClassDetailsModalProps) {
-  const [activeTab, setActiveTab] = useState<'main' | 'special' | 'guest'>(initialTab);
+  const [activeTab, setActiveTab] = useState<"main" | "special" | "guest">(
+    initialTab
+  );
 
   if (!student) return null;
 
-  console.log('Student in modal:', student); // Debug log
-
   // Use attendanceRecords from our updated data structure
-  const attendanceRecords = student.attendanceRecords || student.attendanceData || [];
+  const attendanceRecords =
+    student.attendanceRecords || student.attendanceData || [];
 
   // Filter attendance data by session type
-  const getAttendanceByType = (type: 'main' | 'special' | 'guest') => {
+  const getAttendanceByType = (type: "main" | "special" | "guest") => {
     const sessionTypes = {
-      main: ['regular', 'problemSolving', 'practice'],
-      special: ['special'],
-      guest: ['guest']
+      main: ["regular", "problemSolving", "practice"],
+      special: ["special"],
+      guest: ["guest"],
     };
 
-    return attendanceRecords.filter((record: any) => 
+    return attendanceRecords.filter((record: any) =>
       sessionTypes[type].includes(record.sessionType)
     );
   };
 
-  const mainClasses = getAttendanceByType('main');
-  const specialClasses = getAttendanceByType('special');
-  const guestClasses = getAttendanceByType('guest');
+  const mainClasses = getAttendanceByType("main");
+  const specialClasses = getAttendanceByType("special");
+  const guestClasses = getAttendanceByType("guest");
 
   // Get real stats from student.attendanceStats
-  const getStats = (type: 'main' | 'special' | 'guest') => {
+  const getStats = (type: "main" | "special" | "guest") => {
     const stats = student.attendanceStats || {};
-    
-    if (type === 'main') {
+
+    if (type === "main") {
       const total = stats.mainClasses?.total || 0;
       const attended = stats.mainClasses?.attended || 0;
       const rate = stats.mainClasses?.rate || 0;
       return { total, attended, rate, classes: mainClasses };
     }
-    
-    if (type === 'special') {
+
+    if (type === "special") {
       const total = stats.specialClasses?.total || 0;
       const attended = stats.specialClasses?.attended || 0;
       const rate = stats.specialClasses?.rate || 0;
       return { total, attended, rate, classes: specialClasses };
     }
-    
+
     // type === 'guest'
     const total = stats.guestClasses?.total || 0;
     const attended = stats.guestClasses?.attended || 0;
@@ -85,9 +86,9 @@ export default function StudentClassDetailsModal({
     return { total, attended, rate, classes: guestClasses };
   };
 
-  const mainStats = getStats('main');
-  const specialStats = getStats('special');
-  const guestStats = getStats('guest');
+  const mainStats = getStats("main");
+  const specialStats = getStats("special");
+  const guestStats = getStats("guest");
 
   const renderClassTable = (classes: any[], type: string) => {
     if (classes.length === 0) {
@@ -106,66 +107,104 @@ export default function StudentClassDetailsModal({
       <div className="border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="">
               <tr className="border-b">
-                <th className="text-left py-3 px-4 font-medium text-gray-700">SL</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Class Name</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Date</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Session Type</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Marked At</th>
+                <th className="text-left py-3 px-4 font-medium">
+                  SL
+                </th>
+                <th className="text-left py-3 px-4 font-medium">
+                  Class Name
+                </th>
+                <th className="text-left py-3 px-4 font-medium">
+                  Session Type
+                </th>
+                <th className="text-left py-3 px-4 font-medium">
+                  Date
+                </th>
+                
+                <th className="text-left py-3 px-4 font-medium">
+                  Status
+                </th>
+                <th className="text-left py-3 px-4 font-medium">
+                  Marked At
+                </th>
               </tr>
             </thead>
             <tbody>
               {classes.map((record: any, index: number) => (
-                <tr key={record._id || index} className="border-b hover:bg-gray-50 transition-colors">
+                <tr
+                  key={record._id || index}
+                  className="border-b hover:bg-gray-50 transition-colors"
+                >
                   <td className="py-3 px-4 font-medium">{index + 1}</td>
                   <td className="py-3 px-4">
                     <div className="font-medium">{record.className}</div>
                     {record.batchId && (
-                      <div className="text-xs text-gray-500">Batch: {record.batchId}</div>
+                      <div className="text-xs text-gray-500">
+                        Batch: {record.batchId}
+                      </div>
                     )}
+                  </td>
+                   <td className="py-3 px-4">
+                    <Badge
+                      className="capitalize"
+                      variant={
+                        record.sessionType === "regular"
+                          ? "default"
+                          : record.sessionType === "problemSolving"
+                          ? "secondary"
+                          : record.sessionType === "practice"
+                          ? "outline"
+                          : record.sessionType === "special"
+                          ? "destructive"
+                          : "secondary"
+                      }
+                    >
+                      {record.sessionType}
+                    </Badge>
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-gray-400" />
                       <div>
                         <div className="font-medium">
-                          {record.date ? format(new Date(record.date), "MMM d, yyyy") : "N/A"}
+                          {record.date
+                            ? format(new Date(record.date), "MMM d, yyyy")
+                            : "N/A"}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {record.date ? format(new Date(record.date), "EEEE") : ""}
+                          {record.date
+                            ? format(new Date(record.date), "EEEE")
+                            : ""}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="py-3 px-4">
-                    <Badge className="capitalize" variant={
-                      record.sessionType === 'regular' ? 'default' :
-                      record.sessionType === 'problemSolving' ? 'secondary' :
-                      record.sessionType === 'practice' ? 'outline' :
-                      record.sessionType === 'special' ? 'destructive' :
-                      'secondary'
-                    }>
-                      {record.sessionType}
-                    </Badge>
-                  </td>
+                 
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
                       {record.attended ? (
                         <>
                           <CheckCircle className="h-5 w-5 text-green-500" />
                           <div>
-                            <span className="text-green-700 font-medium">Present</span>
-                            <div className="text-xs text-green-600">Attended</div>
+                            <span className="text-green-700 font-medium">
+                              Present
+                            </span>
+                            <div className="text-xs text-green-600">
+                              Attended
+                            </div>
                           </div>
                         </>
                       ) : (
                         <>
                           <XCircle className="h-5 w-5 text-red-500" />
                           <div>
-                            <span className="text-red-700 font-medium">Absent</span>
-                            <div className="text-xs text-red-600">Not Attended</div>
+                            <span className="text-red-700 font-medium">
+                              Absent
+                            </span>
+                            <div className="text-xs text-red-600">
+                              Not Attended
+                            </div>
                           </div>
                         </>
                       )}
@@ -176,10 +215,14 @@ export default function StudentClassDetailsModal({
                       <Clock className="h-4 w-4 text-gray-400" />
                       <div>
                         <div className="text-sm">
-                          {record.markedAt ? format(new Date(record.markedAt), "MMM d, yyyy") : "N/A"}
+                          {record.markedAt
+                            ? format(new Date(record.markedAt), "MMM d, yyyy")
+                            : "N/A"}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {record.markedAt ? format(new Date(record.markedAt), "h:mm a") : ""}
+                          {record.markedAt
+                            ? format(new Date(record.markedAt), "h:mm a")
+                            : ""}
                         </div>
                       </div>
                     </div>
@@ -189,12 +232,12 @@ export default function StudentClassDetailsModal({
             </tbody>
           </table>
         </div>
-        
+
         {/* Summary footer */}
-        <div className="bg-gray-50 px-4 py-3 border-t">
+        <div className="px-4 py-3 border-t">
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-600">
-              Showing {classes.length} class{classes.length !== 1 ? 'es' : ''}
+              Showing {classes.length} class{classes.length !== 1 ? "es" : ""}
             </div>
             <div className="text-sm font-medium">
               <span className="text-green-600">
@@ -212,10 +255,11 @@ export default function StudentClassDetailsModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose} >
-      <DialogContent className="max-h-[90vh] overflow-y-auto"
-    style={{ width: '1200px', maxWidth: '90vw' }}>
-        
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent
+        className="max-h-[90vh] overflow-y-auto"
+        style={{ width: "1200px", maxWidth: "90vw" }}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -223,7 +267,9 @@ export default function StudentClassDetailsModal({
                 <User className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <span className="text-xl">{student.name}'s Attendance Details</span>
+                <span className="text-xl">
+                  {student.name}'s Attendance Details
+                </span>
                 <DialogDescription className="mt-1 flex items-center gap-4">
                   <span>{student.email}</span>
                   {student.phone && student.phone !== "N/A" && (
@@ -242,35 +288,44 @@ export default function StudentClassDetailsModal({
 
         <div className="space-y-6">
           {/* Student Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 border border-blue-200">
+          {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-xl p-5 border border-blue-200">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
                   <BookOpen className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
                   <p className="font-medium text-blue-800">Main Classes</p>
-                  <p className="text-xs text-blue-600">Regular, Problem Solving, Practice</p>
+                  <p className="text-xs text-blue-600">
+                    Regular, Problem Solving, Practice
+                  </p>
                 </div>
               </div>
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-3xl font-bold text-blue-900">
-                    {mainStats.attended}<span className="text-xl text-blue-700">/{mainStats.total}</span>
+                    {mainStats.attended}
+                    <span className="text-xl text-blue-700">
+                      /{mainStats.total}
+                    </span>
                   </p>
                   <p className="text-sm text-blue-700">attended</p>
                 </div>
-                <Badge className={`text-lg font-bold px-3 py-1 ${
-                  mainStats.rate >= 80 ? "bg-green-100 text-green-800 border-green-200" :
-                  mainStats.rate >= 60 ? "bg-yellow-100 text-yellow-800 border-yellow-200" :
-                  "bg-red-100 text-red-800 border-red-200"
-                }`}>
+                <Badge
+                  className={`text-lg font-bold px-3 py-1 ${
+                    mainStats.rate >= 80
+                      ? "bg-green-100 text-green-800 border-green-200"
+                      : mainStats.rate >= 60
+                      ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                      : "bg-red-100 text-red-800 border-red-200"
+                  }`}
+                >
                   {mainStats.rate.toFixed(1)}%
                 </Badge>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 border border-purple-200">
+            <div className="bg-linear-to-br from-purple-50 to-purple-100 rounded-xl p-5 border border-purple-200">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3">
                   <GraduationCap className="h-5 w-5 text-purple-600" />
@@ -283,21 +338,28 @@ export default function StudentClassDetailsModal({
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-3xl font-bold text-purple-900">
-                    {specialStats.attended}<span className="text-xl text-purple-700">/{specialStats.total}</span>
+                    {specialStats.attended}
+                    <span className="text-xl text-purple-700">
+                      /{specialStats.total}
+                    </span>
                   </p>
                   <p className="text-sm text-purple-700">attended</p>
                 </div>
-                <Badge className={`text-lg font-bold px-3 py-1 ${
-                  specialStats.rate >= 80 ? "bg-green-100 text-green-800 border-green-200" :
-                  specialStats.rate >= 60 ? "bg-yellow-100 text-yellow-800 border-yellow-200" :
-                  "bg-red-100 text-red-800 border-red-200"
-                }`}>
+                <Badge
+                  className={`text-lg font-bold px-3 py-1 ${
+                    specialStats.rate >= 80
+                      ? "bg-green-100 text-green-800 border-green-200"
+                      : specialStats.rate >= 60
+                      ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                      : "bg-red-100 text-red-800 border-red-200"
+                  }`}
+                >
                   {specialStats.rate.toFixed(1)}%
                 </Badge>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-5 border border-orange-200">
+            <div className="bg-linear-to-br from-orange-50 to-orange-100 rounded-xl p-5 border border-orange-200">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mr-3">
                   <UsersRound className="h-5 w-5 text-orange-600" />
@@ -310,21 +372,28 @@ export default function StudentClassDetailsModal({
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-3xl font-bold text-orange-900">
-                    {guestStats.attended}<span className="text-xl text-orange-700">/{guestStats.total}</span>
+                    {guestStats.attended}
+                    <span className="text-xl text-orange-700">
+                      /{guestStats.total}
+                    </span>
                   </p>
                   <p className="text-sm text-orange-700">attended</p>
                 </div>
-                <Badge className={`text-lg font-bold px-3 py-1 ${
-                  guestStats.rate >= 80 ? "bg-green-100 text-green-800 border-green-200" :
-                  guestStats.rate >= 60 ? "bg-yellow-100 text-yellow-800 border-yellow-200" :
-                  "bg-red-100 text-red-800 border-red-200"
-                }`}>
+                <Badge
+                  className={`text-lg font-bold px-3 py-1 ${
+                    guestStats.rate >= 80
+                      ? "bg-green-100 text-green-800 border-green-200"
+                      : guestStats.rate >= 60
+                      ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                      : "bg-red-100 text-red-800 border-red-200"
+                  }`}
+                >
                   {guestStats.rate.toFixed(1)}%
                 </Badge>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200">
+            <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mr-3">
                   <Calendar className="h-5 w-5 text-gray-600" />
@@ -338,40 +407,58 @@ export default function StudentClassDetailsModal({
                 <div>
                   <p className="text-3xl font-bold text-gray-900">
                     {student.attendanceStats?.totalAttended || 0}
-                    <span className="text-xl text-gray-700">/{student.attendanceStats?.totalClasses || 0}</span>
+                    <span className="text-xl text-gray-700">
+                      /{student.attendanceStats?.totalClasses || 0}
+                    </span>
                   </p>
                   <p className="text-sm text-gray-700">total attended</p>
                 </div>
-                <Badge className={`text-lg font-bold px-3 py-1 ${
-                  (student.attendanceStats?.overallRate || 0) >= 80 ? "bg-green-100 text-green-800 border-green-200" :
-                  (student.attendanceStats?.overallRate || 0) >= 60 ? "bg-yellow-100 text-yellow-800 border-yellow-200" :
-                  "bg-red-100 text-red-800 border-red-200"
-                }`}>
+                <Badge
+                  className={`text-lg font-bold px-3 py-1 ${
+                    (student.attendanceStats?.overallRate || 0) >= 80
+                      ? "bg-green-100 text-green-800 border-green-200"
+                      : (student.attendanceStats?.overallRate || 0) >= 60
+                      ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                      : "bg-red-100 text-red-800 border-red-200"
+                  }`}
+                >
                   {(student.attendanceStats?.overallRate || 0).toFixed(1)}%
                 </Badge>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Tabs for Class Types */}
-          <div className="bg-white rounded-xl border p-1">
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-              <TabsList className="grid grid-cols-3 h-12">
-                <TabsTrigger value="main" className="flex items-center gap-2 text-base font-medium">
+          <div className=" rounded-xl border p-1">
+            <Tabs
+              value={activeTab}
+              onValueChange={(v) => setActiveTab(v as any)}
+            >
+              <TabsList className="grid grid-cols-3 h-12 w-full">
+                <TabsTrigger
+                  value="main"
+                  className="flex items-center gap-2 text-base font-medium cursor-pointer"
+                >
                   <BookOpen className="h-5 w-5" />
                   Main Classes
                   <Badge variant="outline" className="ml-2">
                     {mainStats.classes.length}
                   </Badge>
                 </TabsTrigger>
-                <TabsTrigger value="special" className="flex items-center gap-2 text-base font-medium">
+                <TabsTrigger
+                  value="special"
+                  className="flex items-center gap-2 text-base font-medium cursor-pointer"
+                >
                   <GraduationCap className="h-5 w-5" />
                   Special Classes
                   <Badge variant="outline" className="ml-2">
                     {specialStats.classes.length}
                   </Badge>
                 </TabsTrigger>
-                <TabsTrigger value="guest" className="flex items-center gap-2 text-base font-medium">
+                <TabsTrigger
+                  value="guest"
+                  className="flex items-center gap-2 text-base font-medium cursor-pointer"
+                >
                   <UsersRound className="h-5 w-5" />
                   Guest Classes
                   <Badge variant="outline" className="ml-2">
@@ -394,60 +481,6 @@ export default function StudentClassDetailsModal({
                 </TabsContent>
               </div>
             </Tabs>
-          </div>
-
-          {/* Overall Performance Summary */}
-          <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl p-5 border border-primary/20">
-            <h4 className="font-semibold text-lg mb-4 text-primary flex items-center gap-2">
-              <User className="h-5 w-5" />
-              Overall Performance Summary
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-white rounded-lg p-4 border">
-                <p className="text-sm text-gray-600 mb-1">Total Classes</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {student.attendanceStats?.totalClasses || 0}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">All session types</p>
-              </div>
-              <div className="bg-white rounded-lg p-4 border">
-                <p className="text-sm text-gray-600 mb-1">Classes Attended</p>
-                <p className="text-2xl font-bold text-green-700">
-                  {student.attendanceStats?.totalAttended || 0}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {((student.attendanceStats?.totalAttended || 0) / (student.attendanceStats?.totalClasses || 1) * 100).toFixed(1)}% of total
-                </p>
-              </div>
-              <div className="bg-white rounded-lg p-4 border">
-                <p className="text-sm text-gray-600 mb-1">Attendance Rate</p>
-                <p className="text-2xl font-bold text-blue-700">
-                  {(student.attendanceStats?.overallRate || 0).toFixed(1)}%
-                </p>
-                <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full" 
-                    style={{ width: `${Math.min(student.attendanceStats?.overallRate || 0, 100)}%` }}
-                  ></div>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg p-4 border">
-                <p className="text-sm text-gray-600 mb-1">Current Status</p>
-                <div className="flex items-center gap-2">
-                  <Badge className={`text-base px-3 py-1.5 ${
-                    student.attendanceStats?.result === "Excellent" ? "bg-green-100 text-green-800 border-green-200" :
-                    student.attendanceStats?.result === "Good" ? "bg-blue-100 text-blue-800 border-blue-200" :
-                    student.attendanceStats?.result === "Average" ? "bg-yellow-100 text-yellow-800 border-yellow-200" :
-                    "bg-red-100 text-red-800 border-red-200"
-                  }`}>
-                    {student.attendanceStats?.result || "No Data"}
-                  </Badge>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  Based on attendance performance
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </DialogContent>

@@ -19,7 +19,7 @@ import Course from "@/pages/Course/Course";
 import CouponList from "@/pages/Coupon/CouponList";
 import CreateCoupon from "@/pages/Coupon/new/NewCoupon";
 import AttendanceList from "@/pages/Attendence/AttendanceList";
-import CreateAttendance from "@/pages/Attendence/new/CreateAttendance";
+// import CreateAttendance from "@/pages/Attendence/new/CreateAttendance";
 import UserList from "@/pages/Users/Users/UserList";
 import AdminList from "@/pages/Users/Admin/AdminList";
 import TeacherList from "@/pages/Users/Teacher/TeacherList";
@@ -29,7 +29,7 @@ import SeminarFormPage from "@/pages/Seminar/SeminarFormPage/SeminarFormPage";
 import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
 import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
 import PDF from "@/pages/PDF/PDF";
-import BatchDetailsPage from "@/pages/Attendence/BatchDetailsPage";
+import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -142,14 +142,14 @@ const router = createBrowserRouter([
         path: "attendance",
         element: <AttendanceList />,
       },
-      {
-        path: "attendance/new",
-        element: <CreateAttendance />,
-      },
-      {
-        path: "attendance/edit/:id",
-        element: <CreateAttendance />,
-      },
+      // {
+      //   path: "attendance/new",
+      //   element: <CreateAttendance />,
+      // },
+      // {
+      //   path: "attendance/edit/:id",
+      //   element: <CreateAttendance />,
+      // },
       {
         path: "attendance/batches",
         element: <BatchAttendanceDashboard />,
