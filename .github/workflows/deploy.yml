@@ -23,24 +23,20 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            echo "Starting React deployment..."
+            echo "Starting Vite React deployment..."
 
-            # Go to project folder
-            cd /var/www/html/craft/admin || exit
+            cd /var/www/html/craft/admin || exit 1
 
-            # Pull latest code
             git fetch --all
             git reset --hard origin/main
 
-            # Install dependencies and build React
-            npm install
+            rm -rf dist
+
+            npm ci
             npm run build
 
-            # Replace old build folder with new one
-            sudo rm -rf /var/www/html/craft/admin/build
-            mv build /var/www/html/craft/admin/
+            chown -R www-data:www-data dist
 
-            # Reload NGINX to apply changes
-            sudo systemctl restart nginx
+            systemctl reload nginx
 
             echo "Deployment completed successfully!"
