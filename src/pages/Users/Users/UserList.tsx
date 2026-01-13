@@ -14,14 +14,12 @@ export default function UsersList() {
   const [loading, setLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const navigate = useNavigate();
-  const currentRole = "user";
+  const currentRole = "student";
 
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
 
-      // Fetch all users (no role filter)
-      // const url = `${import.meta.env.VITE_API_URL}/users`;
       const url = `${import.meta.env.VITE_API_URL}/users?role=${currentRole}`;
 
       const response = await fetch(url, {
@@ -88,7 +86,7 @@ export default function UsersList() {
       <TableTopBar
         title="All Users"
         linkTitle="Add New User"
-        href="/users/new" // General user creation
+        href="/users/new"
         data={users}
         model="User"
         showImport={false}

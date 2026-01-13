@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import {
@@ -21,7 +20,6 @@ import {
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-// import logo from "../../public/logo.png";
 import {
   Sidebar,
   SidebarContent,
@@ -32,7 +30,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-
+import { useCurrentUserQuery } from "@/redux/features/auth/user.api";
 
 const navData = [
   {
@@ -74,7 +72,7 @@ const navData = [
     url: "/seminar",
     icon: Megaphone,
     isActive: false,
-  }, 
+  },
   {
     title: "Courses",
     url: "#",
@@ -86,7 +84,7 @@ const navData = [
         url: "/courses",
         isActive: false,
       },
-      
+
       {
         title: "Course Batch",
         url: "/course-batches",
@@ -99,71 +97,80 @@ const navData = [
     url: "coupons",
     icon: Percent,
     isActive: false,
-    
   },
   {
     title: "Attendance",
     url: "attendance",
     icon: Hand,
-    
   },
   {
     title: "PDF",
     url: "pdf",
-    icon: FileText, 
-    
+    icon: FileText,
   },
   {
-      title: "Users",
-      icon: Users,
-      isActive: false,
-      items: [
-        {
-          title: "Users",
-          url: "/users",
-          icon: User,
-          isActive: false,
-        },
-        {
-          title: "Admins",
-          url: "/admin",
-          icon: Shield,
-          isActive: false,
-        },
-        {
-          title: "Teachers",
-          url: "/teacher",
-          icon: GraduationCap,
-          isActive: false,
-        },
-      ],
-    },
+    title: "Users",
+    icon: Users,
+    isActive: false,
+    items: [
+      {
+        title: "Users",
+        url: "/users",
+        icon: User,
+        isActive: false,
+      },
+      {
+        title: "Admins",
+        url: "/admin",
+        icon: Shield,
+        isActive: false,
+      },
+      {
+        title: "Teachers",
+        url: "/teacher",
+        icon: GraduationCap,
+        isActive: false,
+      },
+    ],
+  },
   {
     title: "Contact",
     url: "#",
     icon: Contact,
     isActive: false,
   },
- 
+
   {
     title: "Database Backup",
-    url: "/design",
+    url: "#",
     icon: Database,
     isActive: false,
   },
 ];
 
-const userData = {
-  name: "Craft Skills",
-  email: "craft@gmail.com",
-  avatar: "/logo.png",
-};
+// const userData = {
+//   name: "Craft Skills",
+//   email: "craft@gmail.com",
+//   avatar: "/logo.png",
+// };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
   const [navItems, setNavItems] = React.useState(() =>
     initializeActiveStates(navData, location.pathname)
   );
+
+  React.useEffect(() => {
+    setNavItems((prevNav) => updateActiveStates(prevNav, location.pathname));
+  }, [location.pathname]);
+
+  const { data: currentUser } = useCurrentUserQuery(undefined);
+
+  const userData = {
+    name: currentUser?.name || "User",
+    email: currentUser?.email || "",
+    avatar: currentUser?.avatar || "/logo.png",
+  };
 
   // Update active states when route changes
   React.useEffect(() => {

@@ -2,7 +2,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-// import logo from "../../public/CHARTIFICATE-FINAL02.webp";
 import AppForm from "./FormInputs/AppForm";
 import TextInput from "./FormInputs/TextInput";
 import SubmitButton from "./FormInputs/SubmitButton";

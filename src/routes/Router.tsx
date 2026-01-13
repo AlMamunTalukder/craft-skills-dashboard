@@ -47,100 +47,123 @@ const router = createBrowserRouter([
         <Main />
       </ProtectedRoute>
     ),
+    handle: { breadcrumb: "Dashboard" },
     children: [
       {
         path: "dashboard",
         element: <Home />,
+        handle: { breadcrumb: "Dashboard" },
       },
       {
         path: "site-content",
         element: <SiteContent />,
+        handle: { breadcrumb: "Site Content" },
       },
       {
         path: "sitecontent/update",
         element: <UpdateSiteContentPage />,
+        handle: { breadcrumb: "Update Site Content" },
       },
       {
         path: "banner",
         element: <Banner />,
+        handle: { breadcrumb: "Banner" },
       },
       {
         path: "banner/update",
         element: <UpdateBanner />,
+        handle: { breadcrumb: "Update Banner" },
       },
       {
         path: "class-schedule",
         element: <ClassSchedule />,
+          handle: { breadcrumb: "Class Schedule" },
       },
       {
         path: "class-schedule/update",
         element: <UpdateClassSchedule />,
+          handle: { breadcrumb: "Update Class Schedule" },
       },
       // Seminar
-      {
+       {
         path: "seminar",
         element: <SeminarList />,
+        handle: { breadcrumb: "Seminars" },
       },
       {
         path: "seminar/new",
         element: <SeminarFormPage />,
+        handle: { breadcrumb: "Create Seminar" },
       },
       {
         path: "seminar/update/:id",
         element: <SeminarFormPage />,
+        handle: { breadcrumb: "Update Seminar" },
       },
       {
         path: "seminar/details/:id",
         element: <SeminarDetailsPage />,
+        handle: { breadcrumb: "Seminar Details" },
       },
       // course
       {
         path: "courses",
         element: <CourseList />,
+        handle: { breadcrumb: "CourseList" },
       },
       {
         path: "courses/new",
         element: <Course />,
+        handle: { breadcrumb: "courses" },
       },
       {
         path: "courses/edit/:id",
         element: <Course />,
+        handle: { breadcrumb: "courses" },
       },
       // course-batch
       {
         path: "course-batches",
         element: <BatchList />,
+        handle: { breadcrumb: "course-batches" },
       },
       {
         path: "course-batches/new",
         element: <CreateBatch />,
+        handle: { breadcrumb: "course-batches" },
       },
       {
         path: "course-batches/edit/:id",
         element: <UpdateBatch />,
+        handle: { breadcrumb: "course-batches" },
       },
       {
         path: "course-batches/details/:id",
         element: <CourseBatchDetails />,
+        handle: { breadcrumb: "course-batches" },
       },
       // coupons
       {
         path: "coupons",
         element: <CouponList />,
+        handle: { breadcrumb: "coupons" },
       },
       {
         path: "coupons/new",
         element: <CreateCoupon />,
+        handle: { breadcrumb: "coupons" },
       },
       {
         path: "coupons/edit/:id",
         element: <CreateCoupon />,
+        handle: { breadcrumb: "coupons" },
       },
       // Attendance
       // In your router configuration
       {
         path: "attendance",
         element: <AttendanceList />,
+        handle: { breadcrumb: "attendance" },
       },
       // {
       //   path: "attendance/new",
@@ -153,12 +176,14 @@ const router = createBrowserRouter([
       {
         path: "attendance/batches",
         element: <BatchAttendanceDashboard />,
+        handle: { breadcrumb: "attendance" },
       },
 
       // path="/attendance/batch/:batchId" element={<BatchDetailsPage />} 
       {
         path: "attendance/batch/:batchId",
         element: <BatchDetailsPage />,
+        handle: { breadcrumb: "attendance" },
       },
 
     
@@ -166,28 +191,34 @@ const router = createBrowserRouter([
       {
         path: "users",
         element: <UserList />,
+        handle: { breadcrumb: "users" },
       },
       {
         path: "admin",
         element: <AdminList />,
+        handle: { breadcrumb: "admin" },
       },
       {
         path: "teacher",
         element: <TeacherList />,
+        handle: { breadcrumb: "teacher" },
       },
       {
         path: "teacher/new",
         element: <CreateUser />,
+        handle: { breadcrumb: "teacher" },
       },
 
       {
         path: "teacher/:id",
         element: <CreateUser />,
+        handle: { breadcrumb: "teacher" },
       },
       // PDF
       {
         path: "pdf",
         element: <PDF />,
+        handle: { breadcrumb: "PDF" },
       },
     ],
   },
