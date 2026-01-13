@@ -625,7 +625,7 @@ export default function BatchDetailsPageV2() {
       </div>
 
       {/* Debug Info (can be removed later) */}
-      {students.length > 0 && (
+      {/* {students.length > 0 && (
         <Card className="mb-6 bg-gray-50">
           <CardContent className="pt-4">
             <div className="text-sm text-gray-600">
@@ -651,7 +651,7 @@ export default function BatchDetailsPageV2() {
             </div>
           </CardContent>
         </Card>
-      )}
+      )} */}
 
       {/* Students Table */}
       <Card>
