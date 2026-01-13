@@ -88,7 +88,7 @@ export default function ErrorPage({ status, message }: ErrorPageProps) {
         <CardContent>
           <div className="bg-gray-50 rounded-lg p-4">
             <p className="text-sm text-gray-600 mb-2">Error Details:</p>
-            <code className="text-xs text-gray-800 break-words">
+            <code className="text-xs text-gray-800 wrap-break-word">
               {error instanceof Error ? error.stack : JSON.stringify(error, null, 2)}
             </code>
           </div>

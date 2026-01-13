@@ -148,14 +148,17 @@ export const userColumns = (
 
       if (!userId) return null;
 
+      const isTeacher = user.role === "teacher";
+
       return (
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" asChild title="Edit">
-            <Link to={`/teacher/${userId}`}>
-              <Edit className="h-4 w-4" />
-            </Link>
-          </Button>
-
+          {isTeacher && (
+            <Button size="sm" variant="ghost" asChild title="Edit">
+              <Link to={`/teacher/${userId}`}>
+                <Edit className="h-4 w-4" />
+              </Link>
+            </Button>
+          )}
           <DeleteDialog
             onConfirm={() => onDelete(userId)}
             title="Delete User?"
