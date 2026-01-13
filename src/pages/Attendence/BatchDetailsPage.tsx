@@ -566,7 +566,7 @@ export default function BatchDetailsPageV2() {
       {/* Simple Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="pt-3">
             <div className="flex items-center">
               <div className="p-2 rounded-lg bg-blue-100 mr-3">
                 <Users className="h-5 w-5 text-blue-600" />
@@ -580,7 +580,7 @@ export default function BatchDetailsPageV2() {
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="pt-3">
             <div className="flex items-center">
               <div className="p-2 rounded-lg bg-purple-100 mr-3">
                 <BookOpen className="h-5 w-5 text-purple-600" />
@@ -594,7 +594,7 @@ export default function BatchDetailsPageV2() {
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="pt-3">
             <div className="flex items-center">
               <div className="p-2 rounded-lg bg-green-100 mr-3">
                 <GraduationCap className="h-5 w-5 text-green-600" />
@@ -608,7 +608,7 @@ export default function BatchDetailsPageV2() {
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="pt-3">
             <div className="flex items-center">
               <div className="p-2 rounded-lg bg-orange-100 mr-3">
                 <UsersRound className="h-5 w-5 text-orange-600" />
@@ -624,34 +624,7 @@ export default function BatchDetailsPageV2() {
         </Card>
       </div>
 
-      {/* Debug Info (can be removed later) */}
-      {/* {students.length > 0 && (
-        <Card className="mb-6 bg-gray-50">
-          <CardContent className="pt-4">
-            <div className="text-sm text-gray-600">
-              <p>Debug Info:</p>
-              <ul className="list-disc pl-5 mt-2">
-                <li>Total students in batch: {students.length}</li>
-                <li>Total attendance records: {attendanceData.length}</li>
-                <li>
-                  Students with attendance data:{" "}
-                  {
-                    students.filter((s) => s.attendanceStats.totalClasses > 0)
-                      .length
-                  }
-                </li>
-                <li>
-                  Sample student IDs:{" "}
-                  {students
-                    .slice(0, 3)
-                    .map((s) => s._id)
-                    .join(", ")}
-                </li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-      )} */}
+   
 
       {/* Students Table */}
       <Card>
