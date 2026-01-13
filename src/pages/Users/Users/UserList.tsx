@@ -3,8 +3,8 @@ import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+// import { Button } from "@/components/ui/button";
+// import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { userColumns } from "../Column";
 import TableTopBar from "@/pages/Tables/TableTopBar";
@@ -13,7 +13,7 @@ export default function UsersList() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const currentRole = "student";
 
   const fetchUsers = useCallback(async () => {
@@ -85,8 +85,8 @@ export default function UsersList() {
     <div className="container mx-auto py-6">
       <TableTopBar
         title="All Users"
-        linkTitle="Add New User"
-        href="/users/new"
+        linkTitle=""
+        href=""
         data={users}
         model="User"
         showImport={false}
@@ -103,9 +103,9 @@ export default function UsersList() {
           ) : users.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500">No users found.</p>
-              <Button onClick={() => navigate("/users/new")} className="mt-4">
+              {/* <Button onClick={() => navigate("/users/new")} className="mt-4">
                 Add New User
-              </Button>
+              </Button> */}
             </div>
           ) : (
             <DataTable data={users} columns={columns} searchable={true} />

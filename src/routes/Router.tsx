@@ -23,7 +23,7 @@ import AttendanceList from "@/pages/Attendence/AttendanceList";
 import UserList from "@/pages/Users/Users/UserList";
 import AdminList from "@/pages/Users/Admin/AdminList";
 import TeacherList from "@/pages/Users/Teacher/TeacherList";
-import CreateUser from "@/pages/Users/Teacher/CreateUser";
+import CreateUser from "@/pages/Users/Teacher/Teacher";
 import CourseBatchDetails from "@/pages/CourseBatch/details/CourseBatchDetails";
 import SeminarFormPage from "@/pages/Seminar/SeminarFormPage/SeminarFormPage";
 import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";

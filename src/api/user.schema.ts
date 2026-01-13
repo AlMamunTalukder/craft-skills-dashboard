@@ -4,16 +4,10 @@ import { z } from 'zod';
 
 // Create base schema
 const userBaseSchema = {
-  firstName: z
+ name: z
     .string()
     .min(1, 'First name is required')
     .max(50, 'First name must not exceed 50 characters')
-    .trim(),
-
-  lastName: z
-    .string()
-    .min(1, 'Last name is required')
-    .max(50, 'Last name must not exceed 50 characters')
     .trim(),
 
   email: z
@@ -43,11 +37,7 @@ const userBaseSchema = {
   
   status: z.enum(['active', 'inactive', 'banned']),
   
-  // image: z
-  //   .string()
-  //   .url('Invalid image URL')
-  //   .optional()
-  //   .or(z.literal('')),
+
 };
 
 // For form submission - with validation
@@ -59,9 +49,9 @@ export const userSchema = z.object(userBaseSchema)
 
 // For form initialization - all fields optional
 export const userFormInitSchema = z.object({
+  _id: z.string().optional(),
   ...userBaseSchema,
-  firstName: userBaseSchema.firstName.optional(),
-  lastName: userBaseSchema.lastName.optional(),
+  name: userBaseSchema.name.optional(),
   role: userBaseSchema.role.optional(),
   status: userBaseSchema.status.optional(),
 });
