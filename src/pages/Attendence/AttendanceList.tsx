@@ -30,7 +30,7 @@ export default function BatchAttendanceDashboard() {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/attendances/batch-stats-public`,
         {
-          credentials: "include", // Important for cookies
+          credentials: "include", 
         }
       );
 
@@ -77,7 +77,6 @@ export default function BatchAttendanceDashboard() {
       const batchesResult = await batchesResponse.json();
 
       if (batchesResult.success) {
-        // Calculate basic stats without attendance
         const basicBatches = batchesResult.data.map((batch: any) => ({
           ...batch,
           attendanceStats: {
