@@ -1,4 +1,4 @@
-// Updated BatchDetailsPageV2.tsx with correct attendance filtering
+// src/pages/Attendance/BatchDetailsPageV2.tsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,13 +8,26 @@ import {
   Users,
   BookOpen,
   GraduationCap,
-  UsersRound,
   Eye,
+  MoreVertical,
+  CheckCircle,
+  AlertCircle,
+  Star,
+  TrendingUp,
 } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import StudentClassDetailsModal from "../StudentDetailsModal/StudentClassDetailsModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 export default function BatchDetailsPageV2() {
   const { batchId } = useParams();
@@ -28,6 +41,7 @@ export default function BatchDetailsPageV2() {
     "main"
   );
   const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
+  const [updatingResult, setUpdatingResult] = useState<string | null>(null);
 
   useEffect(() => {
     if (batchId) {
@@ -35,6 +49,144 @@ export default function BatchDetailsPageV2() {
     }
   }, [batchId]);
 
+  // Helper function to calculate result based on overall rate
+  const calculateResult = (overallRate: number) => {
+    if (overallRate >= 90) return "excellent";
+    if (overallRate >= 80) return "very good";
+    if (overallRate >= 70) return "good";
+    if (overallRate >= 60) return "average";
+    return "needs improvement";
+  };
+
+  const updateStudentResult = async (studentId: string, result: string) => {
+    try {
+      setUpdatingResult(studentId);
+      console.log(`Updating result for student ${studentId} to ${result}`);
+
+      // Find the admission ID for this student
+      const student = students.find((s) => s._id === studentId);
+
+      if (!student) {
+        throw new Error("Student not found in local state");
+      }
+
+      // Get admission ID - check if student has admissionId or if we need to find it
+      let admissionId = student.admissionId;
+
+      // If no admissionId, try to find admission by matching email/phone
+      if (!admissionId && batchId) {
+        console.log(
+          "No admissionId found, trying to find admission by student details..."
+        );
+
+        // Get all admissions for this batch
+        const admissionsResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/admissions/batch/${batchId}`,
+          {
+            credentials: "include",
+          }
+        );
+
+        if (admissionsResponse.ok) {
+          const admissionsResult = await admissionsResponse.json();
+          if (admissionsResult.success && admissionsResult.data.length > 0) {
+            // Find admission by matching email or phone
+            const matchingAdmission = admissionsResult.data.find(
+              (admission: any) =>
+                (student.email && admission.email === student.email) ||
+                (student.phone && admission.phone === student.phone)
+            );
+
+            if (matchingAdmission) {
+              admissionId = matchingAdmission._id;
+              console.log(`Found matching admission: ${admissionId}`);
+            }
+          }
+        }
+      }
+
+      // If we have an admission ID, update in backend
+      if (admissionId) {
+        const updateResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/admissions/${admissionId}/result`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ result }),
+          }
+        );
+
+        if (updateResponse.ok) {
+          const updateResult = await updateResponse.json();
+          if (updateResult.success) {
+            // Update local state
+            setStudents((prevStudents) =>
+              prevStudents.map((s) =>
+                s._id === studentId ? { ...s, result, admissionId } : s
+              )
+            );
+
+            // Save to localStorage as backup
+            if (batchId) {
+              localStorage.setItem(
+                `student_result_${batchId}_${studentId}`,
+                result
+              );
+            }
+
+            toast.success(`Result updated to ${result}`);
+            return true;
+          }
+        } else {
+          console.log("Backend update failed, falling back to local storage");
+        }
+      }
+
+      // Fallback: Update local state and save to localStorage
+      setStudents((prevStudents) =>
+        prevStudents.map((s) => (s._id === studentId ? { ...s, result } : s))
+      );
+
+      // Save to localStorage for persistence
+      if (batchId) {
+        localStorage.setItem(`student_result_${batchId}_${studentId}`, result);
+      }
+
+      toast.success(
+        `Result set to ${result} ${
+          admissionId ? "" : "(saved locally, no admission record found)"
+        }`
+      );
+
+      return true;
+    } catch (error: any) {
+      console.error("Error updating student result:", error);
+      toast.error("Failed to update result");
+      return false;
+    } finally {
+      setUpdatingResult(null);
+    }
+  };
+
+  // Add this useEffect to load saved results from localStorage
+  useEffect(() => {
+    if (!batchId || students.length === 0) return;
+
+    const loadSavedResults = () => {
+      const updatedStudents = students.map((student) => {
+        const key = `student_result_${batchId}_${student._id}`;
+        const savedResult = localStorage.getItem(key);
+        return savedResult ? { ...student, result: savedResult } : student;
+      });
+
+      setStudents(updatedStudents);
+    };
+
+    loadSavedResults();
+  }, [students.length, batchId]);
   const loadSimpleData = async () => {
     try {
       setLoading(true);
@@ -100,36 +252,42 @@ export default function BatchDetailsPageV2() {
       }
 
       // Step 4: Combine data with proper attendance calculation
+      // Step 4: Combine data with proper attendance calculation
       console.log("Step 4: Combining data...");
-      const studentsWithAttendance = admissionsData.map((student: any) => {
-        const studentId = student._id;
+      const studentsWithAttendance = admissionsData.map((admission: any) => {
+        // Use admission._id as the identifier for this student
+        // const studentId = admission._id;
 
-        // Filter attendance for this specific student
+        // Find attendance records by matching email or phone
         const studentAttendance = allAttendanceData.filter((record: any) => {
-          // Handle both possible structures of studentId
-          const recordStudentId =
-            record.studentId?._id?.toString() ||
-            record.studentId?.$oid ||
-            record.studentId?.toString();
+          // Check if the attendance record has matching email or phone
+          const recordEmail = record.studentId?.email || "";
+          const recordPhone = record.studentId?.phone || "";
 
-          console.log("Comparing:", {
-            studentId,
-            recordStudentId,
-            record: record.studentId,
-          });
+          const admissionEmail = admission.email || "";
+          const admissionPhone = admission.phone || "";
 
-          return recordStudentId === studentId;
+          return (
+            (recordEmail && admissionEmail && recordEmail === admissionEmail) ||
+            (recordPhone && admissionPhone && recordPhone === admissionPhone)
+          );
         });
 
         console.log(
-          `Student ${student.name} (${studentId}) has ${studentAttendance.length} attendance records`
+          `Student ${admission.name} (${admission._id}) has ${studentAttendance.length} attendance records`
         );
 
         // Calculate detailed statistics
         const stats = calculateStudentStats(studentAttendance);
+        const calculatedResult = calculateResult(stats.overallRate);
 
         return {
-          ...student,
+          _id: admission._id, // Use admission ID as the identifier
+          admissionId: admission._id, // Store admission ID separately
+          name: admission.name,
+          email: admission.email,
+          phone: admission.phone,
+          result: admission.result || calculatedResult,
           attendanceStats: stats,
           attendanceRecords: studentAttendance,
         };
@@ -169,6 +327,7 @@ export default function BatchDetailsPageV2() {
 
           if (studentAttendance.length > 0) {
             const stats = calculateStudentStats(studentAttendance);
+            const calculatedResult = calculateResult(stats.overallRate);
 
             // Try to get student details
             try {
@@ -184,6 +343,7 @@ export default function BatchDetailsPageV2() {
                 if (studentResult.success) {
                   studentsWithAttendance.push({
                     ...studentResult.data,
+                    result: studentResult.data.result || calculatedResult,
                     attendanceStats: stats,
                     attendanceRecords: studentAttendance,
                   });
@@ -205,6 +365,7 @@ export default function BatchDetailsPageV2() {
               name: studentName,
               email: studentEmail,
               phone: "N/A",
+              result: calculatedResult,
               attendanceStats: stats,
               attendanceRecords: studentAttendance,
             });
@@ -284,7 +445,6 @@ export default function BatchDetailsPageV2() {
       totalAttended: attendanceRecords.filter((a) => a.attended).length,
       overallRate: 0,
       presentations: 0,
-      result: "Pending",
     };
 
     // Calculate rates
@@ -304,19 +464,6 @@ export default function BatchDetailsPageV2() {
       stats.totalClasses > 0
         ? (stats.totalAttended / stats.totalClasses) * 100
         : 0;
-
-    // Determine result
-    if (stats.overallRate >= 80) {
-      stats.result = "Excellent";
-    } else if (stats.overallRate >= 60) {
-      stats.result = "Good";
-    } else if (stats.overallRate >= 40) {
-      stats.result = "Average";
-    } else if (stats.totalClasses > 0) {
-      stats.result = "Needs Improvement";
-    } else {
-      stats.result = "No Attendance";
-    }
 
     return stats;
   };
@@ -350,7 +497,7 @@ export default function BatchDetailsPageV2() {
           <div>
             <div className="font-medium">{student.name}</div>
             <div className="text-sm text-gray-500">{student.email}</div>
-            {student.phone && (
+            {student.phone && student.phone !== "N/A" && (
               <div className="text-xs text-gray-400">{student.phone}</div>
             )}
           </div>
@@ -479,9 +626,128 @@ export default function BatchDetailsPageV2() {
                 </span>
               </span>
             </div>
-            {/* <div className="text-xs text-center font-medium">
-              {stats?.result || "Pending"}
+            {/* <div className="text-xs text-center text-gray-500 mt-1">
+              {rate.toFixed(1)}%
             </div> */}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "result",
+      header: "Result",
+      cell: ({ row }: { row: any }) => {
+        const student = row.original;
+        const result = student.result || "pending";
+
+        // Define result styles
+        const getResultStyles = (result: string) => {
+          const styles = {
+            pending: {
+              bg: "bg-gray-100",
+              text: "text-gray-800",
+              icon: <AlertCircle className="h-3 w-3 mr-1" />,
+            },
+            good: {
+              bg: "bg-blue-100",
+              text: "text-blue-800",
+              icon: <TrendingUp className="h-3 w-3 mr-1" />,
+            },
+            "very good": {
+              bg: "bg-purple-100",
+              text: "text-purple-800",
+              icon: <Star className="h-3 w-3 mr-1" />,
+            },
+            excellent: {
+              bg: "bg-green-100",
+              text: "text-green-800",
+              icon: <CheckCircle className="h-3 w-3 mr-1" />,
+            },
+            "needs improvement": {
+              bg: "bg-yellow-100",
+              text: "text-yellow-800",
+              icon: <AlertCircle className="h-3 w-3 mr-1" />,
+            },
+            average: {
+              bg: "bg-orange-100",
+              text: "text-orange-800",
+              icon: <TrendingUp className="h-3 w-3 mr-1" />,
+            },
+          };
+
+          return styles[result as keyof typeof styles] || styles.pending;
+        };
+
+        const styles = getResultStyles(result);
+
+        return (
+          <div className="flex items-center gap-2">
+            <Badge
+              variant="outline"
+              className={`${styles.bg} ${styles.text} border-0 capitalize flex items-center`}
+            >
+              {styles.icon}
+              {result}
+            </Badge>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  disabled={updatingResult === student._id}
+                >
+                  <span className="sr-only">Open menu</span>
+                  {updatingResult === student._id ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <MoreVertical className="h-4 w-4" />
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Set Result</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => updateStudentResult(student._id, "pending")}
+                >
+                  <AlertCircle className="h-4 w-4 mr-2" />
+                  Pending
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    updateStudentResult(student._id, "needs improvement")
+                  }
+                >
+                  <AlertCircle className="h-4 w-4 mr-2" />
+                  Needs Improvement
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => updateStudentResult(student._id, "average")}
+                >
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Average
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => updateStudentResult(student._id, "good")}
+                >
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Good
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => updateStudentResult(student._id, "very good")}
+                >
+                  <Star className="h-4 w-4 mr-2" />
+                  Very Good
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => updateStudentResult(student._id, "excellent")}
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Excellent
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         );
       },
@@ -508,6 +774,27 @@ export default function BatchDetailsPageV2() {
     },
   ];
 
+  // Calculate result statistics
+  const calculateResultStats = () => {
+    const stats = {
+      pending: 0,
+      "needs improvement": 0,
+      average: 0,
+      good: 0,
+      "very good": 0,
+      excellent: 0,
+    };
+
+    students.forEach((student) => {
+      const result = student.result || "pending";
+      stats[result as keyof typeof stats]++;
+    });
+
+    return stats;
+  };
+
+  const resultStats = calculateResultStats();
+
   if (loading) {
     return (
       <div className="container mx-auto py-6 px-4">
@@ -515,7 +802,6 @@ export default function BatchDetailsPageV2() {
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
             <p className="text-gray-600">Loading batch details...</p>
-            {/* <p className="text-sm text-gray-500 mt-2">Batch ID: {batchId}</p> */}
           </div>
         </div>
       </div>
@@ -557,7 +843,7 @@ export default function BatchDetailsPageV2() {
         </div>
       </div>
 
-      {/* Simple Statistics */}
+      {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardContent className="pt-3">
@@ -604,14 +890,25 @@ export default function BatchDetailsPageV2() {
         <Card>
           <CardContent className="pt-3">
             <div className="flex items-center">
-              <div className="p-2 rounded-lg bg-orange-100 mr-3">
-                <UsersRound className="h-5 w-5 text-orange-600" />
+              <div className="p-2 rounded-lg bg-indigo-100 mr-3">
+                <Star className="h-5 w-5 text-indigo-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Active</p>
-                <p className="text-2xl font-bold">
-                  {batch.isActive ? "Yes" : "No"}
-                </p>
+                <p className="text-sm text-gray-600">Results Summary</p>
+                <div className="mt-1 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-600">Excellent:</span>
+                    <Badge variant="outline" className="text-xs">
+                      {resultStats.excellent}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-600">Very Good:</span>
+                    <Badge variant="outline" className="text-xs">
+                      {resultStats["very good"]}
+                    </Badge>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -621,7 +918,9 @@ export default function BatchDetailsPageV2() {
       {/* Students Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Student Attendance ({students.length} students)</CardTitle>
+          <CardTitle className="flex items-center justify-between">
+            <span>Student Attendance ({students.length} students)</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {students.length > 0 ? (
@@ -629,7 +928,7 @@ export default function BatchDetailsPageV2() {
               data={students}
               columns={studentColumns}
               searchable={true}
-              searchPlaceholder="Search students by name, email, or phone..."
+              searchPlaceholder="Search students by name, email, phone, or result..."
             />
           ) : (
             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
