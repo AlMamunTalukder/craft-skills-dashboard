@@ -3,8 +3,6 @@ import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-// import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { userColumns } from "../Column";
 import TableTopBar from "@/pages/Tables/TableTopBar";
@@ -103,9 +101,6 @@ export default function UsersList() {
           ) : users.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500">No users found.</p>
-              {/* <Button onClick={() => navigate("/users/new")} className="mt-4">
-                Add New User
-              </Button> */}
             </div>
           ) : (
             <DataTable data={users} columns={columns} searchable={true} />
