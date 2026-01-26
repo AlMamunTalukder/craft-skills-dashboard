@@ -12,6 +12,7 @@ type TableHeaderProps = {
   showButton?: boolean;
   showExport?: boolean;
   onStatusFilter?: (value: string | null) => void;
+  onAddClick?: () => void;
 };
 
 export default function TableTopBar({
@@ -19,6 +20,7 @@ export default function TableTopBar({
   href,
   linkTitle,
   showButton = true,
+  onAddClick,
 }: TableHeaderProps) {
   return (
     <div className="w-full bg-muted/50 border border-muted rounded-xl shadow-sm px-4 py-1 mb-6">
@@ -27,11 +29,25 @@ export default function TableTopBar({
 
         <div className="ml-auto flex items-center gap-2">
           {showButton && (
-            <Button size="sm" asChild className="h-8 gap-1">
-              <Link to={href}>
-                <PlusCircle className="h-3.5 w-3.5" /> {linkTitle}
-              </Link>
-            </Button>
+            <>
+              {onAddClick ? (
+                // Render a Button with onClick if onAddClick is provided
+                <Button 
+                  size="sm" 
+                  className="h-8 gap-1"
+                  onClick={onAddClick}
+                >
+                  <PlusCircle className="h-3.5 w-3.5" /> {linkTitle}
+                </Button>
+              ) : (
+                // Render a Link if no onAddClick
+                <Button size="sm" asChild className="h-8 gap-1">
+                  <Link to={href}>
+                    <PlusCircle className="h-3.5 w-3.5" /> {linkTitle}
+                  </Link>
+                </Button>
+              )}
+            </>
           )}
         </div>
       </div>

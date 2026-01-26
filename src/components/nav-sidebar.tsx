@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   LayoutGrid,
   Megaphone,
+  MessageSquareQuote,
   Percent,
   Shield,
   User,
@@ -58,11 +59,6 @@ const navData = [
       {
         title: "Class Schedule & Holidays",
         url: "/class-schedule",
-        isActive: false,
-      },
-      {
-        title: "Reviews",
-        url: "#",
         isActive: false,
       },
     ],
@@ -133,6 +129,13 @@ const navData = [
       },
     ],
   },
+
+  {
+    title: "Reviews",
+    url: "/review",
+    icon: MessageSquareQuote, 
+    isActive: false,
+  },
   {
     title: "Contact",
     url: "#",
@@ -148,16 +151,10 @@ const navData = [
   },
 ];
 
-// const userData = {
-//   name: "Craft Skills",
-//   email: "craft@gmail.com",
-//   avatar: "/logo.png",
-// };
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
   const [navItems, setNavItems] = React.useState(() =>
-    initializeActiveStates(navData, location.pathname)
+    initializeActiveStates(navData, location.pathname),
   );
 
   React.useEffect(() => {
@@ -187,7 +184,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ...subItem,
           isActive: false,
         })),
-      }))
+      })),
     );
   };
 
@@ -200,7 +197,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           ...subItem,
           isActive: subItem.title === subItemTitle && item.title === mainTitle,
         })),
-      }))
+      })),
     );
   };
 
@@ -248,7 +245,7 @@ function initializeActiveStates(navItems: any[], currentPath: string) {
   return navItems.map((item) => {
     const isMainActive = item.url === currentPath;
     const activeSubItem = item.items?.find(
-      (subItem: any) => subItem.url === currentPath
+      (subItem: any) => subItem.url === currentPath,
     );
 
     return {
@@ -267,7 +264,7 @@ function updateActiveStates(navItems: any[], currentPath: string) {
   return navItems.map((item) => {
     const isMainActive = item.url === currentPath;
     const activeSubItem = item.items?.find(
-      (subItem: any) => subItem.url === currentPath
+      (subItem: any) => subItem.url === currentPath,
     );
 
     return {

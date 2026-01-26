@@ -30,6 +30,7 @@ import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
 import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
 import PDF from "@/pages/PDF/PDF";
 import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDetailsPage";
+import Review from "@/pages/Review/Review";
 
 const router = createBrowserRouter([
   {
@@ -219,6 +220,12 @@ const router = createBrowserRouter([
         path: "pdf",
         element: <PDF />,
         handle: { breadcrumb: "PDF" },
+      },
+      // Review
+      {
+        path: "review",
+        element: <Review />,
+        handle: { breadcrumb: "Review" },
       },
     ],
   },
