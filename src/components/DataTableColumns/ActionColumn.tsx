@@ -37,9 +37,8 @@ type ActionColumnProps = {
   showDuplicate?: boolean;
   extraMutation?: any | null;
   extraActionLabel?: string;
-  // Add these new props for modal support
-  onEdit?: (data: any) => void; // Function to call when edit is clicked
-  useModalForEdit?: boolean; // Whether to use modal instead of link
+  onEdit?: (data: any) => void; 
+  useModalForEdit?: boolean; 
 };
 
 export default function ActionColumn({

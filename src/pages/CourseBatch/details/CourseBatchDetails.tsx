@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Users, ChevronLeft} from "lucide-react";
+import { Users, ChevronLeft } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { studentAdmissionColumns } from "./Column";
@@ -24,7 +24,7 @@ export default function CourseBatchDetails() {
 
         // Fetch batch details
         const batchResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/course-batches/${id}`
+          `${import.meta.env.VITE_API_URL}/course-batches/${id}`,
         );
         const batchResult = await batchResponse.json();
 
@@ -36,7 +36,7 @@ export default function CourseBatchDetails() {
 
         // Fetch admissions for this batch
         const admissionsResponse = await fetch(
-          `${import.meta.env.VITE_API_URL}/admissions/batch/${id}`
+          `${import.meta.env.VITE_API_URL}/admissions/batch/${id}`,
         );
         const admissionsResult = await admissionsResponse.json();
 
@@ -53,6 +53,29 @@ export default function CourseBatchDetails() {
 
     fetchData();
   }, [id]);
+
+  const handleDeleteStudent = async (id: string) => {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/admissions/${id}`,
+      { method: "DELETE" }
+    );
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new Error(result.message || "Delete failed");
+    }
+
+    toast.success("Student deleted successfully");
+
+    // remove from UI
+    setAdmissions((prev) => prev.filter((s) => s._id !== id));
+  } catch (err: any) {
+    toast.error(err.message || "Failed to delete student");
+  }
+};
+
 
   if (loading) {
     return (
@@ -83,11 +106,8 @@ export default function CourseBatchDetails() {
     );
   }
 
-
-
   return (
     <div className="container mx-auto py-6 px-4">
-      
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-4">
@@ -101,7 +121,6 @@ export default function CourseBatchDetails() {
             <h1 className="text-2xl font-bold">{batch.name}</h1>
           </div>
         </div>
-       
       </div>
 
       {/* Admissions Table */}
@@ -109,20 +128,22 @@ export default function CourseBatchDetails() {
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <CardTitle><p className="">Batch {batch.code} Details </p> </CardTitle>
+              <CardTitle>
+                <p className="">Batch {batch.code} Details </p>{" "}
+              </CardTitle>
 
               <p className="text-gray-600 mt-1">
                 {admissions.length} students registered in this batch
               </p>
             </div>
-           
           </div>
         </CardHeader>
         <CardContent>
+          
           {admissions.length > 0 ? (
             <DataTable
               data={admissions}
-              columns={studentAdmissionColumns}
+              columns={studentAdmissionColumns(handleDeleteStudent)}
               searchable={true}
               searchPlaceholder="Search students by name, email, or phone..."
             />

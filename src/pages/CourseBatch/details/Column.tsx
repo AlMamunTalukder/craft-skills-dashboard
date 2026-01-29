@@ -3,6 +3,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Mail, Phone, MessageSquare } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 
 export type AdmissionStudent = {
   _id: string;
@@ -12,20 +13,18 @@ export type AdmissionStudent = {
   phone: string;
   whatsapp?: string;
   courseId: string | { $oid: string };
-  batchId: string | { $oid: string }; 
+  batchId: string | { $oid: string };
   paymentMethod: string;
   senderNumber: string;
   couponCode?: string;
   amount: number;
-  discountAmount?: number;
-  status: "pending" | "approved" | "rejected" | "waitlisted";
   paymentStatus: "pending" | "partial" | "paid" | "cancelled";
   registeredAt: string | Date;
-  createdAt: string | Date;
-  updatedAt: string | Date;
 };
 
-export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
+export const studentAdmissionColumns = (
+  onDelete: (id: string) => Promise<void>,
+): ColumnDef<AdmissionStudent>[] => [
   {
     accessorKey: "sl",
     header: "SL",
@@ -34,9 +33,7 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
   {
     accessorKey: "name",
     header: "Student Name",
-    cell: ({ row }) => (
-      <div className="font-medium ">{row.original.name}</div>
-    ),
+    cell: ({ row }) => <div className="font-medium ">{row.original.name}</div>,
   },
   {
     accessorKey: "contact",
@@ -53,7 +50,6 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
             <Phone className="h-3 w-3 text-gray-500" />
             <span className="text-sm">{student.phone}</span>
           </div>
-         
         </div>
       );
     },
@@ -65,7 +61,6 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
       const student = row.original;
       return (
         <div className="space-y-1">
-         
           {student.whatsapp && (
             <div className="flex items-center gap-2">
               <MessageSquare className="h-3 w-3 text-green-500" />
@@ -78,18 +73,15 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
   },
   {
     accessorKey: "paymentInfo",
-    header: "Payment Info",
+    header: "Payment Number",
     cell: ({ row }) => {
       const student = row.original;
       return (
         <div className="space-y-1">
-          <div className="text-sm">
-            <span className="font-medium">Method:</span> {student.paymentMethod}
-          </div>
-          <div className="text-sm">
-            <span className="font-medium">Sender:</span> {student.senderNumber}
-          </div>
-          
+          {student.senderNumber}{" "}
+          <span className="text-xs text-gray-400">
+            ({student.paymentMethod})
+          </span>
         </div>
       );
     },
@@ -101,11 +93,8 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
       const student = row.original;
       return (
         <div className="space-y-1">
-          
           {student.couponCode && (
-            <div className="text-sm">
-              <span className="font-medium">Coupon:</span> {student.couponCode}
-            </div>
+            <div className="text-sm">{student.couponCode}</div>
           )}
         </div>
       );
@@ -115,29 +104,14 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
     accessorKey: "amount",
     header: "Amount",
     cell: ({ row }) => {
-      const student = row.original;
-      const total = student.amount;
-      const discount = student.discountAmount || 0;
-      const finalAmount = total - discount;
-
       return (
         <div className="space-y-1">
-          <div className="text-sm">
-            <span className="font-medium">Total:</span> ৳{total}
-          </div>
-          {discount > 0 && (
-            <div className="text-sm text-green-600">
-              <span className="font-medium">Discount:</span> -৳{discount}
-            </div>
-          )}
-          <div className="text-sm font-bold">
-            <span className="font-medium">Final:</span> ৳{finalAmount}
-          </div>
+          <div className="text-sm font-bold">৳{row.original.amount}</div>
         </div>
       );
     },
   },
-  
+
   {
     accessorKey: "paymentStatus",
     header: "Payment Status",
@@ -186,5 +160,21 @@ export const studentAdmissionColumns: ColumnDef<AdmissionStudent>[] = [
       }
     },
   },
-  
+
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => (
+      <ActionColumn
+        row={row}
+        editEndpoint={""}
+        model="student"
+        id={row.original._id}
+        showDetails={false}
+        showEdit={false}
+        showDelete={true}
+        deleteFunction={onDelete}
+      />
+    ),
+  },
 ];
