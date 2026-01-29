@@ -10,7 +10,7 @@ import PasswordResetModal from "./_components/PasswordResetModal";
 
 export const userColumns = (
   onDelete: (id: string) => Promise<void>,
-  refreshUsers: () => void
+  refreshUsers: () => void,
 ): ColumnDef<any>[] => [
   {
     accessorKey: "sl",
@@ -73,7 +73,21 @@ export const userColumns = (
     accessorKey: " batchNumber",
     header: " Batch",
     cell: ({ row }) => (
-      <div className="text-sm">{row.original.batchNumber || "-"}</div>
+      <div className="flex gap-1 flex-wrap">
+        {row.original.batchNumbers?.length ? (
+          row.original.batchNumbers.map((batch: string) => (
+            <Badge
+              key={batch}
+              variant="outline"
+              className="text-xs bg-muted text-foreground border-border dark:bg-muted/40 dark:text-foreground"
+            >
+              {batch}
+            </Badge>
+          ))
+        ) : (
+          <Badge variant="secondary">-</Badge>
+        )}
+      </div>
     ),
   },
   {
@@ -89,8 +103,8 @@ export const userColumns = (
               user.status === "active"
                 ? "default"
                 : user.status === "inactive"
-                ? "secondary"
-                : "destructive"
+                  ? "secondary"
+                  : "destructive"
             }
             className="capitalize"
           >
