@@ -1,143 +1,215 @@
- 
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar, Clock, BookOpen } from "lucide-react";
+import { Calendar, Clock, BookOpen, Hash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-interface ClassScheduleItem {
-  _id?: string;
+
+const CLASS_TYPES = [
+  { id: 1, label: "মেইন ক্লাস", placeholder: "শুক্র ও সোমবার" },
+  { id: 2, label: "প্রব্লেম সলভিং", placeholder: "শনি ও মঙ্গলবার" },
+  { id: 3, label: "প্রাক্টিস", placeholder: "রবি ও বুধবার" },
+  { id: 4, label: "প্রেজেন্টেশন রিভিউ", placeholder: "মঙ্গলবার" },
+  
+];
+
+type ClassItem = {
+  id: number;
   className: string;
   days: string;
   time: string;
-  holidays?: string;
-}
+};
+
+type CompleteSchedule = {
+  _id?: string;
+  weekNumber: number;
+  holidays: string;
+  schedules: ClassItem[];
+};
 
 interface Props {
-  initialValues: ClassScheduleItem[];
+  initialData?: CompleteSchedule;
+  mode?: 'create' | 'update';
 }
 
-export default function ClassScheduleForm({ initialValues }: Props) {
-  const [schedule, setSchedule] =
-    useState<ClassScheduleItem[]>(initialValues);
+export default function ClassScheduleForm({ 
+  initialData,
+  mode = 'update'
+}: Props) {
+  const [weekNumber, setWeekNumber] = useState<number>(1);
+  const [holidays, setHolidays] = useState<string>("");
+  
+  // Initialize with 13 empty classes
+  const [schedules, setSchedules] = useState<ClassItem[]>(
+    CLASS_TYPES.map(cls => ({
+      id: cls.id,
+      className: cls.label,
+      days: "",
+      time: "",
+    }))
+  );
+  
   const [loading, setLoading] = useState(false);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const handleChange = (
-    index: number,
-    field: keyof ClassScheduleItem,
-    value: string
-  ) => {
-    const updated = [...schedule];
-    updated[index] = { ...updated[index], [field]: value };
-    setSchedule(updated);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/class-schedule`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(schedule),
-        }
-      );
-
-        if (res.ok) {
-        // const result = await res.json();
-        toast.success("Banner content updated successfully.");
-        setTimeout(() => {
-          navigate("/class-schedule");
-        }, 1000);
-      } else {
-        // const errorData = await res.json();
-        throw new Error('Failed to update banner content');
+  useEffect(() => {
+    if (initialData) {
+      setWeekNumber(initialData.weekNumber || 1);
+      setHolidays(initialData.holidays || "");
+      
+      if (initialData.schedules && initialData.schedules.length > 0) {
+        // Merge existing data with our 13-class structure
+        const mergedSchedules = CLASS_TYPES.map(cls => {
+          const existing = initialData.schedules.find(s => 
+            s.className.includes(cls.label.split(" ")[0]) || 
+            s.id === cls.id
+          );
+          return {
+            id: cls.id,
+            className: existing?.className || cls.label,
+            days: existing?.days || "",
+            time: existing?.time || "",
+          };
+        });
+        setSchedules(mergedSchedules);
       }
-    } catch {
-      toast.error("Failed to update class schedule");
-    } finally {
-      setLoading(false);
     }
+  }, [initialData]);
+
+  const handleScheduleChange = (index: number, field: keyof ClassItem, value: string) => {
+    const updated = [...schedules];
+    updated[index] = { ...updated[index], [field]: value };
+    setSchedules(updated);
   };
+
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const scheduleData = {
+      weekNumber,
+      holidays,
+      schedules: schedules.filter(s => s.days.trim() && s.time.trim()),
+    };
+
+    let url = `${import.meta.env.VITE_API_URL}/class-schedule`;
+    let method = "PUT";
+
+    // If we have an ID and we're in update mode, use the specific endpoint
+    if (mode === 'update' && initialData?._id) {
+      url = `${import.meta.env.VITE_API_URL}/class-schedule/${initialData._id}`;
+      method = "PUT";
+    } else if (mode === 'create') {
+      method = "POST";
+    }
+
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(scheduleData),
+    });
+
+    if (res.ok) {
+      toast.success(mode === 'create' ? "Schedule created!" : "Schedule updated!");
+      navigate("/class-schedule");
+    } else {
+      const errorData = await res.json();
+      throw new Error(errorData.message);
+    }
+  } catch (error: any) {
+    toast.error(error.message || "Failed to save schedule");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {schedule.map((item, index) => (
-        <Card key={item._id || index}>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-purple-600" />
-              <CardTitle>{item.className || "Class Schedule"}</CardTitle>
-            </div>
-          </CardHeader>
+      {/* Week Info */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Hash className="w-5 h-5" />
+            <CardTitle>Week {weekNumber} Schedule</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Week Number</Label>
+            <Input
+              type="number"
+              value={weekNumber}
+              onChange={(e) => setWeekNumber(Number(e.target.value))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Holidays</Label>
+            <Input
+              value={holidays}
+              onChange={(e) => setHolidays(e.target.value)}
+              placeholder="সাপ্তাহিক ছুটিঃ বৃহস্পতিবার"
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label>Class Name</Label>
-              <Input
-                value={item.className}
-                onChange={(e) =>
-                  handleChange(index, "className", e.target.value)
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" /> Days
-              </Label>
-              <Input
-                value={item.days}
-                onChange={(e) =>
-                  handleChange(index, "days", e.target.value)
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="flex items-center gap-1">
-                <Clock className="w-4 h-4" /> Time
-              </Label>
-              <Input
-                value={item.time}
-                onChange={(e) =>
-                  handleChange(index, "time", e.target.value)
-                }
-              />
-            </div>
-
-            {index === 0 && (
-              <div className="space-y-2 md:col-span-2">
-                <Label>Holidays</Label>
-                <Input
-                  value={item.holidays || ""}
-                  onChange={(e) =>
-                    handleChange(index, "holidays", e.target.value)
-                  }
-                />
+      {/* 13 Classes Grid */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            <CardTitle>Weekly Classes</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {schedules.map((item, index) => (
+              <div key={item.id} className="space-y-3 p-4 border rounded-lg">
+                <Label className="font-semibold">{item.className}</Label>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    <Input
+                      value={item.days}
+                      onChange={(e) => handleScheduleChange(index, "days", e.target.value)}
+                      placeholder={CLASS_TYPES[index]?.placeholder || "Days"}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    <Input
+                      value={item.time}
+                      onChange={(e) => handleScheduleChange(index, "time", e.target.value)}
+                      placeholder="Time"
+                    />
+                  </div>
+                </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      ))}
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="flex justify-end pt-4">
-        <Button type="submit" disabled={loading} size="lg">
-          {loading ? "Updating..." : "Update Class Schedule"}
+      {/* Submit */}
+      <div className="flex justify-end gap-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => navigate("/class-schedule")}
+        >
+          Cancel
+        </Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? "Saving..." : mode === 'create' ? "Create Schedule" : "Update Schedule"}
         </Button>
       </div>
     </form>

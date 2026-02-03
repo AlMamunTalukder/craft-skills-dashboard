@@ -31,6 +31,7 @@ import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
 import PDF from "@/pages/PDF/PDF";
 import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDetailsPage";
 import Review from "@/pages/Review/Review";
+import AddSchedule from "@/pages/ClassSchedule/add/page";
 
 const router = createBrowserRouter([
   {
@@ -78,15 +79,23 @@ const router = createBrowserRouter([
       {
         path: "class-schedule",
         element: <ClassSchedule />,
-          handle: { breadcrumb: "Class Schedule" },
+        handle: { breadcrumb: "Class Schedule" },
       },
       {
-        path: "class-schedule/update",
-        element: <UpdateClassSchedule />,
-          handle: { breadcrumb: "Update Class Schedule" },
+        path: "class-schedule/add",
+        element: <AddSchedule />,
+        handle: { breadcrumb: "Update Class Schedule" },
       },
+      {
+        path: "class-schedule/edit/:id",
+        element: <UpdateClassSchedule />,
+        handle: { breadcrumb: "Update Class Schedule" },
+      },
+      //  <Route path="/schedules" element={<ScheduleList />} />
+      // <Route path="/schedules/new" element={<AddSchedule />} />
+      // <Route path="/schedules/edit/:id" element={<EditSchedule />} />
       // Seminar
-       {
+      {
         path: "seminar",
         element: <SeminarList />,
         handle: { breadcrumb: "Seminars" },
@@ -180,14 +189,13 @@ const router = createBrowserRouter([
         handle: { breadcrumb: "attendance" },
       },
 
-      // path="/attendance/batch/:batchId" element={<BatchDetailsPage />} 
+      // path="/attendance/batch/:batchId" element={<BatchDetailsPage />}
       {
         path: "attendance/batch/:batchId",
         element: <BatchDetailsPage />,
         handle: { breadcrumb: "attendance" },
       },
 
-    
       // Users
       {
         path: "users",
