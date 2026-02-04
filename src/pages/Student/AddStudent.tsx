@@ -61,7 +61,7 @@ export default function AddStudentPage() {
 
   const handleSubmitSuccess = () => {
     toast.success("Student added successfully!");
-    navigate("/dashboard/students");
+    navigate("/add-student");
   };
 
   if (loading) {
