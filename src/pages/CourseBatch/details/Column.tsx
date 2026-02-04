@@ -1,13 +1,11 @@
-// src/pages/CourseBatch/details/Column.tsx
 import type { ColumnDef } from "@tanstack/react-table";
-import { Mail, Phone, MessageSquare } from "lucide-react";
+import { Mail, Phone, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 
 export type AdmissionStudent = {
   _id: string;
-  id?: string;
   name: string;
   email: string;
   phone: string;
@@ -18,13 +16,26 @@ export type AdmissionStudent = {
   senderNumber: string;
   couponCode?: string;
   amount: number;
+  discountAmount?: number;
   paymentStatus: "pending" | "partial" | "paid" | "cancelled";
+  status: "pending" | "approved" | "rejected" | "waitlisted";
+  result?: string;
   registeredAt: string | Date;
+  facebook?: string;
+  occupation?: string;
+  address?: string;
+  notes?: string;
 };
 
-export const studentAdmissionColumns = (
-  onDelete: (id: string) => Promise<void>,
-): ColumnDef<AdmissionStudent>[] => [
+interface StudentAdmissionColumnsProps {
+  onDelete: (id: string) => Promise<void>;
+  onEdit?: (student: AdmissionStudent) => void;
+}
+
+export const studentAdmissionColumns = ({
+  onDelete,
+  onEdit,
+}: StudentAdmissionColumnsProps): ColumnDef<AdmissionStudent>[] => [
   {
     accessorKey: "sl",
     header: "SL",
@@ -33,7 +44,7 @@ export const studentAdmissionColumns = (
   {
     accessorKey: "name",
     header: "Student Name",
-    cell: ({ row }) => <div className="font-medium ">{row.original.name}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
   },
   {
     accessorKey: "contact",
@@ -44,7 +55,7 @@ export const studentAdmissionColumns = (
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <Mail className="h-3 w-3 text-gray-500" />
-            <span className="text-sm">{student.email}</span>
+            <span className="text-sm truncate">{student.email}</span>
           </div>
           <div className="flex items-center gap-2">
             <Phone className="h-3 w-3 text-gray-500" />
@@ -55,33 +66,18 @@ export const studentAdmissionColumns = (
     },
   },
   {
-    accessorKey: "whatsapp",
-    header: "Whatsapp",
+    accessorKey: "courseInfo",
+    header: "Course & Payment",
     cell: ({ row }) => {
       const student = row.original;
+      
+      
       return (
         <div className="space-y-1">
-          {student.whatsapp && (
-            <div className="flex items-center gap-2">
-              <MessageSquare className="h-3 w-3 text-green-500" />
-              <span className="text-sm">{student.whatsapp}</span>
-            </div>
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "paymentInfo",
-    header: "Payment Number",
-    cell: ({ row }) => {
-      const student = row.original;
-      return (
-        <div className="space-y-1">
-          {student.senderNumber}{" "}
-          <span className="text-xs text-gray-400">
-            ({student.paymentMethod})
-          </span>
+          
+          <div className="flex items-center gap-2">
+            <span className="text-sm">৳{student.amount.toLocaleString()}</span>
+          </div>
         </div>
       );
     },
@@ -92,55 +88,56 @@ export const studentAdmissionColumns = (
     cell: ({ row }) => {
       const student = row.original;
       return (
-        <div className="space-y-1">
-          {student.couponCode && (
-            <div className="text-sm">{student.couponCode}</div>
+        <div className="flex items-center gap-2">
+          {student.couponCode ? (
+            <>
+             
+              <Badge variant="outline" className="text-xs bg-green-50 dark:text-black">
+                 <Tag className="h-3 w-3 text-green-500" />{student.couponCode}
+              </Badge>
+             
+            </>
+          ) : (
+            <span className="text-gray-400 text-xs">No coupon</span>
           )}
         </div>
       );
     },
   },
   {
-    accessorKey: "amount",
-    header: "Amount",
+    accessorKey: "paymentInfo",
+    header: "Payment Details",
     cell: ({ row }) => {
+      const student = row.original;
+      const paymentMethodColors = {
+        BKASH: "bg-pink-100 text-pink-800",
+        NAGAD: "bg-green-100 text-green-800",
+        ROCKET: "bg-blue-100 text-blue-800",
+        CASH: "bg-yellow-100 text-yellow-800",
+      };
+      
+      
+
       return (
         <div className="space-y-1">
-          <div className="text-sm font-bold">৳{row.original.amount}</div>
+          <div className="flex items-center gap-2">
+            <Badge 
+              className={paymentMethodColors[student.paymentMethod as keyof typeof paymentMethodColors] || "bg-gray-100"}
+              variant="outline"
+            >
+              {student.senderNumber}
+              
+            </Badge>
+            
+          </div>
+          <div className="text-xs text-gray-500 truncate">
+            {student.paymentMethod}
+          </div>
         </div>
       );
     },
   },
 
-  {
-    accessorKey: "paymentStatus",
-    header: "Payment Status",
-    cell: ({ row }) => {
-      const paymentStatus = row.original.paymentStatus;
-      const statusConfig = {
-        pending: {
-          label: "Pending",
-          className: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
-        },
-        partial: {
-          label: "Partial",
-          className: "bg-orange-100 text-orange-800 hover:bg-orange-100",
-        },
-        paid: {
-          label: "Paid",
-          className: "bg-green-100 text-green-800 hover:bg-green-100",
-        },
-        cancelled: {
-          label: "Cancelled",
-          className: "bg-red-100 text-red-800 hover:bg-red-100",
-        },
-      };
-
-      const config = statusConfig[paymentStatus] || statusConfig.pending;
-
-      return <Badge className={config.className}>{config.label}</Badge>;
-    },
-  },
   {
     accessorKey: "registeredAt",
     header: "Registered",
@@ -160,21 +157,31 @@ export const studentAdmissionColumns = (
       }
     },
   },
-
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => (
-      <ActionColumn
-        row={row}
-        editEndpoint={""}
-        model="student"
-        id={row.original._id}
-        showDetails={false}
-        showEdit={false}
-        showDelete={true}
-        deleteFunction={onDelete}
-      />
-    ),
+    cell: ({ row }) => {
+      const student = row.original;
+      const studentId = student._id;
+
+      if (!studentId) return null;
+
+      return (
+        <div className="flex items-center gap-2">
+          <ActionColumn
+            row={row}
+            model="student"
+            editEndpoint={`/dashboard/students/edit/${studentId}`}
+            id={studentId}
+            deleteFunction={onDelete}
+            showDetails={false}
+            showEdit={true}
+            showDelete={true}
+            onEdit={onEdit ? () => onEdit(student) : undefined}
+            useModalForEdit={!!onEdit}
+          />
+        </div>
+      );
+    },
   },
 ];

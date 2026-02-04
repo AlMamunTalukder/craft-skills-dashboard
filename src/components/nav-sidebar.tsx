@@ -16,6 +16,7 @@ import {
   Percent,
   Shield,
   User,
+  UserPlus,
   Users,
 } from "lucide-react";
 
@@ -87,6 +88,12 @@ const navData = [
         isActive: false,
       },
     ],
+  },
+  {
+    title: "Add Student",
+    url: "/add-student",
+    icon: UserPlus,
+    isActive: false,
   },
   {
     title: "Coupons",

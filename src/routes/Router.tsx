@@ -32,6 +32,7 @@ import PDF from "@/pages/PDF/PDF";
 import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDetailsPage";
 import Review from "@/pages/Review/Review";
 import AddSchedule from "@/pages/ClassSchedule/add/page";
+import AddStudent from "@/pages/Student/AddStudent";
 
 const router = createBrowserRouter([
   {
@@ -152,6 +153,12 @@ const router = createBrowserRouter([
         element: <CourseBatchDetails />,
         handle: { breadcrumb: "course-batches" },
       },
+      // Add Student
+      {
+        path: "add-student",
+        element: <AddStudent />,
+        handle: { breadcrumb: "Add Student" },
+      },
       // coupons
       {
         path: "coupons",
@@ -207,6 +214,7 @@ const router = createBrowserRouter([
         element: <AdminList />,
         handle: { breadcrumb: "admin" },
       },
+      // teacher
       {
         path: "teacher",
         element: <TeacherList />,
