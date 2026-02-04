@@ -8,18 +8,13 @@ import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { studentAdmissionColumns } from "./Column";
 import { dashboardApi } from "@/lib/dashboard-api";
-import EditStudentModal from "@/pages/Student/EditStudentModal";
 
 export default function CourseBatchDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [batch, setBatch] = useState<any>(null);
   const [admissions, setAdmissions] = useState<any[]>([]);
-  const [courses, setCourses] = useState<any[]>([]);
-  const [batches, setBatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,14 +33,6 @@ export default function CourseBatchDetails() {
         // Fetch admissions for this batch
         const admissionsData = await dashboardApi.getAdmissionsByBatchId(id);
         setAdmissions(admissionsData);
-
-        // Fetch courses and batches for edit modal
-        const [coursesData, batchesData] = await Promise.all([
-          dashboardApi.getCourses(),
-          dashboardApi.getBatches(),
-        ]);
-        setCourses(coursesData);
-        setBatches(batchesData);
       } catch (error: any) {
         console.error("Error fetching data:", error);
         toast.error(error.message || "Failed to load batch details");
@@ -58,26 +45,8 @@ export default function CourseBatchDetails() {
   }, [id]);
 
   const handleDeleteStudent = async (id: string) => {
-  await dashboardApi.deleteAdmission(id);
-
-  // update UI
-  setAdmissions(prev => prev.filter(s => s._id !== id));
-};
-
-
-  const handleEdit = (student: any) => {
-    setSelectedStudent(student);
-    setIsEditModalOpen(true);
-  };
-
-  const handleEditSuccess = async () => {
-    // Refresh admissions data
-    try {
-      const admissionsData = await dashboardApi.getAdmissionsByBatchId(id!);
-      setAdmissions(admissionsData);
-    } catch (error) {
-      console.error("Error refreshing admissions:", error);
-    }
+    await dashboardApi.deleteAdmission(id);
+    setAdmissions(prev => prev.filter(s => s._id !== id));
   };
 
   const handleAddStudent = () => {
@@ -128,14 +97,8 @@ export default function CourseBatchDetails() {
           </Button>
           <div>
             <h1 className="text-2xl font-bold">{batch.name}</h1>
-            
           </div>
         </div>
-        
-        {/* <Button onClick={handleAddStudent} className="gap-2">
-          <PlusCircle className="h-4 w-4" />
-          Add Student to Batch
-        </Button> */}
       </div>
 
       {/* Admissions Table */}
@@ -143,12 +106,15 @@ export default function CourseBatchDetails() {
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              
               <CardTitle>{batch.code} Batch Students</CardTitle>
               <p className="text-gray-600 mt-1">
                 {admissions.length} students registered in this batch
               </p>
             </div>
+            <Button onClick={handleAddStudent} className="gap-2">
+              <PlusCircle className="h-4 w-4" />
+              Add Student to Batch
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -157,7 +123,6 @@ export default function CourseBatchDetails() {
               data={admissions}
               columns={studentAdmissionColumns({
                 onDelete: handleDeleteStudent,
-                onEdit: handleEdit,
               })}
               searchable={true}
               searchPlaceholder="Search students by name, email, or phone..."
@@ -179,18 +144,6 @@ export default function CourseBatchDetails() {
           )}
         </CardContent>
       </Card>
-
-      {/* Edit Student Modal */}
-      {selectedStudent && (
-        <EditStudentModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          student={selectedStudent}
-          courses={courses}
-          batches={batches}
-          onSuccess={handleEditSuccess}
-        />
-      )}
     </div>
   );
 }

@@ -1,13 +1,10 @@
+// src/pages/Student/AddStudentPage.tsx
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
-import { Loader2, ArrowLeft, UserPlus } from "lucide-react";
-import AddStudentForm from "@/components/Forms/AddStudentForm";
+import { Loader2 } from "lucide-react";
+import StudentForm from "@/components/Forms/StudentForm";
 
 export default function AddStudentPage() {
-  const navigate = useNavigate();
   const [courses, setCourses] = useState<any[]>([]);
   const [batches, setBatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,11 +56,6 @@ export default function AddStudentPage() {
     fetchData();
   }, []);
 
-  const handleSubmitSuccess = () => {
-    toast.success("Student added successfully!");
-    navigate("/add-student");
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -73,43 +65,11 @@ export default function AddStudentPage() {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate("/dashboard/students")}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Students
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Add New Student
-            </h1>
-            <p className="text-muted-foreground">
-              Manually register a student to any course batch
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UserPlus className="h-5 w-5" />
-            Student Registration Form
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AddStudentForm
-            courses={courses}
-            batches={batches}
-            onSuccess={handleSubmitSuccess}
-          />
-        </CardContent>
-      </Card>
-    </div>
+    <StudentForm
+      courses={courses}
+      batches={batches}
+      isEdit={false}
+      backLink="/dashboard/students"
+    />
   );
 }

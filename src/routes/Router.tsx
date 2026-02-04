@@ -33,6 +33,7 @@ import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDet
 import Review from "@/pages/Review/Review";
 import AddSchedule from "@/pages/ClassSchedule/add/page";
 import AddStudent from "@/pages/Student/AddStudent";
+import EditStudentPage from "@/pages/Student/EditStudentModal";
 
 const router = createBrowserRouter([
   {
@@ -157,6 +158,11 @@ const router = createBrowserRouter([
       {
         path: "add-student",
         element: <AddStudent />,
+        handle: { breadcrumb: "Add Student" },
+      },
+      {
+        path: "/students/edit/:id" ,
+        element: <EditStudentPage />,
         handle: { breadcrumb: "Add Student" },
       },
       // coupons

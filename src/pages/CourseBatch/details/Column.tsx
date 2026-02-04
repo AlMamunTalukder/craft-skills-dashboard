@@ -171,14 +171,13 @@ export const studentAdmissionColumns = ({
           <ActionColumn
             row={row}
             model="student"
-            editEndpoint={`/dashboard/students/edit/${studentId}`}
+            editEndpoint={`/students/edit/${studentId}`}
             id={studentId}
             deleteFunction={onDelete}
             showDetails={false}
             showEdit={true}
             showDelete={true}
-            onEdit={onEdit ? () => onEdit(student) : undefined}
-            useModalForEdit={!!onEdit}
+            // No onEdit or useModalForEdit props needed
           />
         </div>
       );
