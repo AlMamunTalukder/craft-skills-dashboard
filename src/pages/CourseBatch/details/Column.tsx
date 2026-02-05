@@ -34,7 +34,6 @@ interface StudentAdmissionColumnsProps {
 
 export const studentAdmissionColumns = ({
   onDelete,
-  onEdit,
 }: StudentAdmissionColumnsProps): ColumnDef<AdmissionStudent>[] => [
   {
     accessorKey: "sl",
