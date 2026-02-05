@@ -75,11 +75,9 @@ export default function SiteContentForm({ initialValues }: Props) {
         body: JSON.stringify(formData),
       });
 
-      // console.log('Update response status:', response.status);
+   
 
       if (response.ok) {
-        // const result = await response.json();
-        // console.log('Update successful:', result);
         toast.success("Site content updated successfully.");
         setTimeout(() => {
           navigate("/site-content");

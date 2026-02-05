@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -29,7 +28,6 @@ import {
   Briefcase,
   MapPin,
   Calculator,
-  CreditCard,
   Tag,
   AlertCircle,
   Loader2,
@@ -39,7 +37,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-// Types
+
 export interface StudentFormData {
   name: string;
   email: string;
@@ -134,7 +132,7 @@ export default function StudentForm({
     notes: "",
   });
 
-  // Initialize form with initialData when provided
+ 
   useEffect(() => {
     if (initialData) {
       setFormData({
