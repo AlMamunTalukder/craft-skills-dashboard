@@ -90,7 +90,7 @@ export default function CourseBatchDetails() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate("/dashboard/course-batches")}
+            onClick={() => navigate("/course-batches")}
           >
             <ChevronLeft className="h-4 w-4 mr-2" />
             Back
