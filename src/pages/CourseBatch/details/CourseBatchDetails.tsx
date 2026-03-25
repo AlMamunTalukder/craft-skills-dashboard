@@ -46,7 +46,7 @@ export default function CourseBatchDetails() {
 
   const handleDeleteStudent = async (id: string) => {
     await dashboardApi.deleteAdmission(id);
-    setAdmissions(prev => prev.filter(s => s._id !== id));
+    setAdmissions((prev) => prev.filter((s) => s._id !== id));
   };
 
   const handleAddStudent = () => {
@@ -74,7 +74,7 @@ export default function CourseBatchDetails() {
           <p className="text-gray-600 mb-6">
             The batch you're looking for doesn't exist.
           </p>
-          <Button onClick={() => navigate("/dashboard/course-batches")}>
+          <Button onClick={() => navigate("/course-batches")}>
             Back to Batches
           </Button>
         </div>

@@ -1,14 +1,10 @@
 // src/pages/Seminar/details/page.tsx
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  AlertCircle,
-  Users, 
-  ChevronLeft,
-} from "lucide-react";
+import { AlertCircle, Users, ChevronLeft } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { participantColumns } from "./columns";
@@ -46,7 +42,7 @@ export default function SeminarDetailsPage() {
         setLoading(false);
         return;
       }
-      
+
       try {
         setLoading(true);
         const response = await fetch(
@@ -61,9 +57,9 @@ export default function SeminarDetailsPage() {
         }
 
         const result = await response.json();
-        
+
         if (!result.success) {
-          throw new Error(result.message || 'Failed to fetch seminar');
+          throw new Error(result.message || "Failed to fetch seminar");
         }
 
         setSeminar(result.data);
@@ -78,8 +74,6 @@ export default function SeminarDetailsPage() {
 
     fetchSeminar();
   }, [id]);
-
- 
 
   if (loading) {
     return (
@@ -101,7 +95,9 @@ export default function SeminarDetailsPage() {
           <div className="text-center max-w-md">
             <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">Seminar Not Found</h2>
-            <p className="text-gray-600 mb-6">{error || "The seminar you're looking for doesn't exist."}</p>
+            <p className="text-gray-600 mb-6">
+              {error || "The seminar you're looking for doesn't exist."}
+            </p>
             <Button asChild>
               <Link to="/seminar">
                 <ChevronLeft className="mr-2 h-4 w-4" />
@@ -114,8 +110,6 @@ export default function SeminarDetailsPage() {
     );
   }
 
-  
-
   const participantCount = seminar.participants?.length || 0;
 
   return (
@@ -127,7 +121,7 @@ export default function SeminarDetailsPage() {
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Seminars
           </Link>
-        </Button>       
+        </Button>
       </div>
 
       {/* Participants Section */}
@@ -135,30 +129,34 @@ export default function SeminarDetailsPage() {
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <CardTitle className="text-2xl font-bold">{seminar.sl} Seninar Batch Participants Details</CardTitle>
+              <CardTitle className="text-2xl font-bold">
+                {seminar.sl} Seminar Batch Participants Details
+              </CardTitle>
               <p className="text-gray-600 mt-1">
-                {participantCount} registered participant{participantCount !== 1 ? 's' : ''}
+                {participantCount} registered participant
+                {participantCount !== 1 ? "s" : ""}
               </p>
             </div>
-            
-            
           </div>
         </CardHeader>
-        
+
         <CardContent>
           {participantCount > 0 ? (
-            <DataTable 
-              data={seminar.participants || []} 
-              columns={participantColumns} 
+            <DataTable
+              data={seminar.participants || []}
+              columns={participantColumns}
               searchable={true}
               searchPlaceholder="Search participants by name, email, or phone..."
             />
           ) : (
             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
               <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Participants Yet</h3>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                No Participants Yet
+              </h3>
               <p className="text-gray-500 max-w-md mx-auto">
-                No one has registered for this seminar yet. Participants will appear here once they register.
+                No one has registered for this seminar yet. Participants will
+                appear here once they register.
               </p>
             </div>
           )}
