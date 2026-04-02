@@ -1,3 +1,170 @@
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// import { ChevronRight, type LucideIcon } from "lucide-react";
+// import { useNavigate } from "react-router-dom";
+// import { useState } from "react";
+
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible";
+// import {
+//   SidebarGroup,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+//   SidebarMenuSub,
+//   SidebarMenuSubButton,
+//   SidebarMenuSubItem,
+// } from "@/components/ui/sidebar";
+
+// export function NavMain({
+//   items,
+//   onItemClick,
+//   onSubItemClick,
+// }: {
+//   items: {
+//     title: string;
+//     url: string;
+//     icon?: LucideIcon;
+//     isActive?: boolean;
+//     items?: {
+//       title: string;
+//       url: string;
+//       isActive?: boolean;
+//     }[];
+//   }[];
+//   onItemClick?: (title: string) => void;
+//   onSubItemClick?: (mainTitle: string, subItemTitle: string) => void;
+// }) {
+//   const navigate = useNavigate();
+//   const [openItems, setOpenItems] = useState<string[]>(
+//     items.filter((item) => item.isActive).map((item) => item.title),
+//   );
+
+//   const handleItemClick = (e: React.MouseEvent, item: any) => {
+//     e.preventDefault();
+
+//     // If item has sub-items, toggle collapsible
+//     if (item.items && item.items.length > 0) {
+//       setOpenItems((prev) =>
+//         prev.includes(item.title)
+//           ? prev.filter((title) => title !== item.title)
+//           : [...prev, item.title],
+//       );
+//     }
+
+//     // Call the parent click handler
+//     if (onItemClick) {
+//       onItemClick(item.title);
+//     }
+
+//     // Navigate to the main item URL (even if it has sub-items)
+//     if (item.url && item.url !== "#") {
+//       navigate(item.url);
+//     }
+//   };
+
+//   const handleSubItemClick = (
+//     e: React.MouseEvent,
+//     mainItem: any,
+//     subItem: any,
+//   ) => {
+//     e.preventDefault();
+//     if (onSubItemClick) {
+//       onSubItemClick(mainItem.title, subItem.title);
+//     }
+//     // Navigate to the sub-item URL
+//     if (subItem.url && subItem.url !== "#") {
+//       navigate(subItem.url);
+//     }
+//   };
+
+//   const isItemOpen = (title: string) => openItems.includes(title);
+
+//   return (
+//     <SidebarGroup>
+//       <SidebarMenu>
+//         {items.map((item) => {
+//           // If item has sub-items, render as collapsible
+//           if (item.items && item.items.length > 0) {
+//             return (
+//               <Collapsible
+//                 key={item.title}
+//                 asChild
+//                 open={isItemOpen(item.title)}
+//                 onOpenChange={(open) => {
+//                   if (open) {
+//                     setOpenItems((prev) => [...prev, item.title]);
+//                   } else {
+//                     setOpenItems((prev) =>
+//                       prev.filter((title) => title !== item.title),
+//                     );
+//                   }
+//                 }}
+//                 className="group/collapsible"
+//               >
+//                 <SidebarMenuItem>
+//                   <CollapsibleTrigger asChild>
+//                     <SidebarMenuButton
+//                       tooltip={item.title}
+//                       isActive={item.isActive}
+//                       className="cursor-pointer "
+//                     >
+//                       {item.icon && <item.icon />}
+//                       <span>{item.title}</span>
+//                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+//                     </SidebarMenuButton>
+//                   </CollapsibleTrigger>
+//                   <CollapsibleContent>
+//                     <SidebarMenuSub>
+//                       {item.items?.map((subItem) => (
+//                         <SidebarMenuSubItem key={subItem.title}>
+//                           <SidebarMenuSubButton
+//                             asChild
+//                             onClick={(e) =>
+//                               handleSubItemClick(e, item, subItem)
+//                             }
+//                             isActive={subItem.isActive}
+//                           >
+//                             <a
+//                               href={subItem.url}
+//                               onClick={(e) => e.preventDefault()}
+//                             >
+//                               <span>{subItem.title}</span>
+//                             </a>
+//                           </SidebarMenuSubButton>
+//                         </SidebarMenuSubItem>
+//                       ))}
+//                     </SidebarMenuSub>
+//                   </CollapsibleContent>
+//                 </SidebarMenuItem>
+//               </Collapsible>
+//             );
+//           }
+
+//           // If item has no sub-items, render as simple button
+//           return (
+//             <SidebarMenuItem key={item.title}>
+//               <SidebarMenuButton
+//                 tooltip={item.title}
+//                 onClick={(e) => handleItemClick(e, item)}
+//                 isActive={item.isActive}
+//                 className="cursor-pointer"
+//               >
+//                 {item.icon && <item.icon />}
+//                 <span>{item.title}</span>
+//               </SidebarMenuButton>
+//             </SidebarMenuItem>
+//           );
+//         })}
+//       </SidebarMenu>
+//     </SidebarGroup>
+//   );
+// }
+
+
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +184,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 export function NavMain({
   items,
@@ -28,6 +196,7 @@ export function NavMain({
     url: string;
     icon?: LucideIcon;
     isActive?: boolean;
+    color?: string; // 1. Added color to the interface
     items?: {
       title: string;
       url: string;
@@ -38,6 +207,8 @@ export function NavMain({
   onSubItemClick?: (mainTitle: string, subItemTitle: string) => void;
 }) {
   const navigate = useNavigate();
+  
+  // Initialize open items based on active parent
   const [openItems, setOpenItems] = useState<string[]>(
     items.filter((item) => item.isActive).map((item) => item.title),
   );
@@ -45,7 +216,6 @@ export function NavMain({
   const handleItemClick = (e: React.MouseEvent, item: any) => {
     e.preventDefault();
 
-    // If item has sub-items, toggle collapsible
     if (item.items && item.items.length > 0) {
       setOpenItems((prev) =>
         prev.includes(item.title)
@@ -54,12 +224,10 @@ export function NavMain({
       );
     }
 
-    // Call the parent click handler
     if (onItemClick) {
       onItemClick(item.title);
     }
 
-    // Navigate to the main item URL (even if it has sub-items)
     if (item.url && item.url !== "#") {
       navigate(item.url);
     }
@@ -74,7 +242,6 @@ export function NavMain({
     if (onSubItemClick) {
       onSubItemClick(mainItem.title, subItem.title);
     }
-    // Navigate to the sub-item URL
     if (subItem.url && subItem.url !== "#") {
       navigate(subItem.url);
     }
@@ -86,7 +253,6 @@ export function NavMain({
     <SidebarGroup>
       <SidebarMenu>
         {items.map((item) => {
-          // If item has sub-items, render as collapsible
           if (item.items && item.items.length > 0) {
             return (
               <Collapsible
@@ -109,11 +275,14 @@ export function NavMain({
                     <SidebarMenuButton
                       tooltip={item.title}
                       isActive={item.isActive}
-                      className="cursor-pointer "
+                      className="cursor-pointer"
                     >
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      {/* 2. Applying the color class here */}
+                      {item.icon && (
+                        <item.icon className={cn("size-6 shrink-0 transition-colors font-bold", item.color)} />
+                      )}
+                      <span className="font-medium">{item.title}</span>
+                      <ChevronRight className="ml-auto size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -143,7 +312,6 @@ export function NavMain({
             );
           }
 
-          // If item has no sub-items, render as simple button
           return (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
@@ -152,8 +320,11 @@ export function NavMain({
                 isActive={item.isActive}
                 className="cursor-pointer"
               >
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
+                {/* 3. Applying the color class here for items without sub-menus */}
+                {item.icon && (
+                  <item.icon className={cn("size-6 shrink-0 transition-colors font-bold", item.color)} />
+                )}
+                <span className="font-medium">{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           );

@@ -135,7 +135,7 @@ const router = createBrowserRouter([
         element: <Course />,
         handle: { breadcrumb: "courses" },
       },
-      // course-batch
+      // course batch
       {
         path: "course-batches",
         element: <BatchList />,
@@ -153,7 +153,7 @@ const router = createBrowserRouter([
       },
       {
         path: "course-batches/details/:id",
-        element: <CourseBatchDetails />,
+        element: <CourseBatchDetails />, 
         handle: { breadcrumb: "course-batches" },
       },
       // Add Student
