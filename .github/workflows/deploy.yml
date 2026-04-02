@@ -25,7 +25,7 @@ jobs:
           script: |
             echo "Starting Vite React deployment..."
 
-            cd /var/www/html/craft/admin || exit 1
+            cd /var/www/html/craft/skills/admin || exit 1
 
             git fetch --all
             git reset --hard origin/main

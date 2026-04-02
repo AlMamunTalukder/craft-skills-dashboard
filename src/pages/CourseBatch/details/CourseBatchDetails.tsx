@@ -46,7 +46,7 @@ export default function CourseBatchDetails() {
 
   const handleDeleteStudent = async (id: string) => {
     await dashboardApi.deleteAdmission(id);
-    setAdmissions(prev => prev.filter(s => s._id !== id));
+    setAdmissions((prev) => prev.filter((s) => s._id !== id));
   };
 
   const handleAddStudent = () => {

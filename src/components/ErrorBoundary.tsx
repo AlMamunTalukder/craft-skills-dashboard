@@ -2,7 +2,7 @@
 import { useRouteError, isRouteErrorResponse, useNavigate } from 'react-router-dom';
 import { AlertCircle, RefreshCw, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function ErrorPage() {
   const error = useRouteError();
