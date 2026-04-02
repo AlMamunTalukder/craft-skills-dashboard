@@ -471,7 +471,7 @@ export default function StudentForm({
     <div className="container mx-auto py-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button
+        {/* <Button
           variant="outline"
           size="sm"
           onClick={() => navigate(backLink)}
@@ -479,7 +479,7 @@ export default function StudentForm({
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
-        </Button>
+        </Button> */}
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
             {isEdit ? 'Edit Student' : 'Add New Student'}

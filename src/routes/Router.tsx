@@ -34,10 +34,12 @@ import Review from "@/pages/Review/Review";
 import AddSchedule from "@/pages/ClassSchedule/add/page";
 import AddStudent from "@/pages/Student/AddStudent";
 import EditStudentPage from "@/pages/Student/EditStudentModal";
+import ErrorPage from "@/components/ErrorBoundary";
 
 const router = createBrowserRouter([
   {
     path: "/",
+     errorElement: <ErrorPage />,
     element: (
       <GuestRoute>
         <LoginForm />
@@ -161,9 +163,9 @@ const router = createBrowserRouter([
         handle: { breadcrumb: "Add Student" },
       },
       {
-        path: "/students/edit/:id" ,
+        path: "/students/edit/:id",
         element: <EditStudentPage />,
-        handle: { breadcrumb: "Add Student" },
+        handle: { breadcrumb: "Edit Student" },
       },
       // coupons
       {

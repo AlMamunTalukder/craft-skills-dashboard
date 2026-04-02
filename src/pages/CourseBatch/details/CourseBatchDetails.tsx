@@ -74,7 +74,7 @@ export default function CourseBatchDetails() {
           <p className="text-gray-600 mb-6">
             The batch you're looking for doesn't exist.
           </p>
-          <Button onClick={() => navigate("/dashboard/course-batches")}>
+          <Button onClick={() => navigate("/course-batches")}>
             Back to Batches
           </Button>
         </div>
@@ -90,7 +90,7 @@ export default function CourseBatchDetails() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate("/dashboard/course-batches")}
+            onClick={() => navigate("/course-batches")}
           >
             <ChevronLeft className="h-4 w-4 mr-2" />
             Back

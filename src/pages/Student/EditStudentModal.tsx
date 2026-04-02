@@ -135,7 +135,7 @@ export default function EditStudentPage() {
       batches={batches}
       initialData={initialData}
       isEdit={true}
-      backLink="/dashboard/students"
+      backLink="/course-batches/details"
     />
   );
 }
