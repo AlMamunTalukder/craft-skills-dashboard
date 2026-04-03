@@ -98,7 +98,7 @@ const AppSelectFile = ({
                         <div className="flex items-center space-x-4">
                           <File className="w-8 h-8 text-blue-500" />
                           <div>
-                            <p className="font-medium text-gray-700 truncate max-w-[200px]">
+                            <p className="font-medium text-gray-700 truncate max-w-50">
                               {file.name || "Uploaded file"}
                             </p>
                             <p className="text-sm text-gray-500">

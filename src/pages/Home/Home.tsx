@@ -60,6 +60,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   console.log(courseBatches)
+
   // Helper function to extract batchId as string
   const getBatchIdString = (batchId: any): string => {
     if (!batchId) return '';
@@ -233,6 +234,7 @@ const Home = () => {
 
       {/* Main Content Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+        
         {/* Recent Admissions - Left Column */}
         <Card className="lg:col-span-4">
           <CardHeader>
