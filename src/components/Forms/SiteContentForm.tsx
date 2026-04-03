@@ -347,7 +347,7 @@ export default function SiteContentForm({ initialValues }: Props) {
                   className="flex items-center gap-2"
                 >
                   <BookOpen className="w-4 h-4" />
-                  Total Courses
+                  Total Courses Students
                 </Label>
                 <Input
                   id="totalCourses"

@@ -22,6 +22,7 @@ import {
 import { Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { StatCard } from "@/components/common/StatCard";
 
 interface SiteData {
   totalsTeachers: number;
@@ -134,6 +135,13 @@ const Home = () => {
     }
   };
 
+   const statsData = [
+    { icon: <Users className="h-6 w-6" />, title: "Total Teachers", value: data?.totalsTeachers || 0, color: "text-blue-600", bgColor: "bg-blue-50" },
+    { icon: <BookOpen className="h-6 w-6" />, title: "Total Students", value: data?.totalCourses || 0, color: "text-green-600", bgColor: "bg-green-50" },
+    { icon: <GraduationCap className="h-6 w-6" />, title: "Total Batches", value: data?.totalBatches || 0, color: "text-purple-600", bgColor: "bg-purple-50" },
+    { icon: <Trophy className="h-6 w-6" />, title: "Success Rate", value: `${data?.successRate || 0}%`, color: "text-orange-600", bgColor: "bg-orange-50" },
+  ];
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -225,16 +233,14 @@ const Home = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard icon={<Users className="h-6 w-6" />} title="Total Teachers" value={data.totalsTeachers || 0} color="text-blue-600" bgColor="bg-blue-50" />
-        <StatCard icon={<BookOpen className="h-6 w-6" />} title="Total Courses" value={data.totalCourses || 0} color="text-green-600" bgColor="bg-green-50" />
-        <StatCard icon={<GraduationCap className="h-6 w-6" />} title="Total Batches" value={data.totalBatches || 0} color="text-purple-600" bgColor="bg-purple-50" />
-        <StatCard icon={<Trophy className="h-6 w-6" />} title="Success Rate" value={`${data.successRate || 0}%`} color="text-orange-600" bgColor="bg-orange-50" />
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statsData.map((stat, index) => (
+          <StatCard key={index} {...stat} />
+        ))}
       </div>
-
       {/* Main Content Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        
+
         {/* Recent Admissions - Left Column */}
         <Card className="lg:col-span-4">
           <CardHeader>
@@ -347,21 +353,3 @@ const Home = () => {
 };
 
 export default Home;
-
-function StatCard({ icon, title, value, color, bgColor }: { icon: React.ReactNode; title: string; value: string | number; color: string; bgColor: string }) {
-  return (
-    <Card className="shadow-sm hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
-        <div className="flex items-center gap-4">
-          <div className={`p-3 rounded-full ${bgColor}`}>
-            <div className={color}>{icon}</div>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold">{value}</p>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
