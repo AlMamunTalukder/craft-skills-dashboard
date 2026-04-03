@@ -59,6 +59,7 @@ const Home = () => {
   const [totalAdmittedStudents, setTotalAdmittedStudents] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  console.log(courseBatches)
   // Helper function to extract batchId as string
   const getBatchIdString = (batchId: any): string => {
     if (!batchId) return '';
@@ -251,7 +252,7 @@ const Home = () => {
           <CardContent>          
             {/* Selected Batch Summary */}
             {selectedBatch && (
-              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+              <div className="mb-6 p-4 bg-linear-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold text-sm text-gray-700">{selectedBatch.name}</h4>
@@ -286,7 +287,7 @@ const Home = () => {
               {recentAdmissions.length > 0 ? (
                 recentAdmissions.map((admission) => (
                   <div key={admission._id} className="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                    <div className="rounded-lg bg-green-100 p-2 flex-shrink-0">
+                    <div className="rounded-lg bg-green-100 p-2 shrink-0">
                       <UserPlus className="h-6 w-6 text-green-600" />
                     </div>
                     <div className="flex-1 min-w-0">
