@@ -203,7 +203,10 @@ export default function EditStudentPage() {
           `${import.meta.env.VITE_API_URL}/admissions/${id}`,
           { credentials: "include" },
         );
+        // const studentResult = await studentResponse.json();
+
         const studentResult = await studentResponse.json();
+console.log("Student data from API:", studentResult.data);
 
         if (!studentResponse.ok || !studentResult.success) {
           throw new Error(studentResult.message);
