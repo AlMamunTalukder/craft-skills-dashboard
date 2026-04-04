@@ -942,6 +942,7 @@ export default function StudentForm({
                 <div className="space-y-2">
                   <Label htmlFor="status">Admission Status</Label>
                   <Select
+                   key={`status-${formData.status}`}
                     value={formData.status}
                     onValueChange={(value: any) =>
                       handleSelectChange("status", value)
@@ -962,6 +963,7 @@ export default function StudentForm({
                 <div className="space-y-2">
                   <Label htmlFor="paymentStatus">Payment Status</Label>
                   <Select
+                   key={`paymentStatus-${formData.paymentStatus}`}
                     value={formData.paymentStatus}
                     onValueChange={(value: any) =>
                       handleSelectChange("paymentStatus", value)
@@ -983,6 +985,7 @@ export default function StudentForm({
                   <div className="space-y-2">
                     <Label htmlFor="result">Result</Label>
                     <Select
+                    key={`result-${formData.result}`}
                       value={formData.result}
                       onValueChange={(value: any) =>
                         handleSelectChange("result", value)
