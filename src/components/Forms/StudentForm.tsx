@@ -1,7 +1,7 @@
 // src/components/Forms/StudentForm.tsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,13 +20,12 @@ import {
   Mail,
   MessageSquare,
   Facebook,
-  Briefcase,
-  MapPin,
   Tag,
   AlertCircle,
   Loader2,
   Save,
   XCircle,
+  ArrowLeft,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -36,8 +35,6 @@ export interface StudentFormData {
   phone: string;
   whatsapp?: string;
   facebook?: string;
-  occupation?: string;
-  address?: string;
   courseId: string;
   batchId: string;
   paymentMethod: string;
@@ -115,8 +112,6 @@ export default function StudentForm({
     phone: "",
     whatsapp: "",
     facebook: "",
-    occupation: "",
-    address: "",
     courseId: "",
     batchId: "",
     paymentMethod: "",
@@ -157,8 +152,6 @@ export default function StudentForm({
         phone: initialData.phone || "",
         whatsapp: initialData.whatsapp || "",
         facebook: initialData.facebook || "",
-        occupation: initialData.occupation || "",
-        address: initialData.address || "",
         courseId: safeCourseId,
         batchId: safeBatchId,
         paymentMethod: initialData.paymentMethod || "",
@@ -387,8 +380,6 @@ export default function StudentForm({
     toast.success("Coupon removed");
   };
 
-  
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -497,13 +488,30 @@ export default function StudentForm({
     }
   };
 
+  const handleBack = () => {
+    if (backLink) {
+      navigate(backLink);
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
     <div className="container mx-auto py-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
+        <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={handleBack}
+            className="w-auto p-3"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back
+          </Button>
         <div>
-          <h1 className="flex gap-2 items-center text-3xl font-bold tracking-tight">
-            <User />
+          <h1 className="gap-2 items-center text-3xl font-bold tracking-tight">
+            
             {isEdit ? "Edit Student" : "Add New Student"}
           </h1>
           <p className="text-muted-foreground">
@@ -516,27 +524,13 @@ export default function StudentForm({
 
       {/* Form */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            {isEdit ? (
-              <>
-                <User className="h-5 w-5" />
-                Edit Student Information
-              </>
-            ) : (
-              <>
-                <User className="h-5 w-5" />
-                Student Registration Form
-              </>
-            )}
-          </CardTitle>
-        </CardHeader>
+        
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Personal Information Section */}
             <div className="space-y-4">
               <h4 className="font-semibold text-lg">Personal Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="flex items-center gap-2">
                     <User className="w-4 h-4" />
@@ -609,38 +603,6 @@ export default function StudentForm({
                     placeholder="Facebook profile URL"
                   />
                 </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="occupation"
-                    className="flex items-center gap-2"
-                  >
-                    <Briefcase className="w-4 h-4" />
-                    Occupation
-                  </Label>
-                  <Input
-                    id="occupation"
-                    name="occupation"
-                    value={formData.occupation}
-                    onChange={handleChange}
-                    placeholder="Student/Job/etc."
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="address" className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
-                  Address
-                </Label>
-                <Textarea
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  placeholder="Full address"
-                  rows={3}
-                />
               </div>
             </div>
 

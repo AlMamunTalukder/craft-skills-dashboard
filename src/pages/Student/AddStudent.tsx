@@ -77,7 +77,7 @@ export default function AddStudentPage() {
     <StudentForm
       courses={courses}
       batches={batches}
-      backLink={from} // ✅ pass batch details url
+      backLink={from} 
     />
   );
 }
