@@ -132,6 +132,25 @@ export default function StudentForm({
 
   useEffect(() => {
     if (initialData) {
+       const safeCourseId = (() => {
+      const val = initialData.courseId;
+      if (typeof val === "string") return val;
+      // If it's an object with _id or id
+      if (val && typeof val === "object") {
+        return (val as any)._id || (val as any).id || "";
+      }
+      return "";
+    })();
+
+    const safeBatchId = (() => {
+      const val = initialData.batchId;
+      if (typeof val === "string") return val;
+      if (val && typeof val === "object") {
+        return (val as any)._id || (val as any).id || "";
+      }
+      return "";
+    })();
+
       setFormData({
         name: initialData.name || "",
         email: initialData.email || "",
@@ -140,8 +159,8 @@ export default function StudentForm({
         facebook: initialData.facebook || "",
         occupation: initialData.occupation || "",
         address: initialData.address || "",
-        courseId: initialData.courseId || "",
-        batchId: initialData.batchId || "",
+         courseId: safeCourseId,
+      batchId: safeBatchId,
         paymentMethod: initialData.paymentMethod || "",
         senderNumber: initialData.senderNumber || "",
         couponCode: initialData.couponCode || "",
@@ -152,6 +171,7 @@ export default function StudentForm({
         result: initialData.result || "pending",
         notes: initialData.notes || "",
       });
+      
       console.log('Edit Data',initialData)
 
       // Find and set selected course
@@ -172,6 +192,11 @@ export default function StudentForm({
           }
         }
       }
+
+      if (safeCourseId) {
+      const course = courses.find(c => c.id === safeCourseId);
+      if (course) setSelectedCourse(course);
+    }
     }
   }, [initialData, courses]);
 

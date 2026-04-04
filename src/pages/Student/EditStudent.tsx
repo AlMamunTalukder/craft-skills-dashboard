@@ -165,14 +165,7 @@ import StudentForm, {
   type StudentFormData,
 } from "@/components/Forms/StudentForm";
 
-// Add this before the component
-// const extractId = (value: any): string => {
-//   if (!value) return "";
-//   if (typeof value === "string") return value;
-//   if (value._id) return value._id;
-//   if (value.$oid) return value.$oid;
-//   return "";
-// };
+
 
 export default function EditStudentPage() {
   const { id } = useParams<{ id: string }>();
@@ -268,7 +261,15 @@ export default function EditStudentPage() {
   }
 
   if (!student) return null;
-
+  
+// Add this before the component
+const extractId = (value: any): string => {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  if (value._id) return value._id;
+  if (value.$oid) return value.$oid;
+  return "";
+};
   const initialData: StudentFormData & { _id?: string } = {
     _id: student._id,
     name: student.name || "",
@@ -278,14 +279,14 @@ export default function EditStudentPage() {
     facebook: student.facebook || "",
     occupation: student.occupation || "",
     address: student.address || "",
-    courseId: courses.find(c => c.id === String(student.courseId?._id || student.courseId)) || null,
-  batchId: batches.find(b => b.id === String(student.batchId?._id || student.batchId)) || null,
+  //   courseId: courses.find(c => c.id === String(student.courseId?._id || student.courseId)) || null,
+  // batchId: batches.find(b => b.id === String(student.batchId?._id || student.batchId)) || null,
     // courseId: String(student.courseId?._id || student.courseId || ""),
     // batchId: String(student.batchId?._id || student.batchId || ""),
     // courseId: student.courseId?._id || student.courseId || "",
     // batchId: student.batchId?._id || student.batchId || "",
-    //   courseId: extractId(student.courseId),
-    // batchId: extractId(student.batchId),
+      courseId: extractId(student.courseId),
+    batchId: extractId(student.batchId),
     paymentMethod: student.paymentMethod || "",
     senderNumber: student.senderNumber || "",
     couponCode: student.couponCode || "",
