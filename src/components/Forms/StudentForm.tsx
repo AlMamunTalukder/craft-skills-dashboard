@@ -94,7 +94,7 @@ export default function StudentForm({
   courses,
   batches,
   initialData,
-  isEdit = false, 
+  isEdit = false,
   backLink = "/add-student",
   onSuccess,
 }: StudentFormProps) {
@@ -132,24 +132,24 @@ export default function StudentForm({
 
   useEffect(() => {
     if (initialData) {
-       const safeCourseId = (() => {
-      const val = initialData.courseId;
-      if (typeof val === "string") return val;
-      // If it's an object with _id or id
-      if (val && typeof val === "object") {
-        return (val as any)._id || (val as any).id || "";
-      }
-      return "";
-    })();
+      const safeCourseId = (() => {
+        const val = initialData.courseId;
+        if (typeof val === "string") return val;
+        // If it's an object with _id or id
+        if (val && typeof val === "object") {
+          return (val as any)._id || (val as any).id || "";
+        }
+        return "";
+      })();
 
-    const safeBatchId = (() => {
-      const val = initialData.batchId;
-      if (typeof val === "string") return val;
-      if (val && typeof val === "object") {
-        return (val as any)._id || (val as any).id || "";
-      }
-      return "";
-    })();
+      const safeBatchId = (() => {
+        const val = initialData.batchId;
+        if (typeof val === "string") return val;
+        if (val && typeof val === "object") {
+          return (val as any)._id || (val as any).id || "";
+        }
+        return "";
+      })();
 
       setFormData({
         name: initialData.name || "",
@@ -159,8 +159,8 @@ export default function StudentForm({
         facebook: initialData.facebook || "",
         occupation: initialData.occupation || "",
         address: initialData.address || "",
-         courseId: safeCourseId,
-      batchId: safeBatchId,
+        courseId: safeCourseId,
+        batchId: safeBatchId,
         paymentMethod: initialData.paymentMethod || "",
         senderNumber: initialData.senderNumber || "",
         couponCode: initialData.couponCode || "",
@@ -171,8 +171,8 @@ export default function StudentForm({
         result: initialData.result || "pending",
         notes: initialData.notes || "",
       });
-      
-      console.log('Edit Data',initialData)
+
+      console.log("Edit Data", initialData);
 
       // Find and set selected course
       if (initialData.courseId) {
@@ -194,9 +194,9 @@ export default function StudentForm({
       }
 
       if (safeCourseId) {
-      const course = courses.find(c => c.id === safeCourseId);
-      if (course) setSelectedCourse(course);
-    }
+        const course = courses.find((c) => c.id === safeCourseId);
+        if (course) setSelectedCourse(course);
+      }
     }
   }, [initialData, courses]);
 
@@ -680,41 +680,46 @@ export default function StudentForm({
                 <div className="space-y-2">
                   <Label htmlFor="courseId">Select Course *</Label>
                   <Select
-  key={`course-${formData.courseId}-${courses.length}`}  // ← forces re‑mount
-  value={formData.courseId}
-  onValueChange={(value) => handleSelectChange("courseId", value)}
->
-  <SelectTrigger>
-    <SelectValue placeholder="Select a course" />
-  </SelectTrigger>
-  <SelectContent>
-    {courses.map((course) => (
-      <SelectItem key={course.id} value={course.id}>
-        {course.name} - ৳{course.price.toLocaleString()}
-      </SelectItem>
-    ))}
-  </SelectContent>
-</Select>
+                    key={`course-${formData.courseId}-${courses.length}`} // ← forces re‑mount
+                    value={formData.courseId}
+                    onValueChange={(value) =>
+                      handleSelectChange("courseId", value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a course" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courses.map((course) => (
+                        <SelectItem key={course.id} value={course.id}>
+                          {course.name} - ৳{course.price.toLocaleString()}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="batchId">Select Batch *</Label>
-                 <Select
-  key={`batch-${formData.batchId}-${batches.length}`}   // ← forces re‑mount
-  value={formData.batchId}
-  onValueChange={(value) => handleSelectChange("batchId", value)}
->
-  <SelectTrigger>
-    <SelectValue placeholder="Select a batch" />
-  </SelectTrigger>
-  <SelectContent>
-    {batches.map((batch) => (
-      <SelectItem key={batch.id} value={batch.id}>
-        {batch.name} - {batch.isActive ? "Active" : "Inactive"}
-      </SelectItem>
-    ))}
-  </SelectContent>
-</Select>
+                  <Select
+                    key={`batch-${formData.batchId}-${batches.length}`} // ← forces re‑mount
+                    value={formData.batchId}
+                    onValueChange={(value) =>
+                      handleSelectChange("batchId", value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a batch" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {batches.map((batch) => (
+                        <SelectItem key={batch.id} value={batch.id}>
+                          {batch.name} -{" "}
+                          {batch.isActive ? "Active" : "Inactive"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
@@ -846,6 +851,7 @@ export default function StudentForm({
                 <div className="space-y-2">
                   <Label htmlFor="paymentMethod">Payment Method</Label>
                   <Select
+                    key={`payment-${formData.paymentMethod}`}
                     value={formData.paymentMethod}
                     onValueChange={(value) =>
                       handleSelectChange("paymentMethod", value)
