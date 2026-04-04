@@ -387,31 +387,7 @@ export default function StudentForm({
     toast.success("Coupon removed");
   };
 
-  // const calculatePrice = () => {
-  //   if (!selectedCourse) return;
-
-  //   const basePrice = selectedCourse.price || 0;
-  //   const discountPercent = selectedCourse.discount || 0;
-  //   const paymentCharge = selectedCourse.paymentCharge || 0;
-
-  //   const discountAmount = (basePrice * discountPercent) / 100;
-  //   const priceAfterDiscount = basePrice - discountAmount;
-  //   const totalWithCharge = priceAfterDiscount + paymentCharge;
-
-  //   // Apply coupon discount if coupon is applied
-  //   const finalAmount = Math.max(
-  //     0,
-  //     totalWithCharge - couponState.discountAmount,
-  //   );
-
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     amount: finalAmount,
-  //     discountAmount: discountAmount + couponState.discountAmount,
-  //   }));
-
-  //   toast.success("Price calculated successfully!");
-  // };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -942,7 +918,7 @@ export default function StudentForm({
                 <div className="space-y-2">
                   <Label htmlFor="status">Admission Status</Label>
                   <Select
-                   key={`status-${formData.status}`}
+                    key={`status-${formData.status}`}
                     value={formData.status}
                     onValueChange={(value: any) =>
                       handleSelectChange("status", value)
@@ -963,7 +939,7 @@ export default function StudentForm({
                 <div className="space-y-2">
                   <Label htmlFor="paymentStatus">Payment Status</Label>
                   <Select
-                   key={`paymentStatus-${formData.paymentStatus}`}
+                    key={`paymentStatus-${formData.paymentStatus}`}
                     value={formData.paymentStatus}
                     onValueChange={(value: any) =>
                       handleSelectChange("paymentStatus", value)
@@ -985,7 +961,7 @@ export default function StudentForm({
                   <div className="space-y-2">
                     <Label htmlFor="result">Result</Label>
                     <Select
-                    key={`result-${formData.result}`}
+                      key={`result-${formData.result}`}
                       value={formData.result}
                       onValueChange={(value: any) =>
                         handleSelectChange("result", value)
