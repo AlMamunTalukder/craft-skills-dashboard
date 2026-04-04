@@ -654,44 +654,41 @@ export default function StudentForm({
                 <div className="space-y-2">
                   <Label htmlFor="courseId">Select Course *</Label>
                   <Select
-                    value={formData.courseId}
-                    onValueChange={(value) =>
-                      handleSelectChange("courseId", value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a course" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {courses.map((course) => (
-                        <SelectItem key={course.id} value={course.id}>
-                          {course.name} - ৳{course.price.toLocaleString()}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+  key={`course-${formData.courseId}-${courses.length}`}  // ← forces re‑mount
+  value={formData.courseId}
+  onValueChange={(value) => handleSelectChange("courseId", value)}
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a course" />
+  </SelectTrigger>
+  <SelectContent>
+    {courses.map((course) => (
+      <SelectItem key={course.id} value={course.id}>
+        {course.name} - ৳{course.price.toLocaleString()}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="batchId">Select Batch *</Label>
-                  <Select
-                    value={formData.batchId}
-                    onValueChange={(value) =>
-                      handleSelectChange("batchId", value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a batch" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {batches.map((batch) => (
-                        <SelectItem key={batch.id} value={batch.id}>
-                          {batch.name} -{" "}
-                          {batch.isActive ? "Active" : "Inactive"}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                 <Select
+  key={`batch-${formData.batchId}-${batches.length}`}   // ← forces re‑mount
+  value={formData.batchId}
+  onValueChange={(value) => handleSelectChange("batchId", value)}
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a batch" />
+  </SelectTrigger>
+  <SelectContent>
+    {batches.map((batch) => (
+      <SelectItem key={batch.id} value={batch.id}>
+        {batch.name} - {batch.isActive ? "Active" : "Inactive"}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
                 </div>
               </div>
 
