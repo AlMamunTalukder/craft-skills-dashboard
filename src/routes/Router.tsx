@@ -33,7 +33,7 @@ import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDet
 import Review from "@/pages/Review/Review";
 import AddSchedule from "@/pages/ClassSchedule/add/page";
 import AddStudent from "@/pages/Student/AddStudent";
-import EditStudentPage from "@/pages/Student/EditStudentModal";
+import EditStudentPage from "@/pages/Student/EditStudent";
 import ErrorPage from "@/components/ErrorBoundary";
 
 const router = createBrowserRouter([
