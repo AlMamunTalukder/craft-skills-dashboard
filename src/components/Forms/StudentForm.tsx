@@ -152,6 +152,7 @@ export default function StudentForm({
         result: initialData.result || "pending",
         notes: initialData.notes || "",
       });
+      console.log('Edit Data',initialData)
 
       // Find and set selected course
       if (initialData.courseId) {
