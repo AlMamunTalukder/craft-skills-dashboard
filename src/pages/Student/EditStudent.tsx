@@ -165,6 +165,16 @@ import StudentForm, {
   type StudentFormData,
 } from "@/components/Forms/StudentForm";
 
+
+// Add this before the component
+const extractId = (value: any): string => {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  if (value._id) return value._id;
+  if (value.$oid) return value.$oid;
+  return "";
+};
+
 export default function EditStudentPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -268,11 +278,8 @@ export default function EditStudentPage() {
     address: student.address || "",
     // courseId: student.courseId?._id || student.courseId || "",
     // batchId: student.batchId?._id || student.batchId || "",
-    courseId:
-      student.courseId?._id || student.courseId?.$oid || student.courseId || "",
-
-    batchId:
-      student.batchId?._id || student.batchId?.$oid || student.batchId || "",
+    courseId: extractId(student.courseId),  
+  batchId: extractId(student.batchId),
     paymentMethod: student.paymentMethod || "",
     senderNumber: student.senderNumber || "",
     couponCode: student.couponCode || "",
