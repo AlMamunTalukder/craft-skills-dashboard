@@ -1,12 +1,7 @@
 // src/components/Forms/StudentForm.tsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,15 +22,13 @@ import {
   Facebook,
   Briefcase,
   MapPin,
-  Calculator,
   Tag,
   AlertCircle,
   Loader2,
   Save,
-  XCircle,  
+  XCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
 
 export interface StudentFormData {
   name: string;
@@ -54,7 +47,13 @@ export interface StudentFormData {
   discountAmount: number;
   status: "pending" | "approved" | "rejected" | "waitlisted";
   paymentStatus: "pending" | "partial" | "paid" | "cancelled";
-  result?: "pending" | "needs improvement" | "average" | "good" | "very good" | "excellent";
+  result?:
+    | "pending"
+    | "needs improvement"
+    | "average"
+    | "good"
+    | "very good"
+    | "excellent";
   notes?: string;
 }
 
@@ -109,7 +108,7 @@ export default function StudentForm({
     error: null,
     loading: false,
   });
-  
+
   const [formData, setFormData] = useState<StudentFormData>({
     name: "",
     email: "",
@@ -131,7 +130,6 @@ export default function StudentForm({
     notes: "",
   });
 
- 
   useEffect(() => {
     if (initialData) {
       setFormData({
@@ -157,10 +155,10 @@ export default function StudentForm({
 
       // Find and set selected course
       if (initialData.courseId) {
-        const course = courses.find(c => c.id === initialData.courseId);
+        const course = courses.find((c) => c.id === initialData.courseId);
         if (course) {
           setSelectedCourse(course);
-          
+
           // Initialize coupon state
           if (initialData.couponCode) {
             setCouponState({
@@ -179,16 +177,19 @@ export default function StudentForm({
   // Calculate price details
   const calculatePriceDetails = () => {
     if (!selectedCourse) return null;
-    
+
     const basePrice = selectedCourse.price || 0;
     const discountPercent = selectedCourse.discount || 0;
     const paymentCharge = selectedCourse.paymentCharge || 0;
-    
+
     const courseDiscountAmount = (basePrice * discountPercent) / 100;
     const priceAfterCourseDiscount = basePrice - courseDiscountAmount;
     const totalWithCharge = priceAfterCourseDiscount + paymentCharge;
-    const finalTotal = Math.max(0, totalWithCharge - couponState.discountAmount);
-    
+    const finalTotal = Math.max(
+      0,
+      totalWithCharge - couponState.discountAmount,
+    );
+
     return {
       basePrice,
       discountPercent,
@@ -202,16 +203,18 @@ export default function StudentForm({
 
   const priceDetails = calculatePriceDetails();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value, type } = e.target;
-    
+
     if (type === "number") {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: value === "" ? 0 : Number(value),
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
@@ -220,9 +223,9 @@ export default function StudentForm({
 
   const handleSelectChange = (name: string, value: string) => {
     if (name === "courseId") {
-      const course = courses.find(c => c.id === value);
+      const course = courses.find((c) => c.id === value);
       setSelectedCourse(course || null);
-      
+
       // Reset coupon when course changes
       setCouponState({
         code: "",
@@ -231,17 +234,17 @@ export default function StudentForm({
         error: null,
         loading: false,
       });
-      
+
       if (course) {
         const basePrice = course.price || 0;
         const discountPercent = course.discount || 0;
         const paymentCharge = course.paymentCharge || 0;
-        
+
         const discountAmount = (basePrice * discountPercent) / 100;
         const priceAfterDiscount = basePrice - discountAmount;
         const totalWithCharge = priceAfterDiscount + paymentCharge;
 
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           courseId: value,
           amount: totalWithCharge,
@@ -249,7 +252,7 @@ export default function StudentForm({
           couponCode: "",
         }));
       } else {
-        setFormData(prev => ({
+        setFormData((prev) => ({
           ...prev,
           courseId: value,
           amount: 0,
@@ -258,7 +261,7 @@ export default function StudentForm({
         }));
       }
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         [name]: value,
       }));
@@ -271,20 +274,23 @@ export default function StudentForm({
       return;
     }
 
-    setCouponState(prev => ({ ...prev, loading: true, error: null }));
+    setCouponState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/coupons/apply`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/coupons/apply`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: formData.couponCode.trim().toUpperCase(),
+            totalAmount: priceDetails.totalWithCharge,
+          }),
         },
-        body: JSON.stringify({
-          code: formData.couponCode.trim().toUpperCase(),
-          totalAmount: priceDetails.totalWithCharge,
-        }),
-      });
+      );
 
       const result = await response.json();
 
@@ -301,18 +307,21 @@ export default function StudentForm({
           error: null,
           loading: false,
         });
-        
+
         // Update the form data with new amount
-        const finalAmount = Math.max(0, priceDetails.totalWithCharge - discountAmount);
-        setFormData(prev => ({
+        const finalAmount = Math.max(
+          0,
+          priceDetails.totalWithCharge - discountAmount,
+        );
+        setFormData((prev) => ({
           ...prev,
           amount: finalAmount,
           discountAmount: priceDetails.courseDiscountAmount + discountAmount,
         }));
-        
+
         toast.success("Coupon applied successfully!");
       } else {
-        setCouponState(prev => ({
+        setCouponState((prev) => ({
           ...prev,
           error: result.message || "Invalid coupon",
           loading: false,
@@ -321,7 +330,7 @@ export default function StudentForm({
       }
     } catch (error: any) {
       console.error("Error applying coupon:", error);
-      setCouponState(prev => ({
+      setCouponState((prev) => ({
         ...prev,
         error: error.message || "Failed to validate coupon",
         loading: false,
@@ -339,45 +348,48 @@ export default function StudentForm({
         error: null,
         loading: false,
       });
-      
+
       // Reset to original amount without coupon
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         amount: priceDetails.totalWithCharge,
         discountAmount: priceDetails.courseDiscountAmount,
         couponCode: "",
       }));
     }
-    
+
     toast.success("Coupon removed");
   };
 
-  const calculatePrice = () => {
-    if (!selectedCourse) return;
-    
-    const basePrice = selectedCourse.price || 0;
-    const discountPercent = selectedCourse.discount || 0;
-    const paymentCharge = selectedCourse.paymentCharge || 0;
-    
-    const discountAmount = (basePrice * discountPercent) / 100;
-    const priceAfterDiscount = basePrice - discountAmount;
-    const totalWithCharge = priceAfterDiscount + paymentCharge;
+  // const calculatePrice = () => {
+  //   if (!selectedCourse) return;
 
-    // Apply coupon discount if coupon is applied
-    const finalAmount = Math.max(0, totalWithCharge - couponState.discountAmount);
-    
-    setFormData(prev => ({
-      ...prev,
-      amount: finalAmount,
-      discountAmount: discountAmount + couponState.discountAmount,
-    }));
+  //   const basePrice = selectedCourse.price || 0;
+  //   const discountPercent = selectedCourse.discount || 0;
+  //   const paymentCharge = selectedCourse.paymentCharge || 0;
 
-    toast.success("Price calculated successfully!");
-  };
+  //   const discountAmount = (basePrice * discountPercent) / 100;
+  //   const priceAfterDiscount = basePrice - discountAmount;
+  //   const totalWithCharge = priceAfterDiscount + paymentCharge;
+
+  //   // Apply coupon discount if coupon is applied
+  //   const finalAmount = Math.max(
+  //     0,
+  //     totalWithCharge - couponState.discountAmount,
+  //   );
+
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     amount: finalAmount,
+  //     discountAmount: discountAmount + couponState.discountAmount,
+  //   }));
+
+  //   toast.success("Price calculated successfully!");
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validation
     if (!formData.name.trim()) {
       toast.error("Name is required");
@@ -385,6 +397,10 @@ export default function StudentForm({
     }
     if (!formData.phone.trim()) {
       toast.error("Phone is required");
+      return;
+    }
+    if (!formData.phone.startsWith("88")) {
+      toast.error("Phone number must start with 88");
       return;
     }
     if (!formData.courseId) {
@@ -402,7 +418,7 @@ export default function StudentForm({
 
     try {
       setSubmitting(true);
-      
+
       // Prepare submission data
       const submitData = {
         ...formData,
@@ -412,14 +428,17 @@ export default function StudentForm({
 
       if (isEdit && initialData?._id) {
         // Update existing student
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/admissions/${initialData._id}`, {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/admissions/${initialData._id}`,
+          {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(submitData),
           },
-          body: JSON.stringify(submitData),
-        });
+        );
 
         const result = await response.json();
 
@@ -430,17 +449,20 @@ export default function StudentForm({
         toast.success("Student updated successfully!");
       } else {
         // Create new student
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/admissions/register`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/admissions/register`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...submitData,
+              registeredAt: new Date().toISOString(),
+            }),
           },
-          body: JSON.stringify({
-            ...submitData,
-            registeredAt: new Date().toISOString(),
-          }),
-        });
+        );
 
         const result = await response.json();
 
@@ -455,12 +477,19 @@ export default function StudentForm({
       if (onSuccess) {
         onSuccess();
       } else {
-        // Default navigation
-        navigate(backLink);
+        const redirectBatchId = formData.batchId;
+
+        if (redirectBatchId) {
+          navigate(`/course-batches/details/${redirectBatchId}`);
+        } else {
+          navigate(backLink);
+        }
       }
     } catch (error: any) {
       console.error("Error submitting form:", error);
-      toast.error(error.message || `Failed to ${isEdit ? 'update' : 'register'} student`);
+      toast.error(
+        error.message || `Failed to ${isEdit ? "update" : "register"} student`,
+      );
     } finally {
       setSubmitting(false);
     }
@@ -470,21 +499,15 @@ export default function StudentForm({
     <div className="container mx-auto py-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        {/* <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate(backLink)}
-          disabled={submitting}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button> */}
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            {isEdit ? 'Edit Student' : 'Add New Student'}
+          <h1 className="flex gap-2 items-center text-3xl font-bold tracking-tight">
+            <User />
+            {isEdit ? "Edit Student" : "Add New Student"}
           </h1>
           <p className="text-muted-foreground">
-            {isEdit ? 'Update student information' : 'Manually register a student to any course batch'}
+            {isEdit
+              ? "Update student information"
+              : "Manually register a student to any course batch"}
           </p>
         </div>
       </div>
@@ -537,7 +560,7 @@ export default function StudentForm({
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="01XXXXXXXXX"
+                    placeholder="8801XXXXXXXXX"
                     required
                   />
                 </div>
@@ -567,7 +590,7 @@ export default function StudentForm({
                     name="whatsapp"
                     value={formData.whatsapp}
                     onChange={handleChange}
-                    placeholder="Optional WhatsApp number"
+                    placeholder="WhatsApp number"
                   />
                 </div>
 
@@ -586,7 +609,10 @@ export default function StudentForm({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="occupation" className="flex items-center gap-2">
+                  <Label
+                    htmlFor="occupation"
+                    className="flex items-center gap-2"
+                  >
                     <Briefcase className="w-4 h-4" />
                     Occupation
                   </Label>
@@ -619,19 +645,9 @@ export default function StudentForm({
             {/* Course & Batch Selection */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-lg">Course & Batch Selection</h4>
-                {selectedCourse && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={calculatePrice}
-                    className="flex items-center gap-2"
-                  >
-                    <Calculator className="w-4 h-4" />
-                    Calculate Price
-                  </Button>
-                )}
+                <h4 className="font-semibold text-lg">
+                  Course & Batch Selection
+                </h4>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -639,7 +655,9 @@ export default function StudentForm({
                   <Label htmlFor="courseId">Select Course *</Label>
                   <Select
                     value={formData.courseId}
-                    onValueChange={(value) => handleSelectChange("courseId", value)}
+                    onValueChange={(value) =>
+                      handleSelectChange("courseId", value)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a course" />
@@ -658,7 +676,9 @@ export default function StudentForm({
                   <Label htmlFor="batchId">Select Batch *</Label>
                   <Select
                     value={formData.batchId}
-                    onValueChange={(value) => handleSelectChange("batchId", value)}
+                    onValueChange={(value) =>
+                      handleSelectChange("batchId", value)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a batch" />
@@ -666,7 +686,8 @@ export default function StudentForm({
                     <SelectContent>
                       {batches.map((batch) => (
                         <SelectItem key={batch.id} value={batch.id}>
-                          {batch.name} - {batch.isActive ? "Active" : "Inactive"}
+                          {batch.name} -{" "}
+                          {batch.isActive ? "Active" : "Inactive"}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -680,7 +701,9 @@ export default function StudentForm({
                     <div>
                       <p className="font-medium">{selectedCourse.name}</p>
                       <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
-                        <span>Price: ৳{selectedCourse.price.toLocaleString()}</span>
+                        <span>
+                          Price: ৳{selectedCourse.price.toLocaleString()}
+                        </span>
                         {selectedCourse.discount > 0 && (
                           <Badge className="bg-green-100 text-green-800">
                             Discount: {selectedCourse.discount}%
@@ -719,11 +742,11 @@ export default function StudentForm({
                       value={formData.couponCode}
                       onChange={(e) => {
                         const value = e.target.value.toUpperCase();
-                        setFormData(prev => ({
+                        setFormData((prev) => ({
                           ...prev,
                           couponCode: value,
                         }));
-                        
+
                         if (couponState.applied) {
                           setCouponState({
                             code: value,
@@ -745,11 +768,18 @@ export default function StudentForm({
                       </div>
                     )}
                   </div>
-                  
+
                   <Button
                     type="button"
-                    onClick={couponState.applied ? handleRemoveCoupon : handleApplyCoupon}
-                    disabled={couponState.loading || (!formData.couponCode && !couponState.applied)}
+                    onClick={
+                      couponState.applied
+                        ? handleRemoveCoupon
+                        : handleApplyCoupon
+                    }
+                    disabled={
+                      couponState.loading ||
+                      (!formData.couponCode && !couponState.applied)
+                    }
                     variant={couponState.applied ? "destructive" : "default"}
                     className="flex items-center gap-2"
                   >
@@ -763,13 +793,15 @@ export default function StudentForm({
                     {couponState.applied ? "Remove Coupon" : "Apply Coupon"}
                   </Button>
                 </div>
-                
+
                 {couponState.applied && (
                   <div className="bg-green-50 p-3 rounded-lg border border-green-200">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Tag className="h-4 w-4 text-green-600" />
-                        <span className="font-medium">Coupon Applied:</span>
+                        <span className="font-medium text-green-600">
+                          Coupon Applied:
+                        </span>
                         <Badge className="bg-green-100 text-green-800">
                           {couponState.code}
                         </Badge>
@@ -786,13 +818,15 @@ export default function StudentForm({
             {/* Payment Information */}
             <div className="space-y-4">
               <h4 className="font-semibold text-lg">Payment Information</h4>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="paymentMethod">Payment Method</Label>
                   <Select
                     value={formData.paymentMethod}
-                    onValueChange={(value) => handleSelectChange("paymentMethod", value)}
+                    onValueChange={(value) =>
+                      handleSelectChange("paymentMethod", value)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select payment method" />
@@ -822,34 +856,42 @@ export default function StudentForm({
               {priceDetails && (
                 <div className="p-4 rounded-lg border space-y-2">
                   <h4 className="font-semibold text-gray-700">Price Summary</h4>
-                  
+
                   <div className="space-y-1">
                     <div className="flex justify-between text-gray-600">
                       <span>Base Price:</span>
                       <span>৳{priceDetails.basePrice.toLocaleString()}</span>
                     </div>
-                    
+
                     {priceDetails.discountPercent > 0 && (
                       <div className="flex justify-between text-green-600">
-                        <span>Course Discount ({priceDetails.discountPercent}%):</span>
-                        <span>-৳{priceDetails.courseDiscountAmount.toLocaleString()}</span>
+                        <span>
+                          Course Discount ({priceDetails.discountPercent}%):
+                        </span>
+                        <span>
+                          -৳{priceDetails.courseDiscountAmount.toLocaleString()}
+                        </span>
                       </div>
                     )}
-                    
+
                     {priceDetails.paymentCharge > 0 && (
                       <div className="flex justify-between text-blue-600">
                         <span>Payment Charge:</span>
-                        <span>+৳{priceDetails.paymentCharge.toLocaleString()}</span>
+                        <span>
+                          +৳{priceDetails.paymentCharge.toLocaleString()}
+                        </span>
                       </div>
                     )}
-                    
+
                     {couponState.applied && (
                       <div className="flex justify-between text-green-600">
                         <span>Coupon Discount:</span>
-                        <span>-৳{couponState.discountAmount.toLocaleString()}</span>
+                        <span>
+                          -৳{couponState.discountAmount.toLocaleString()}
+                        </span>
                       </div>
                     )}
-                    
+
                     <div className="border-t pt-2 mt-2">
                       <div className="flex justify-between font-bold text-lg">
                         <span>Final Amount:</span>
@@ -859,33 +901,6 @@ export default function StudentForm({
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="amount">Total Amount (৳) *</Label>
-                    <Input
-                      id="amount"
-                      name="amount"
-                      type="number"
-                      value={formData.amount}
-                      onChange={handleChange}
-                      placeholder="Enter amount"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="discountAmount">Total Discount Amount (৳)</Label>
-                    <Input
-                      id="discountAmount"
-                      name="discountAmount"
-                      type="number"
-                      value={formData.discountAmount}
-                      onChange={handleChange}
-                      placeholder="Total discount amount"
-                      readOnly
-                      className="bg-gray-100"
-                    />
-                  </div>
                 </div>
               )}
             </div>
@@ -893,13 +908,15 @@ export default function StudentForm({
             {/* Status & Notes */}
             <div className="space-y-4">
               <h4 className="font-semibold text-lg">Status & Notes</h4>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="status">Admission Status</Label>
                   <Select
                     value={formData.status}
-                    onValueChange={(value: any) => handleSelectChange("status", value)}
+                    onValueChange={(value: any) =>
+                      handleSelectChange("status", value)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -917,7 +934,9 @@ export default function StudentForm({
                   <Label htmlFor="paymentStatus">Payment Status</Label>
                   <Select
                     value={formData.paymentStatus}
-                    onValueChange={(value: any) => handleSelectChange("paymentStatus", value)}
+                    onValueChange={(value: any) =>
+                      handleSelectChange("paymentStatus", value)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -936,14 +955,18 @@ export default function StudentForm({
                     <Label htmlFor="result">Result</Label>
                     <Select
                       value={formData.result}
-                      onValueChange={(value: any) => handleSelectChange("result", value)}
+                      onValueChange={(value: any) =>
+                        handleSelectChange("result", value)
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="needs improvement">Needs Improvement</SelectItem>
+                        <SelectItem value="needs improvement">
+                          Needs Improvement
+                        </SelectItem>
                         <SelectItem value="average">Average</SelectItem>
                         <SelectItem value="good">Good</SelectItem>
                         <SelectItem value="very good">Very Good</SelectItem>
@@ -969,14 +992,6 @@ export default function StudentForm({
 
             {/* Submit Button */}
             <div className="flex items-center justify-end gap-4 pt-6 border-t">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate(backLink)}
-                disabled={submitting}
-              >
-                Cancel
-              </Button>
               <Button type="submit" disabled={submitting}>
                 {submitting ? (
                   <>
