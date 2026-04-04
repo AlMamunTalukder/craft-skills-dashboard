@@ -295,6 +295,8 @@ export default function EditStudentPage() {
     notes: student.notes || "",
   };
 
+  console.log("Edit page initialData:", initialData);
+
   return (
     <StudentForm
       courses={courses}
