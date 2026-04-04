@@ -157,7 +157,6 @@
 //   );
 // }
 
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -258,7 +257,7 @@ export default function EditStudentPage() {
 
   if (!student) return null;
 
-   const initialData: StudentFormData & { _id?: string } = {
+  const initialData: StudentFormData & { _id?: string } = {
     _id: student._id,
     name: student.name || "",
     email: student.email || "",
@@ -267,8 +266,13 @@ export default function EditStudentPage() {
     facebook: student.facebook || "",
     occupation: student.occupation || "",
     address: student.address || "",
-    courseId: student.courseId?._id || student.courseId || "",
-    batchId: student.batchId?._id || student.batchId || "",
+    // courseId: student.courseId?._id || student.courseId || "",
+    // batchId: student.batchId?._id || student.batchId || "",
+    courseId:
+      student.courseId?._id || student.courseId?.$oid || student.courseId || "",
+
+    batchId:
+      student.batchId?._id || student.batchId?.$oid || student.batchId || "",
     paymentMethod: student.paymentMethod || "",
     senderNumber: student.senderNumber || "",
     couponCode: student.couponCode || "",
@@ -286,7 +290,7 @@ export default function EditStudentPage() {
       batches={batches}
       initialData={initialData}
       isEdit={true}
-      backLink={from || `/course-batches/details/${initialData.batchId}`} 
+      backLink={from || `/course-batches/details/${initialData.batchId}`}
     />
   );
 }

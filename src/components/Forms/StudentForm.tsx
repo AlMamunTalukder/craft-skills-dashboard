@@ -94,7 +94,7 @@ export default function StudentForm({
   courses,
   batches,
   initialData,
-  isEdit = false,
+  isEdit = false, 
   backLink = "/add-student",
   onSuccess,
 }: StudentFormProps) {
