@@ -3,7 +3,7 @@
 import { Mail, MessageSquare } from "lucide-react";
 import type { Participant } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { formatBDDateTime } from "@/lib/fomatBDDateTime";
+import { formatBDDateTime } from "@/lib/formatBDDate";
 
 export const participantColumns: ColumnDef<Participant>[] = [
   {

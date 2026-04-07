@@ -4,18 +4,16 @@ import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
 import type { AdmissionBatch } from "@/types";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
-import { formatBDDateTime } from "@/lib/fomatBDDateTime";
+import { formatBDDateTime } from "@/lib/formatBDDate";
+
+
 
 export const batchColumns = (
   onDelete: (id: string) => Promise<void>,
   onStatusToggle: (id: string, isActive: boolean) => Promise<void>,
   refreshBatches: () => void,
 ): ColumnDef<AdmissionBatch>[] => [
-  {
-    accessorKey: "sl",
-    header: "SL",
-    cell: ({ row }) => <span>{row.index + 1}</span>,
-  },
+  { accessorKey: "sl", header: "SL", cell: ({ row }) => row.index + 1 },
   {
     accessorKey: "code",
     header: "Code",
@@ -31,18 +29,15 @@ export const batchColumns = (
     header: "Start Date",
     cell: ({ row }) => {
       const formatted = formatBDDateTime(row.original.registrationStart);
-
       if (!formatted) return <span className="text-gray-500">-</span>;
-
       if (formatted === "invalid")
         return <span className="text-red-500">Invalid</span>;
-
       return (
         <div className="text-sm">
-
           <div>{formatted.date}</div>
-          <div></div>
-          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div>
+          <div className="text-muted-foreground">
+            {formatted.dayName}, {formatted.time}
+          </div>
         </div>
       );
     },
@@ -52,16 +47,15 @@ export const batchColumns = (
     header: "End Date",
     cell: ({ row }) => {
       const formatted = formatBDDateTime(row.original.registrationEnd);
-
       if (!formatted) return <span className="text-gray-500">-</span>;
-
       if (formatted === "invalid")
         return <span className="text-red-500">Invalid</span>;
-
       return (
         <div className="text-sm">
           <div>{formatted.date}</div>
-          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div>
+          <div className="text-muted-foreground">
+            {formatted.dayName}, {formatted.time}
+          </div>
         </div>
       );
     },
@@ -72,51 +66,40 @@ export const batchColumns = (
     cell: ({ row }) => {
       const batch = row.original;
       const batchId = batch._id || batch.id;
-
       if (!batchId) return null;
-
       return (
         <Switch
           checked={batch.isActive || false}
-          onCheckedChange={(value) => onStatusToggle(batchId, value)}
+          onCheckedChange={(v) => onStatusToggle(batchId, v)}
           className="data-[state=checked]:bg-green-600"
         />
       );
     },
   },
-
   {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const coursebatches = row.original;
-      const coursebatchesId = coursebatches._id || coursebatches.id;
-
-      if (!coursebatchesId) return null;
+      const batch = row.original;
+      const batchId = batch._id || batch.id;
+      if (!batchId) return null;
 
       const handleDuplicate = async () => {
         try {
-          // Get social fields with proper fallbacks
-          const facebookField = coursebatches.facebookSecretGroup || "";
-          const messengerField = coursebatches.messengerSecretGroup || "";
-
           const duplicateData = {
-            name: `${coursebatches.name || "Batch"} (Copy)`,
-            code: `${coursebatches.code || "BATCH"}-${Date.now()}`,
-            description: coursebatches.description || "",
+            name: `${batch.name} (Copy)`,
+            code: `${batch.code}-${Date.now()}`,
+            description: batch.description || "",
             registrationStart:
-              coursebatches.registrationStart || new Date().toISOString(),
+              batch.registrationStart || new Date().toISOString(),
             registrationEnd:
-              coursebatches.registrationEnd ||
+              batch.registrationEnd ||
               new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            facebookSecretGroup: facebookField,
-            messengerSecretGroup: messengerField,
+            facebookSecretGroup: batch.facebookSecretGroup || "",
+            messengerSecretGroup: batch.messengerSecretGroup || "",
             isActive: false,
           };
-
-          // console.log("Sending to API:", duplicateData);
-
-          const response = await fetch(
+          const res = await fetch(
             `${import.meta.env.VITE_API_URL}/course-batches`,
             {
               method: "POST",
@@ -124,35 +107,28 @@ export const batchColumns = (
               body: JSON.stringify(duplicateData),
             },
           );
-
-          const result = await response.json();
-
-          if (!response.ok) {
-            throw new Error(result.message || "Failed to duplicate");
-          }
-
+          const result = await res.json();
+          if (!res.ok) throw new Error(result.message || "Failed to duplicate");
           toast.success("Batch duplicated successfully");
           refreshBatches();
-        } catch (error: any) {
-          // console.error("Duplicate error:", error);
-          toast.error(error.message || "Failed to duplicate batch");
+        } catch (err: any) {
+          toast.error(err.message || "Failed to duplicate batch");
         }
       };
+
       return (
-        <div className="flex items-center gap-2">
-          <ActionColumn
-            row={row}
-            model="course-batches"
-            showDetails={true}
-            editEndpoint={`/course-batches/edit/${coursebatchesId}`}
-            id={coursebatchesId}
-            deleteFunction={onDelete}
-            showDelete={true}
-            showEdit={true}
-            duplicateFunction={handleDuplicate}
-            showDuplicate={true}
-          />
-        </div>
+        <ActionColumn
+          row={row}
+          model="course-batches"
+          showDetails
+          showEdit
+          showDelete
+          duplicateFunction={handleDuplicate}
+          showDuplicate
+          editEndpoint={`/course-batches/edit/${batchId}`}
+          id={batchId}
+          deleteFunction={onDelete}
+        />
       );
     },
   },

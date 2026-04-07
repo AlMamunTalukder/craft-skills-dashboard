@@ -10,32 +10,50 @@ import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { seminarSchema, type SeminarFormData } from "@/api/seminar.schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, FileText, Loader2, Users, MessageSquare, Facebook, MessageCircle } from "lucide-react";
+import {
+  Calendar,
+  FileText,
+  Loader2,
+  Users,
+  MessageSquare,
+  Facebook,
+  MessageCircle,
+} from "lucide-react";
 
 interface SeminarFormProps {
-  initialValues?: Partial<Seminar>; 
+  initialValues?: Partial<Seminar>;
   onSubmit: (data: SeminarFormData) => Promise<void>;
   isSubmitting?: boolean;
 }
 
-
 const formatDateForInput = (dateString: string | Date | undefined): string => {
-  if (!dateString) return new Date().toISOString().slice(0, 16);
-  
+  if (!dateString) return "";
+
   try {
     const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
-      return new Date().toISOString().slice(0, 16);
-    }
-    
-    // Format: YYYY-MM-DDTHH:mm (required for datetime-local input)
-    return date.toISOString().slice(0, 16);
+    if (isNaN(date.getTime())) return "";
+
+    // Convert to Bangladesh local time (UTC+6)
+    const bdTime = new Date(date.getTime() + 6 * 60 * 60 * 1000);
+
+    // Format as YYYY-MM-DDTHH:mm for datetime-local
+    const yyyy = bdTime.getFullYear();
+    const mm = String(bdTime.getMonth() + 1).padStart(2, "0");
+    const dd = String(bdTime.getDate()).padStart(2, "0");
+    const hh = String(bdTime.getHours()).padStart(2, "0");
+    const min = String(bdTime.getMinutes()).padStart(2, "0");
+
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
   } catch {
-    return new Date().toISOString().slice(0, 16);
+    return "";
   }
 };
 
-export default function SeminarForm({ initialValues, onSubmit, isSubmitting = false }: SeminarFormProps) {
+export default function SeminarForm({
+  initialValues,
+  onSubmit,
+  isSubmitting = false,
+}: SeminarFormProps) {
   const form = useForm<SeminarFormData>({
     resolver: zodResolver(seminarSchema),
     defaultValues: {
@@ -44,9 +62,6 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
       description: "",
       date: new Date().toISOString().slice(0, 16),
       registrationDeadline: new Date().toISOString().slice(0, 16),
-      // facebookSecretGroup: "",
-      // whatsappSecretGroup: "",
-      // messengerSecretGroup: "",
       facebookPublicGroup: "",
       whatsappPublicGroup: "",
       telegramGroup: "",
@@ -61,10 +76,9 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
         title: initialValues.title || "",
         description: initialValues.description || "",
         date: formatDateForInput(initialValues.date),
-        registrationDeadline: formatDateForInput(initialValues.registrationDeadline),
-        // facebookSecretGroup: initialValues.facebookSecretGroup || "",
-        // whatsappSecretGroup: initialValues.whatsappSecretGroup || "",
-        // messengerSecretGroup: initialValues.messengerSecretGroup || "",
+        registrationDeadline: formatDateForInput(
+          initialValues.registrationDeadline,
+        ),
         facebookPublicGroup: initialValues.facebookPublicGroup || "",
         whatsappPublicGroup: initialValues.whatsappPublicGroup || "",
         telegramGroup: initialValues.telegramGroup || "",
@@ -72,8 +86,19 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
     }
   }, [initialValues, form]);
 
+  const convertBDToUTC = (bdDateStr: string) => {
+    const date = new Date(bdDateStr);
+    const utcDate = new Date(date.getTime() - 6 * 60 * 60 * 1000); // subtract 6 hours
+    return utcDate.toISOString();
+  };
+
+  // In handleSubmit:
   const handleSubmit = async (data: SeminarFormData) => {
-    await onSubmit(data);
+    await onSubmit({
+      ...data,
+      date: convertBDToUTC(data.date),
+      registrationDeadline: convertBDToUTC(data.registrationDeadline),
+    });
   };
 
   return (
@@ -85,7 +110,10 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="space-y-2">
@@ -100,7 +128,9 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
                   />
                 </div>
                 {form.formState.errors.sl && (
-                  <p className="text-sm text-red-500">{form.formState.errors.sl.message}</p>
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.sl.message}
+                  </p>
                 )}
               </div>
 
@@ -116,7 +146,9 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
                   />
                 </div>
                 {form.formState.errors.title && (
-                  <p className="text-sm text-red-500">{form.formState.errors.title.message}</p>
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.title.message}
+                  </p>
                 )}
               </div>
 
@@ -129,7 +161,9 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
                   rows={3}
                 />
                 {form.formState.errors.description && (
-                  <p className="text-sm text-red-500">{form.formState.errors.description.message}</p>
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.description.message}
+                  </p>
                 )}
               </div>
 
@@ -145,12 +179,16 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
                   />
                 </div>
                 {form.formState.errors.date && (
-                  <p className="text-sm text-red-500">{form.formState.errors.date.message}</p>
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.date.message}
+                  </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="registrationDeadline">Registration Deadline *</Label>
+                <Label htmlFor="registrationDeadline">
+                  Registration Deadline *
+                </Label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -161,11 +199,11 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
                   />
                 </div>
                 {form.formState.errors.registrationDeadline && (
-                  <p className="text-sm text-red-500">{form.formState.errors.registrationDeadline.message}</p>
+                  <p className="text-sm text-red-500">
+                    {form.formState.errors.registrationDeadline.message}
+                  </p>
                 )}
               </div>
-
-             
             </div>
 
             {/* Social Media Groups */}
@@ -176,12 +214,21 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {[
-                  // { name: "facebookSecretGroup", label: "Facebook Secret Group", icon: Facebook },
-                  { name: "facebookPublicGroup", label: "Facebook Public Group", icon: Facebook },
-                  { name: "whatsappPublicGroup", label: "WhatsApp Public Group", icon: MessageCircle },
-                  // { name: "messengerSecretGroup", label: "Messenger Secret Group", icon: MessageSquare },
-                  { name: "telegramGroup", label: "Telegram Public Group", icon: MessageSquare },
-                  // { name: "whatsappSecretGroup", label: "WhatsApp Secret Group", icon: MessageCircle },
+                  {
+                    name: "facebookPublicGroup",
+                    label: "Facebook Public Group",
+                    icon: Facebook,
+                  },
+                  {
+                    name: "whatsappPublicGroup",
+                    label: "WhatsApp Public Group",
+                    icon: MessageCircle,
+                  },
+                  {
+                    name: "telegramGroup",
+                    label: "Telegram Public Group",
+                    icon: MessageSquare,
+                  },
                 ].map((field) => (
                   <div key={field.name} className="space-y-2">
                     <Label htmlFor={field.name}>{field.label}</Label>
@@ -194,9 +241,15 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
                         className="pl-10"
                       />
                     </div>
-                    {form.formState.errors[field.name as keyof SeminarFormData] && (
+                    {form.formState.errors[
+                      field.name as keyof SeminarFormData
+                    ] && (
                       <p className="text-sm text-red-500">
-                        {form.formState.errors[field.name as keyof SeminarFormData]?.message}
+                        {
+                          form.formState.errors[
+                            field.name as keyof SeminarFormData
+                          ]?.message
+                        }
                       </p>
                     )}
                   </div>
@@ -205,17 +258,17 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
             </div>
 
             <div className="pt-4 flex justify-end border-t">
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="px-8"
-              >
+              <Button type="submit" disabled={isSubmitting} className="px-8">
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Saving...
                   </>
-                ) : initialValues?.title ? "Update Seminar" : "Create Seminar"}
+                ) : initialValues?.title ? (
+                  "Update Seminar"
+                ) : (
+                  "Create Seminar"
+                )}
               </Button>
             </div>
           </form>

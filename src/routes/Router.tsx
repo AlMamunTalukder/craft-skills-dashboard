@@ -25,7 +25,7 @@ import AdminList from "@/pages/Users/Admin/AdminList";
 import TeacherList from "@/pages/Users/Teacher/TeacherList";
 import CreateUser from "@/pages/Users/Teacher/Teacher";
 import CourseBatchDetails from "@/pages/CourseBatch/details/CourseBatchDetails";
-import SeminarFormPage from "@/pages/Seminar/SeminarFormPage/SeminarFormPage";
+import SeminarFormPage from "@/pages/Seminar/new/SeminarFormPage";
 import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
 import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
 import PDF from "@/pages/PDF/PDF";
