@@ -44,9 +44,9 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
       description: "",
       date: new Date().toISOString().slice(0, 16),
       registrationDeadline: new Date().toISOString().slice(0, 16),
-      facebookSecretGroup: "",
-      whatsappSecretGroup: "",
-      messengerSecretGroup: "",
+      // facebookSecretGroup: "",
+      // whatsappSecretGroup: "",
+      // messengerSecretGroup: "",
       facebookPublicGroup: "",
       whatsappPublicGroup: "",
       telegramGroup: "",
@@ -62,9 +62,9 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
         description: initialValues.description || "",
         date: formatDateForInput(initialValues.date),
         registrationDeadline: formatDateForInput(initialValues.registrationDeadline),
-        facebookSecretGroup: initialValues.facebookSecretGroup || "",
-        whatsappSecretGroup: initialValues.whatsappSecretGroup || "",
-        messengerSecretGroup: initialValues.messengerSecretGroup || "",
+        // facebookSecretGroup: initialValues.facebookSecretGroup || "",
+        // whatsappSecretGroup: initialValues.whatsappSecretGroup || "",
+        // messengerSecretGroup: initialValues.messengerSecretGroup || "",
         facebookPublicGroup: initialValues.facebookPublicGroup || "",
         whatsappPublicGroup: initialValues.whatsappPublicGroup || "",
         telegramGroup: initialValues.telegramGroup || "",
@@ -176,12 +176,12 @@ export default function SeminarForm({ initialValues, onSubmit, isSubmitting = fa
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {[
-                  { name: "facebookSecretGroup", label: "Facebook Secret Group", icon: Facebook },
-                  { name: "whatsappSecretGroup", label: "WhatsApp Secret Group", icon: MessageCircle },
-                  { name: "messengerSecretGroup", label: "Messenger Secret Group", icon: MessageSquare },
+                  // { name: "facebookSecretGroup", label: "Facebook Secret Group", icon: Facebook },
                   { name: "facebookPublicGroup", label: "Facebook Public Group", icon: Facebook },
                   { name: "whatsappPublicGroup", label: "WhatsApp Public Group", icon: MessageCircle },
-                  { name: "telegramGroup", label: "Telegram Group", icon: MessageSquare },
+                  // { name: "messengerSecretGroup", label: "Messenger Secret Group", icon: MessageSquare },
+                  { name: "telegramGroup", label: "Telegram Public Group", icon: MessageSquare },
+                  // { name: "whatsappSecretGroup", label: "WhatsApp Secret Group", icon: MessageCircle },
                 ].map((field) => (
                   <div key={field.name} className="space-y-2">
                     <Label htmlFor={field.name}>{field.label}</Label>

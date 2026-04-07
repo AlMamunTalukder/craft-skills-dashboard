@@ -50,8 +50,9 @@ export default function CourseBatchDetails() {
   };
 
   const handleAddStudent = () => {
-    navigate(`/dashboard/students/add?batchId=${id}`);
+    navigate("/add-student");
   };
+  
 
   if (loading) {
     return (
@@ -113,7 +114,7 @@ export default function CourseBatchDetails() {
             </div>
             <Button onClick={handleAddStudent} className="gap-2">
               <PlusCircle className="h-4 w-4" />
-              Add Student to Batch
+              Add Student
             </Button>
           </div>
         </CardHeader>
@@ -135,11 +136,7 @@ export default function CourseBatchDetails() {
               </h3>
               <p className="text-gray-500 max-w-md mx-auto">
                 No students have registered for this batch yet.
-              </p>
-              <Button onClick={handleAddStudent} className="mt-4 gap-2">
-                <PlusCircle className="h-4 w-4" />
-                Add First Student
-              </Button>
+              </p>             
             </div>
           )}
         </CardContent>
