@@ -4,7 +4,7 @@ export const formatPrice = (amount: number): string => {
     style: 'currency',
     currency: 'BDT',
     minimumFractionDigits: 0,
-  }).format(amount).replace('BDT', '৳').trim();
+  }).format(amount).replace('BDT', '৳').trim(); 
 };
 
 export const calculateDiscountedPrice = (price: number, discount: number): number => {

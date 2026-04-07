@@ -4,11 +4,12 @@ import { Switch } from "@/components/ui/switch";
 import type { ColumnDef } from "@tanstack/react-table";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
 import toast from "react-hot-toast";
+import { formatBDDateTime } from "@/lib/fomatBDDateTime";
 
 export const SeminarColumns = (
   onDelete: (id: string) => Promise<void>,
   onStatusToggle: (id: string, isActive: boolean) => void,
-  refreshSeminar: () => Promise<void>
+  refreshSeminar: () => Promise<void>,
 ): ColumnDef<Seminar>[] => [
   {
     accessorKey: "sl",
@@ -16,15 +17,16 @@ export const SeminarColumns = (
     cell: ({ row }) => <span>{row.index + 1}</span>,
   },
   {
-    accessorKey: "title",
-    header: "Title",
-    cell: ({ row }) => <>{row.original.title}</>,
+    accessorKey: "sl",
+    header: "Batch",
+    cell: ({ row }) => <>{row.original.sl}</>, 
   },
   {
-    accessorKey: "sl",
-    header: "Batch No.",
-    cell: ({ row }) => <>{row.original.sl}</>,
+    accessorKey: "title",
+    header: "Seminar Title",
+    cell: ({ row }) => <>{row.original.title}</>,
   },
+  
   {
     accessorKey: "description",
     header: "Description",
@@ -48,38 +50,42 @@ export const SeminarColumns = (
   },
   {
     accessorKey: "date",
-    header: "Seminar Date",
+    header: "Seminar Start",
     cell: ({ row }) => {
-      const dateStr = row.original.date;
-      if (!dateStr) return <span className="text-gray-500">-</span>;
+      const formatted = formatBDDateTime(row.original.date);
 
-      try {
-        const date = new Date(dateStr);
-        if (isNaN(date.getTime())) {
-          return <span className="text-red-500">Invalid date</span>;
-        }
+      if (!formatted) return <span className="text-gray-500">-</span>;
 
-        return (
-          <div className="text-sm">
-            <div>{date.toLocaleDateString("en-US", { weekday: "long" })}</div>
-            <div className="text-muted-foreground">
-              {date.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
-            </div>
-            <div className="text-muted-foreground">
-              {date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </div>
-          </div>
-        );
-      } catch (error) {
-        return <span className="text-red-500">Error</span>;
-      }
+      if (formatted === "invalid")
+        return <span className="text-red-500">Invalid date</span>;
+
+      return (
+        <div className="text-sm">
+          {/* <div>{formatted.dayName}</div> */}
+          <div >{formatted.date}</div>
+          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "registrationDeadline",
+    header: "Seminar End",
+    cell: ({ row }) => {
+      const formatted = formatBDDateTime(row.original.registrationDeadline);
+
+      if (!formatted) return <span className="text-gray-500">-</span>; 
+
+      if (formatted === "invalid")
+        return <span className="text-red-500">Invalid date</span>;
+
+      return (
+        <div className="text-sm">
+          {/* <div>{formatted.dayName}</div> */}
+          <div className="">{formatted.date}</div>
+          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div>
+        </div>
+      );
     },
   },
   {
@@ -117,10 +123,11 @@ export const SeminarColumns = (
             sl: seminar.sl || "",
             description: seminar.description || "",
             date: seminar.date || new Date().toISOString(),
-            registrationDeadline: seminar.registrationDeadline || new Date().toISOString(),
+            registrationDeadline:
+              seminar.registrationDeadline || new Date().toISOString(),
             link: seminar.link || "",
             isActive: false, // Set to inactive by default
-            
+
             // ✅ Include all social media group links
             facebookSecretGroup: seminar.facebookSecretGroup || "",
             whatsappSecretGroup: seminar.whatsappSecretGroup || "",
@@ -136,11 +143,11 @@ export const SeminarColumns = (
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(duplicateData),
-            }
+            },
           );
 
           const result = await response.json();
- 
+
           if (!response.ok) {
             throw new Error(result.message || "Failed to duplicate seminar");
           }

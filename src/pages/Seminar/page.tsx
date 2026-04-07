@@ -14,7 +14,6 @@ export default function SeminarList() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-  // const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   console.log(setSearchTerm);
 

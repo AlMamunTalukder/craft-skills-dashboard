@@ -101,7 +101,7 @@ export default function BatchList() {
     <div className="container mx-auto py-6">
       <TableTopBar
         title="Course Batches"
-        linkTitle="Add New Batch"
+        linkTitle="Add New Batch" 
         href="/course-batches/new"
         data={batches}
         model="Batch"

@@ -4,11 +4,12 @@ import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
 import type { AdmissionBatch } from "@/types";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
+import { formatBDDateTime } from "@/lib/fomatBDDateTime";
 
 export const batchColumns = (
   onDelete: (id: string) => Promise<void>,
   onStatusToggle: (id: string, isActive: boolean) => Promise<void>,
-  refreshBatches: () => void
+  refreshBatches: () => void,
 ): ColumnDef<AdmissionBatch>[] => [
   {
     accessorKey: "sl",
@@ -29,56 +30,40 @@ export const batchColumns = (
     accessorKey: "registrationStart",
     header: "Start Date",
     cell: ({ row }) => {
-      const dateStr = row.original.registrationStart;
-      if (!dateStr) return <span className="text-gray-500">-</span>;
+      const formatted = formatBDDateTime(row.original.registrationStart);
 
-      try {
-        const date = new Date(dateStr);
-        if (isNaN(date.getTime()))
-          return <span className="text-red-500">Invalid</span>;
+      if (!formatted) return <span className="text-gray-500">-</span>;
 
-        return (
-          <div className="text-sm">
-            <div>{date.toLocaleDateString("en-US")}</div>
-            <div className="text-muted-foreground">
-              {date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </div>
-          </div>
-        );
-      } catch {
-        return <span className="text-red-500">Error</span>;
-      }
+      if (formatted === "invalid")
+        return <span className="text-red-500">Invalid</span>;
+
+      return (
+        <div className="text-sm">
+
+          <div>{formatted.date}</div>
+          <div></div>
+          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div>
+        </div>
+      );
     },
   },
   {
     accessorKey: "registrationEnd",
     header: "End Date",
     cell: ({ row }) => {
-      const dateStr = row.original.registrationEnd;
-      if (!dateStr) return <span className="text-gray-500">-</span>;
+      const formatted = formatBDDateTime(row.original.registrationEnd);
 
-      try {
-        const date = new Date(dateStr);
-        if (isNaN(date.getTime()))
-          return <span className="text-red-500">Invalid</span>;
+      if (!formatted) return <span className="text-gray-500">-</span>;
 
-        return (
-          <div className="text-sm">
-            <div>{date.toLocaleDateString("en-US")}</div>
-            <div className="text-muted-foreground">
-              {date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </div>
-          </div>
-        );
-      } catch {
-        return <span className="text-red-500">Error</span>;
-      }
+      if (formatted === "invalid")
+        return <span className="text-red-500">Invalid</span>;
+
+      return (
+        <div className="text-sm">
+          <div>{formatted.date}</div>
+          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div>
+        </div>
+      );
     },
   },
   {
@@ -137,7 +122,7 @@ export const batchColumns = (
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(duplicateData),
-            }
+            },
           );
 
           const result = await response.json();

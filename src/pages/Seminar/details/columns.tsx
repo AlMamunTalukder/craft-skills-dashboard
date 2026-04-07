@@ -3,6 +3,7 @@
 import { Mail, MessageSquare } from "lucide-react";
 import type { Participant } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
+import { formatBDDateTime } from "@/lib/fomatBDDateTime";
 
 export const participantColumns: ColumnDef<Participant>[] = [
   {
@@ -69,44 +70,24 @@ export const participantColumns: ColumnDef<Participant>[] = [
       </div>
     ),
   },
-
-  // {
-  //   accessorKey: "address",
-  //   header: "Address",
-  //   cell: ({ row }) => (
-  //     <div className="flex items-center gap-2">
-  //       <MapPin className="h-4 w-4 text-gray-400" />
-  //       <span className="text-sm">{row.original.address || "-"}</span>
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "registeredAt",
     header: "Registered At",
     cell: ({ row }) => {
-      const date = row.original.registeredAt;
-      if (!date) return <span className="text-gray-400">-</span>;
+      const formatted = formatBDDateTime(row.original.registeredAt);
 
-      try {
-        const formattedDate = new Date(date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
-        const formattedTime = new Date(date).toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+      if (!formatted) return <span className="text-gray-400">-</span>;
 
-        return (
-          <div className="text-sm">
-            <div>{formattedDate}</div>
-            <div className="text-gray-500">{formattedTime}</div>
-          </div>
-        );
-      } catch {
+      if (formatted === "invalid")
         return <span className="text-red-500">Invalid date</span>;
-      }
+
+      return (
+        <div className="text-sm">
+          {/* <div>{formatted.dayName}</div>  */}
+          <div className="text-muted-foreground">{formatted.date}</div>
+          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div> 
+        </div>
+      );
     },
   },
 ];
