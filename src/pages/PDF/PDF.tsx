@@ -39,38 +39,41 @@ export default function PDF() {
   };
 
   const handleToggle = async (value: boolean) => {
-    setSaving(true);
-    
-    try {
-      // Get current site data
-      const siteRes = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
-        credentials: "include",
-      });
+  setSaving(true);
 
-      if (siteRes.status === 401) {
-        alert("Session expired. Please log in again.");
-        return;
-      }
+  try {
+    // Get current site data
+    const siteRes = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
+      credentials: "include",
+    });
 
-      const siteJson = await siteRes.json();
+    if (siteRes.status === 401) {
+      alert("Session expired. Please log in again.");
+      return;
+    }
 
-      if (!siteJson.success) {
-        alert("Failed to fetch current site data");
-        return;
-      }
+    const siteJson = await siteRes.json();
 
-      // Update with new PDF setting
-      const updatedData = {
-        ...siteJson.data,
-        showPdfMenu: value,
-      };
+    if (!siteJson.success) {
+      alert("Failed to fetch current site data");
+      return;
+    }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(updatedData),
-      });
+    // ✅ Remove immutable fields that should not be updated
+    const { _id, createdAt, updatedAt, __v, ...cleanData } = siteJson.data;
+
+    // Update with new PDF setting
+    const updatedData = {
+      ...cleanData,
+      showPdfMenu: value,
+    };
+
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(updatedData),
+    });
 
       if (response.status === 401) {
         alert("Session expired. Please log in again.");
@@ -100,7 +103,7 @@ export default function PDF() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading...</p>
@@ -128,17 +131,21 @@ export default function PDF() {
                 </p>
               </div>
             </div>
-            
+
             <div className="flex flex-col items-end gap-2">
               <Switch
                 checked={showPdfMenu}
                 onCheckedChange={handleToggle}
                 disabled={saving}
               />
-              <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                showPdfMenu ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-              }`}>
-                {showPdfMenu ? 'ON' : 'OFF'}
+              <span
+                className={`text-xs font-medium px-2 py-1 rounded-full ${
+                  showPdfMenu
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {showPdfMenu ? "ON" : "OFF"}
               </span>
             </div>
           </div>
@@ -152,8 +159,6 @@ export default function PDF() {
             >
               Refresh
             </Button>
-            
-           
           </div>
         </CardContent>
       </Card>
