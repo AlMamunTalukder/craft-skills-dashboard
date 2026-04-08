@@ -39,41 +39,17 @@ export default function PDF() {
   };
 
   const handleToggle = async (value: boolean) => {
-  setSaving(true);
-
-  try {
-    // Get current site data
-    const siteRes = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
-      credentials: "include",
-    });
-
-    if (siteRes.status === 401) {
-      alert("Session expired. Please log in again.");
-      return;
-    }
-
-    const siteJson = await siteRes.json();
-
-    if (!siteJson.success) {
-      alert("Failed to fetch current site data");
-      return;
-    }
-
-    // ✅ Remove immutable fields that should not be updated
-    const { _id, createdAt, updatedAt, __v, ...cleanData } = siteJson.data;
-
-    // Update with new PDF setting
-    const updatedData = {
-      ...cleanData,
-      showPdfMenu: value,
-    };
-
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(updatedData),
-    });
+    setSaving(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/site/pdf-settings`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ showPdfMenu: value }),
+        },
+      );
 
       if (response.status === 401) {
         alert("Session expired. Please log in again.");
@@ -81,7 +57,6 @@ export default function PDF() {
       }
 
       const result = await response.json();
-
       if (result.success) {
         setShowPdfMenu(value);
       } else {
