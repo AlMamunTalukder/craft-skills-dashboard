@@ -41,8 +41,8 @@ interface SiteContentData {
   whatsapp?: string;
   youtube?: string;
   telegram?: string;
-  logoLight: string;
-  logoDark: string;
+  // logoLight: string;
+  // logoDark: string;
   totalsTeachers?: number;
   totalCourses?: number;
   totalBatches?: number;
