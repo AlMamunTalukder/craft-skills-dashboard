@@ -60,7 +60,7 @@ const Home = () => {
   const [totalAdmittedStudents, setTotalAdmittedStudents] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // console.log(courseBatches)
+  console.log(courseBatches)
 
   // Helper function to extract batchId as string
   const getBatchIdString = (batchId: any): string => {
