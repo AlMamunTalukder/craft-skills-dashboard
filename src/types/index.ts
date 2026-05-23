@@ -137,9 +137,6 @@ export type CreateCourseDto = Omit<
   "_id" | "id" | "createdAt" | "updatedAt"
 >;
 
-
-
-
 export interface Participant {
   _id: string;
   id: string;
@@ -153,7 +150,6 @@ export interface Participant {
   seminarId: string;
 }
 
-
 // src/types/attendance.ts
 export interface AttendanceRecord {
   _id: string;
@@ -161,7 +157,14 @@ export interface AttendanceRecord {
   studentId: string | { $oid: string };
   batchId: string;
   className: string;
-  sessionType: 'regular' | 'problemSolving' | 'practice' | 'guest' | 'special' | 'exam' | 'revision';
+  sessionType:
+    | "regular"
+    | "problemSolving"
+    | "practice"
+    | "guest"
+    | "special"
+    | "exam"
+    | "revision";
   attended: boolean;
   date: string | Date;
   markedAt: string | Date;
@@ -212,4 +215,31 @@ export interface StudentAttendance {
   attendanceRate: number;
   lastAttendance?: string;
   details: AttendanceRecord[];
+}
+// src/types/exclusive-offer.types.ts
+export interface ExclusiveOfferSettings {
+  _id: string;
+  isActive: boolean;
+  deadline: string; // UTC ISO
+  courseTitle: string;
+  regularPrice: number;
+  offerPrice: number;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExclusiveOfferParticipant {
+  _id: string;
+  name: string;
+  email?: string;
+  phone: string;
+  courseTitle?: string;
+  regularPrice?: number;
+  offerPrice?: number;
+  paymentStatus: "pending" | "success" | "failed";
+  paymentMethod: string;
+  transactionId?: string;
+  createdAt: string;
+  updatedAt: string;
 }

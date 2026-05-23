@@ -7,6 +7,7 @@ import {
   Contact,
   Database,
   FileText,
+  GiftIcon,
   GraduationCap,
   Hand,
   LayoutDashboard,
@@ -73,6 +74,12 @@ const navData = [
     ],
   },
   {
+    title: "Exclusive",
+    url: "/exclusive",
+    icon: GiftIcon,
+    color: "text-blue-600",
+  },
+  {
     title: "Add Student",
     url: "/add-student",
     icon: UserPlus,
@@ -131,7 +138,6 @@ const navData = [
     isActive: false,
   },
 ];
-
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();

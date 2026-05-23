@@ -35,11 +35,14 @@ import AddSchedule from "@/pages/ClassSchedule/add/page";
 import AddStudent from "@/pages/Student/AddStudent";
 import EditStudentPage from "@/pages/Student/EditStudent";
 import ErrorPage from "@/components/ErrorBoundary";
+import ExclusiveOfferSettingsList from "@/pages/Exclusive-offer/page";
+import ExclusiveBatchList from "@/pages/Exclusive-offer/Exclusive-Batch/BatchList";
+import ExclusiveBatchFormPage from "@/pages/Exclusive-offer/Exclusive-Batch/BatchFormPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-     errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     element: (
       <GuestRoute>
         <LoginForm />
@@ -117,6 +120,49 @@ const router = createBrowserRouter([
         element: <SeminarDetailsPage />,
         handle: { breadcrumb: "Seminar Details" },
       },
+      // Exclusive
+
+      {
+        path: "exclusive",
+        element: <ExclusiveOfferSettingsList />,
+        handle: { breadcrumb: "Exclusive" },
+      },
+      // {
+      //   path: "exclusive/new",
+      //   element: <ExclusiveOfferSettingsEdit />,
+      //   handle: { breadcrumb: "Create Exclusive" },
+      // },
+      // {
+      //   path: "seminar/update/:id",
+      //   element: <SeminarFormPage />,
+      //   handle: { breadcrumb: "Update Seminar" },
+      // },
+      // {
+      //   path: "seminar/details/:id",
+      //   element: <SeminarDetailsPage />,
+      //   handle: { breadcrumb: "Seminar Details" },
+      // },
+
+      {
+        path: "exclusive",
+        children: [
+          {
+            index: true,
+            element: <ExclusiveBatchList />,
+            handle: { breadcrumb: "Exclusive Batches" },
+          },
+          {
+            path: "new",
+            element: <ExclusiveBatchFormPage />,
+            handle: { breadcrumb: "Create Batch" },
+          },
+          {
+            path: "update/:id",
+            element: <ExclusiveBatchFormPage />,
+            handle: { breadcrumb: "Update Batch" },
+          },
+        ],
+      },
       // course
       {
         path: "courses",
@@ -151,7 +197,7 @@ const router = createBrowserRouter([
       },
       {
         path: "course-batches/details/:id",
-        element: <CourseBatchDetails />, 
+        element: <CourseBatchDetails />,
         handle: { breadcrumb: "course-batches" },
       },
       // Add Student
