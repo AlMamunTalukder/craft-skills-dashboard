@@ -95,9 +95,7 @@ const router = createBrowserRouter([
         element: <UpdateClassSchedule />,
         handle: { breadcrumb: "Update Class Schedule" },
       },
-      //  <Route path="/schedules" element={<ScheduleList />} />
-      // <Route path="/schedules/new" element={<AddSchedule />} />
-      // <Route path="/schedules/edit/:id" element={<EditSchedule />} />
+
       // Seminar
       {
         path: "seminar",
