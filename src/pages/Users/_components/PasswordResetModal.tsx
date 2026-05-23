@@ -52,7 +52,7 @@ export default function PasswordResetModal({
 
     try {
       const apiUrl = `${import.meta.env.VITE_API_URL}/users/${userId}/reset-password`;
-      console.log("Attempting fetch to:", apiUrl);
+      // console.log("Attempting fetch to:", apiUrl);
 
       const response = await fetch(apiUrl, {
         method: "PUT",
@@ -63,7 +63,7 @@ export default function PasswordResetModal({
       });
 
       clearTimeout(timeoutId); // Request finished, clear the timeout
-      console.log("Response status received:", response.status);
+      // console.log("Response status received:", response.status);
 
       const contentType = response.headers.get("content-type");
       let result;
@@ -89,7 +89,7 @@ export default function PasswordResetModal({
         toast.error(error.message || "An unexpected error occurred");
       }
     } finally {
-      console.log("Setting isLoading to false");
+      // console.log("Setting isLoading to false");
       setIsLoading(false);
     }
   };
@@ -121,7 +121,7 @@ export default function PasswordResetModal({
         </DialogHeader>
         <form
           onSubmit={(e) => {
-            console.log("Form Submit Triggered");
+            // console.log("Form Submit Triggered");
             handleReset(e);
           }}
         >

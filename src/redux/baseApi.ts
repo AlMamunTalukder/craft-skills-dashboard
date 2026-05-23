@@ -7,6 +7,7 @@ import {
 import { tagTypes } from "./tagTypes";
 
 export const URL = import.meta.env.VITE_API_URL;
+// export const baseURL = 'http://localhost:5000/api/v1';
 export const baseURL = import.meta.env.VITE_API_URL;
 
 const rawBaseQuery = fetchBaseQuery({

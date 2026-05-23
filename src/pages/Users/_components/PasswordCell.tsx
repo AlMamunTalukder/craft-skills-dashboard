@@ -16,9 +16,7 @@ export default function PasswordCell({ userId, userName }: PasswordCellProps) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">
-          ••••••••
-        </span>
+        <span className="text-sm text-muted-foreground">••••••••</span>
         <Button
           variant="outline"
           size="sm"
@@ -27,7 +25,7 @@ export default function PasswordCell({ userId, userName }: PasswordCellProps) {
           Reset Password
         </Button>
       </div>
-      
+
       <PasswordResetModal
         userId={userId}
         userName={userName}

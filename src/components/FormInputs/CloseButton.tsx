@@ -11,7 +11,7 @@ export default function CloseButton({ href, parent }: CloseButtonProps) {
   const navigate = useNavigate();
   
   const handleClose = () => {
-    console.log("Close button clicked:", { href, parent }); // Debug log
+    // console.log("Close button clicked:", { href, parent }); // Debug log
     
     // Check what values are being passed
     if (href) {

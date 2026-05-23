@@ -165,7 +165,7 @@ export default function StudentForm({
         notes: initialData.notes || "",
       });
 
-      console.log("Edit Data", initialData);
+      // console.log("Edit Data", initialData);
 
       // Find and set selected course
       if (initialData.courseId) {

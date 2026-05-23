@@ -36,10 +36,11 @@ import AddStudent from "@/pages/Student/AddStudent";
 import EditStudentPage from "@/pages/Student/EditStudent";
 import ErrorPage from "@/components/ErrorBoundary";
 
+
 const router = createBrowserRouter([
   {
     path: "/",
-     errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     element: (
       <GuestRoute>
         <LoginForm />
@@ -47,7 +48,8 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/",
+    path: "/dashboard",
+    errorElement: <ErrorPage />,
     element: (
       <ProtectedRoute roles={["admin", "teacher"]}>
         <Main />
@@ -56,7 +58,7 @@ const router = createBrowserRouter([
     handle: { breadcrumb: "Dashboard" },
     children: [
       {
-        path: "dashboard",
+        index: true, 
         element: <Home />,
         handle: { breadcrumb: "Dashboard" },
       },
@@ -153,7 +155,7 @@ const router = createBrowserRouter([
       },
       {
         path: "course-batches/details/:id",
-        element: <CourseBatchDetails />, 
+        element: <CourseBatchDetails />,
         handle: { breadcrumb: "course-batches" },
       },
       // Add Student
@@ -163,7 +165,7 @@ const router = createBrowserRouter([
         handle: { breadcrumb: "Add Student" },
       },
       {
-        path: "/students/edit/:id",
+        path: "students/edit/:id",
         element: <EditStudentPage />,
         handle: { breadcrumb: "Edit Student" },
       },

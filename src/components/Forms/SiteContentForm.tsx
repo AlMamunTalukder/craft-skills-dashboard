@@ -59,7 +59,7 @@ export default function SiteContentForm({ initialValues }: Props) {
   const [uploading, setUploading] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  console.log(setUploading);
+  // console.log(setUploading);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

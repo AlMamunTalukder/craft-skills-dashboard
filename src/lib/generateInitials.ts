@@ -14,5 +14,5 @@ export function getInitials(name: string | null | undefined): string {
 }
 
 // Example usage
-const initials = getInitials("Muke John");
-console.log(initials); // Outputs: MJ
+// const initials = getInitials("Muke John");
+// console.log(initials); // Outputs: MJ

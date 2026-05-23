@@ -37,7 +37,7 @@ export default function EditStudentPage() {
         // const studentResult = await studentResponse.json();
 
         const studentResult = await studentResponse.json();
-        console.log("Student data from API:", studentResult.data);
+        // console.log("Student data from API:", studentResult.data);
 
         if (!studentResponse.ok || !studentResult.success) {
           throw new Error(studentResult.message);
@@ -129,7 +129,7 @@ export default function EditStudentPage() {
     notes: student.notes || "",
   };
 
-  console.log("Edit page initialData:", initialData);
+  // console.log("Edit page initialData:", initialData);
 
   return (
     <StudentForm

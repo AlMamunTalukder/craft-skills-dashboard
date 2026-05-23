@@ -61,7 +61,7 @@ export default function BatchDetailsPageV2() {
   const updateStudentResult = async (studentId: string, result: string) => {
     try {
       setUpdatingResult(studentId);
-      console.log(`Updating result for student ${studentId} to ${result}`);
+      // console.log(`Updating result for student ${studentId} to ${result}`);
 
       // Find the admission ID for this student
       const student = students.find((s) => s._id === studentId);
@@ -75,9 +75,9 @@ export default function BatchDetailsPageV2() {
 
       // If no admissionId, try to find admission by matching email/phone
       if (!admissionId && batchId) {
-        console.log(
-          "No admissionId found, trying to find admission by student details..."
-        );
+        // console.log(
+        //   "No admissionId found, trying to find admission by student details..."
+        // );
 
         // Get all admissions for this batch
         const admissionsResponse = await fetch(
@@ -99,7 +99,7 @@ export default function BatchDetailsPageV2() {
 
             if (matchingAdmission) {
               admissionId = matchingAdmission._id;
-              console.log(`Found matching admission: ${admissionId}`);
+              // console.log(`Found matching admission: ${admissionId}`);
             }
           }
         }
@@ -215,7 +215,7 @@ export default function BatchDetailsPageV2() {
       setBatch(batchData);
 
       // Step 2: Get admissions for this batch
-      console.log("Step 2: Fetching admissions...");
+      // console.log("Step 2: Fetching admissions...");
       const admissionsResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/admissions/batch/${batchId}`,
         {
@@ -228,12 +228,12 @@ export default function BatchDetailsPageV2() {
         const admissionsResult = await admissionsResponse.json();
         if (admissionsResult.success) {
           admissionsData = admissionsResult.data;
-          console.log(`Found ${admissionsData.length} admissions`);
+          // console.log(`Found ${admissionsData.length} admissions`);
         }
       }
 
       // Step 3: Get attendance for this batch
-      console.log("Step 3: Fetching attendance...");
+      // console.log("Step 3: Fetching attendance...");
       const attendanceResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/attendances/batch/${batchData.code}`,
         {
@@ -273,9 +273,9 @@ export default function BatchDetailsPageV2() {
           );
         });
 
-        console.log(
-          `Student ${admission.name} (${admission._id}) has ${studentAttendance.length} attendance records`
-        );
+        // console.log(
+        //   `Student ${admission.name} (${admission._id}) has ${studentAttendance.length} attendance records`
+        // );
 
         // Calculate detailed statistics
         const stats = calculateStudentStats(studentAttendance);

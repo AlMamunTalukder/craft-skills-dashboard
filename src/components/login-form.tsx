@@ -31,7 +31,7 @@ export function LoginForm({
   const [login, { isLoading }] = useLoginMutation();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  console.log(login)
+
   
   const handleLogin = async (data: z.infer<typeof loginSchema>) => {
     setServerError(null);

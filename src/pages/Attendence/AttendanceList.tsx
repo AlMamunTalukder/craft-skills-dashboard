@@ -15,8 +15,8 @@ export default function BatchAttendanceDashboard() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  console.log(attendanceStats);
-  console.log(setSearchTerm);
+  // console.log(attendanceStats);
+  // console.log(setSearchTerm);
 
   useEffect(() => {
     fetchBatchesWithAttendance();
