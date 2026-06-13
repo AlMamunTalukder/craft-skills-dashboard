@@ -6,7 +6,6 @@ import {
   BookCheck,
   Contact,
   Database,
-  FileText,
   GiftIcon,
   GraduationCap,
   Hand,
