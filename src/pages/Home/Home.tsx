@@ -18,11 +18,16 @@ import {
   UserPlus,
   TrendingUp,
   Clock,
+  Settings,
+  MessageSquare,
+  Star,
+  Gift,
 } from "lucide-react";
 import { Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { StatCard } from "@/components/common/StatCard";
+import { Switch } from "@/components/ui/switch";
 
 interface SiteData {
   totalsTeachers: number;
@@ -61,6 +66,15 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   console.log(courseBatches)
+
+  // Menu settings state
+  const [menuSettings, setMenuSettings] = useState({
+    admission: true,
+    review: true,
+    exclusive: true,
+    gift: true,
+  });
+  const [savingMenuSettings, setSavingMenuSettings] = useState(false);
 
   // Helper function to extract batchId as string
   const getBatchIdString = (batchId: any): string => {
@@ -132,6 +146,34 @@ const Home = () => {
   const handleViewAllAdmissions = () => {
     if (selectedBatch) {
       navigate(`/course-batches/details/${selectedBatch._id}`);
+    }
+  };
+
+
+   const handleToggleMenu = async (key: keyof typeof menuSettings, value: boolean) => {
+    setSavingMenuSettings(true);
+    const previousSettings = { ...menuSettings };
+    // Optimistic update
+    setMenuSettings(prev => ({ ...prev, [key]: value }));
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/site/menu-settings`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ [key]: value }),
+      });
+      const result = await response.json();
+      if (!result.success) {
+        // Revert on error
+        setMenuSettings(previousSettings);
+        alert(result.message || "Failed to update menu settings");
+      }
+    } catch (error) {
+      setMenuSettings(previousSettings);
+      alert("Network error. Please try again.");
+    } finally {
+      setSavingMenuSettings(false);
     }
   };
 
@@ -327,7 +369,7 @@ const Home = () => {
         </Card>
 
         {/* Right Sidebar - Quick Actions */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 space-y-5">
           <Card>
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
@@ -346,9 +388,71 @@ const Home = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Menu Visibility Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Menu Visibility
+              </CardTitle>
+              <CardDescription>
+                Show/hide navigation items on the public website. Home is always visible.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="h-4 w-4 text-purple-600" />
+                  <span className="text-sm font-medium">Admission</span>
+                </div>
+                <Switch
+                  checked={menuSettings.admission}
+                  onCheckedChange={(val) => handleToggleMenu('admission', val)}
+                  disabled={savingMenuSettings}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium">Review</span>
+                </div>
+                <Switch
+                  checked={menuSettings.review}
+                  onCheckedChange={(val) => handleToggleMenu('review', val)}
+                  disabled={savingMenuSettings}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Star className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm font-medium">Exclusive</span>
+                </div>
+                <Switch
+                  checked={menuSettings.exclusive}
+                  onCheckedChange={(val) => handleToggleMenu('exclusive', val)}
+                  disabled={savingMenuSettings}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Gift className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium">Gift (PDF)</span>
+                </div>
+                <Switch
+                  checked={menuSettings.gift}
+                  onCheckedChange={(val) => handleToggleMenu('gift', val)}
+                  disabled={savingMenuSettings}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        
         </div>
       </div>
-    </div>
+   
   );
 };
 

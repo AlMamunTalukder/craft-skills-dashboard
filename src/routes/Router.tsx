@@ -28,7 +28,7 @@ import CourseBatchDetails from "@/pages/CourseBatch/details/CourseBatchDetails";
 import SeminarFormPage from "@/pages/Seminar/new/SeminarFormPage";
 import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
 import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
-import PDF from "@/pages/PDF/PDF";
+// import PDF from "@/pages/PDF/PDF";
 import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDetailsPage";
 import Review from "@/pages/Review/Review";
 import AddSchedule from "@/pages/ClassSchedule/add/page";
@@ -284,11 +284,11 @@ const router = createBrowserRouter([
         handle: { breadcrumb: "teacher" },
       },
       // PDF
-      {
-        path: "pdf",
-        element: <PDF />,
-        handle: { breadcrumb: "PDF" },
-      },
+      // {
+      //   path: "pdf",
+      //   element: <PDF />,
+      //   handle: { breadcrumb: "PDF" },
+      // },
       // Review
       {
         path: "review",
