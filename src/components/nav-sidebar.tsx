@@ -99,12 +99,12 @@ const navData = [
     icon: Hand,
     color: "text-violet-500",
   },
-  {
-    title: "PDF",
-    url: "pdf",
-    icon: FileText,
-    color: "text-blue-500",
-  },
+  // {
+  //   title: "PDF",
+  //   url: "pdf",
+  //   icon: FileText,
+  //   color: "text-blue-500",
+  // },
   {
     title: "Users",
     icon: Users,
