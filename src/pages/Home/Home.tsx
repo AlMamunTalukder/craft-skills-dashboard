@@ -66,8 +66,6 @@ const Home = () => {
   const [totalAdmittedStudents, setTotalAdmittedStudents] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  console.log(courseBatches)
-
   // Menu settings state
   const [menuSettings, setMenuSettings] = useState({
     admission: true,
@@ -93,6 +91,25 @@ const Home = () => {
     { path: "/courses/new", icon: BookOpen, label: "Add Course", color: "text-green-600", hoverBg: "hover:bg-green-50" },
     { path: "/coupons/new", icon: Ticket, label: "Add Coupon", color: "text-orange-600", hoverBg: "hover:bg-orange-50" },
   ];
+
+  // ✅ Fetch menu settings on mount
+  useEffect(() => {
+    const fetchMenuSettings = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
+          credentials: "include",
+        });
+        const result = await response.json();
+        if (result.success && result.data?.menuSettings) {
+          setMenuSettings(result.data.menuSettings);
+        }
+      } catch (error) {
+        console.error("Failed to fetch menu settings:", error);
+      }
+    };
+
+    fetchMenuSettings();
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -142,15 +159,13 @@ const Home = () => {
     loadData();
   }, []);
 
-
-
   const handleViewAllAdmissions = () => {
     if (selectedBatch) {
       navigate(`/course-batches/details/${selectedBatch._id}`);
     }
   };
 
-
+  // ✅ Updated toggle handler - NO RELOAD
   const handleToggleMenu = async (key: keyof typeof menuSettings, value: boolean) => {
     setSavingMenuSettings(true);
     const previousSettings = { ...menuSettings };
@@ -159,10 +174,10 @@ const Home = () => {
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/site/menu-settings`, {
-        method: "PUT", // ✅ This should be PUT, not GET
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}` // ✅ Add auth token if needed
+          "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
         credentials: "include",
         body: JSON.stringify({ [key]: value }),
@@ -173,16 +188,18 @@ const Home = () => {
       if (!result.success) {
         // Revert on error
         setMenuSettings(previousSettings);
-        alert(result.message || "Failed to update menu settings");
+        toast.error(result.message || "Failed to update menu settings");
       } else {
-        // ✅ Success - show toast or reload
+        // ✅ Update with the response data
+        if (result.data && result.data.menuSettings) {
+          setMenuSettings(result.data.menuSettings);
+        }
         toast.success("Menu settings updated successfully");
-        // Optionally reload to reflect changes
-        setTimeout(() => window.location.reload(), 1000);
+        // ✅ NO RELOAD - just keep the current state
       }
     } catch (error) {
       setMenuSettings(previousSettings);
-      alert("Network error. Please try again.");
+      toast.error("Network error. Please try again.");
       console.error("Menu settings error:", error);
     } finally {
       setSavingMenuSettings(false);
@@ -292,9 +309,9 @@ const Home = () => {
           <StatCard key={index} {...stat} />
         ))}
       </div>
+
       {/* Main Content Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-
         {/* Recent Admissions - Left Column */}
         <Card className="lg:col-span-4">
           <CardHeader>
@@ -460,11 +477,8 @@ const Home = () => {
             </CardContent>
           </Card>
         </div>
-
-
       </div>
     </div>
-
   );
 };
 
