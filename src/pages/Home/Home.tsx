@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { StatCard } from "@/components/common/StatCard";
 import { Switch } from "@/components/ui/switch";
+import toast from "react-hot-toast";
 
 interface SiteData {
   totalsTeachers: number;
@@ -153,32 +154,36 @@ const Home = () => {
   const handleToggleMenu = async (key: keyof typeof menuSettings, value: boolean) => {
     setSavingMenuSettings(true);
     const previousSettings = { ...menuSettings };
+    // Optimistic update
     setMenuSettings(prev => ({ ...prev, [key]: value }));
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/site/menu-settings`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: "PUT", // ✅ This should be PUT, not GET
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem('token')}` // ✅ Add auth token if needed
+        },
         credentials: "include",
         body: JSON.stringify({ [key]: value }),
       });
+
       const result = await response.json();
+
       if (!result.success) {
+        // Revert on error
         setMenuSettings(previousSettings);
         alert(result.message || "Failed to update menu settings");
       } else {
-        // ✅ Clear cache after successful update
-        await fetch(`${import.meta.env.VITE_API_URL}/site/clear-cache`, {
-          method: "POST",
-          credentials: "include",
-        });
-
-        // ✅ Reload the page to see the changes
-        window.location.reload();
+        // ✅ Success - show toast or reload
+        toast.success("Menu settings updated successfully");
+        // Optionally reload to reflect changes
+        setTimeout(() => window.location.reload(), 1000);
       }
     } catch (error) {
       setMenuSettings(previousSettings);
       alert("Network error. Please try again.");
+      console.error("Menu settings error:", error);
     } finally {
       setSavingMenuSettings(false);
     }
