@@ -1,3 +1,4 @@
+// pages/Exclusive-offer/page.tsx
 import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,7 +29,6 @@ export default function ExclusiveOfferSettingsList() {
         throw new Error("Invalid response format");
       }
 
-      // Wrap the single settings object in an array for the table
       setSettings(data ? [data] : []);
     } catch (error: any) {
       console.error("Error fetching settings:", error);
@@ -39,8 +39,8 @@ export default function ExclusiveOfferSettingsList() {
     }
   }, []);
 
-  const handleStatusToggle = async (id: string, isActive: boolean) => {
-    console.log(id)
+  // ✅ Remove unused 'id' parameter
+  const handleStatusToggle = async (_id: string, isActive: boolean) => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/admin/exclusive-offer/settings`,
@@ -67,14 +67,7 @@ export default function ExclusiveOfferSettingsList() {
     fetchSettings();
   }, [fetchSettings]);
 
-  // const refreshSettings = () => {
-  //   fetchSettings();
-  // };
-
-  const settingsColumns = ExclusiveOfferColumns(
-    handleStatusToggle,
-    // refreshSettings,
-  );
+  const settingsColumns = ExclusiveOfferColumns(handleStatusToggle);
 
   return (
     <div className="container mx-auto py-6">

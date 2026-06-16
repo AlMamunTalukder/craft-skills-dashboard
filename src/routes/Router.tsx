@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "@/Layout/Main";
 import Home from "../pages/Home/Home";
 import { LoginForm } from "@/components/login-form";
@@ -28,16 +28,15 @@ import CourseBatchDetails from "@/pages/CourseBatch/details/CourseBatchDetails";
 import SeminarFormPage from "@/pages/Seminar/new/SeminarFormPage";
 import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
 import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
-// import PDF from "@/pages/PDF/PDF";
 import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDetailsPage";
 import Review from "@/pages/Review/Review";
 import AddSchedule from "@/pages/ClassSchedule/add/page";
 import AddStudent from "@/pages/Student/AddStudent";
 import EditStudentPage from "@/pages/Student/EditStudent";
 import ErrorPage from "@/components/ErrorBoundary";
-import ExclusiveOfferSettingsList from "@/pages/Exclusive-offer/page";
-import ExclusiveBatchList from "@/pages/Exclusive-offer/Exclusive-Batch/BatchList";
-import ExclusiveBatchFormPage from "@/pages/Exclusive-offer/Exclusive-Batch/BatchFormPage";
+import ExclusiveOfferParticipants from "@/pages/Exclusive-offer/details/Participants";
+import ParticipantForm from "@/pages/Exclusive-offer/ParticipantForm";
+import ExclusiveOfferSettings from "@/pages/Exclusive-offer/Settings";
 
 const router = createBrowserRouter([
   {
@@ -124,45 +123,41 @@ const router = createBrowserRouter([
 
       {
         path: "exclusive",
-        element: <ExclusiveOfferSettingsList />,
+        element: <Navigate to="/exclusive-offer/participants" replace />,
         handle: { breadcrumb: "Exclusive" },
       },
-      // {
-      //   path: "exclusive/new",
-      //   element: <ExclusiveOfferSettingsEdit />,
-      //   handle: { breadcrumb: "Create Exclusive" },
-      // },
-      // {
-      //   path: "seminar/update/:id",
-      //   element: <SeminarFormPage />,
-      //   handle: { breadcrumb: "Update Seminar" },
-      // },
-      // {
-      //   path: "seminar/details/:id",
-      //   element: <SeminarDetailsPage />,
-      //   handle: { breadcrumb: "Seminar Details" },
-      // },
+
 
       {
-        path: "exclusive",
+        path: "exclusive-offer",
         children: [
           {
             index: true,
-            element: <ExclusiveBatchList />,
-            handle: { breadcrumb: "Exclusive Batches" },
+            element: <Navigate to="participants" replace />,
           },
           {
-            path: "new",
-            element: <ExclusiveBatchFormPage />,
-            handle: { breadcrumb: "Create Batch" },
+            path: "participants",
+            element: <ExclusiveOfferParticipants />,
+            handle: { breadcrumb: "Participants" },
           },
           {
-            path: "update/:id",
-            element: <ExclusiveBatchFormPage />,
-            handle: { breadcrumb: "Update Batch" },
+            path: "participants/new",
+            element: <ParticipantForm />,
+            handle: { breadcrumb: "Add Participant" },
+          },
+          {
+            path: "participants/edit/:id",
+            element: <ParticipantForm />,
+            handle: { breadcrumb: "Edit Participant" },
+          },
+          {
+            path: "settings",
+            element: <ExclusiveOfferSettings />,
+            handle: { breadcrumb: "Settings" },
           },
         ],
       },
+
       // course
       {
         path: "courses",
