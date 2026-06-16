@@ -68,7 +68,7 @@ const Home = () => {
 
   console.log("courseBatches:", courseBatches);
 
-  // Menu settings state
+
   const [menuSettings, setMenuSettings] = useState({
     admission: true,
     review: true,

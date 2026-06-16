@@ -14,8 +14,6 @@ dist-ssr
 *.local
 
 # Environment variables
-.env
-.env.*
 
 # Editor & OS files
 .vscode/*
@@ -27,3 +25,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+config.bat
