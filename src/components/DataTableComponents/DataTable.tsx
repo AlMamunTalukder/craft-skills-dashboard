@@ -54,7 +54,6 @@ interface DataTableProps<TData, TValue> {
   searchPlaceholder?: string;
   dateField?: string;
   searchable?: boolean;
-  // ✅ New props for row selection
   enableRowSelection?: boolean;
   onRowSelectionChange?: (selectedIds: string[]) => void;
   onBulkDelete?: (selectedIds: string[]) => Promise<void>;
