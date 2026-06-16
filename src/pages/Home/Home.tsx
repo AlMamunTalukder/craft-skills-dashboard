@@ -111,26 +111,26 @@ const Home = () => {
         const admissionsRes = await fetch(`${import.meta.env.VITE_API_URL}/admissions?limit=1000`);
         const admissionsJson = await admissionsRes.json();
         const allAdmissions = admissionsJson?.data || [];
-        
+
         // Set recent admissions (last 5)
         setRecentAdmissions(allAdmissions.slice(0, 5));
 
         // Select default batch (active or first)
         const activeBatch = batches.find((batch: CourseBatch) => batch.isActive === true);
         const defaultBatch = activeBatch || batches[0];
-        
+
         if (defaultBatch) {
           setSelectedBatch(defaultBatch);
-          
+
           // Count admissions for this batch
           const batchAdmissions = allAdmissions.filter((ad: Admission) => {
             const admissionBatchId = getBatchIdString(ad.batchId);
             return admissionBatchId === defaultBatch._id;
           });
-          
+
           setTotalAdmittedStudents(batchAdmissions.length);
         }
-        
+
       } catch (error) {
         console.error("Failed to load data:", error);
       } finally {
@@ -141,7 +141,7 @@ const Home = () => {
     loadData();
   }, []);
 
-  
+
 
   const handleViewAllAdmissions = () => {
     if (selectedBatch) {
@@ -150,10 +150,9 @@ const Home = () => {
   };
 
 
-   const handleToggleMenu = async (key: keyof typeof menuSettings, value: boolean) => {
+  const handleToggleMenu = async (key: keyof typeof menuSettings, value: boolean) => {
     setSavingMenuSettings(true);
     const previousSettings = { ...menuSettings };
-    // Optimistic update
     setMenuSettings(prev => ({ ...prev, [key]: value }));
 
     try {
@@ -165,9 +164,17 @@ const Home = () => {
       });
       const result = await response.json();
       if (!result.success) {
-        // Revert on error
         setMenuSettings(previousSettings);
         alert(result.message || "Failed to update menu settings");
+      } else {
+        // ✅ Clear cache after successful update
+        await fetch(`${import.meta.env.VITE_API_URL}/site/clear-cache`, {
+          method: "POST",
+          credentials: "include",
+        });
+
+        // ✅ Reload the page to see the changes
+        window.location.reload();
       }
     } catch (error) {
       setMenuSettings(previousSettings);
@@ -177,7 +184,7 @@ const Home = () => {
     }
   };
 
-   const statsData = [
+  const statsData = [
     { icon: <Users className="h-6 w-6" />, title: "Total Teachers", value: data?.totalsTeachers || 0, color: "text-blue-600", bgColor: "bg-blue-50" },
     { icon: <BookOpen className="h-6 w-6" />, title: "Total Students", value: data?.totalCourses || 0, color: "text-green-600", bgColor: "bg-green-50" },
     { icon: <GraduationCap className="h-6 w-6" />, title: "Total Batches", value: data?.totalBatches || 0, color: "text-purple-600", bgColor: "bg-purple-50" },
@@ -275,7 +282,7 @@ const Home = () => {
       </div>
 
       {/* Stats Section */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsData.map((stat, index) => (
           <StatCard key={index} {...stat} />
         ))}
@@ -299,7 +306,7 @@ const Home = () => {
               )}
             </div>
           </CardHeader>
-          <CardContent>          
+          <CardContent>
             {/* Selected Batch Summary */}
             {selectedBatch && (
               <div className="mb-6 p-4 bg-linear-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
@@ -360,7 +367,7 @@ const Home = () => {
                 <div className="text-center py-8 text-muted-foreground">No recent admissions found</div>
               )}
             </div>
-            
+
             <Button className="mt-4 w-full" variant="outline" onClick={handleViewAllAdmissions} disabled={!selectedBatch}>
               <Users className="mr-2 h-4 w-4" />
               View All Admissions
@@ -449,10 +456,10 @@ const Home = () => {
           </Card>
         </div>
 
-        
-        </div>
+
       </div>
-   
+    </div>
+
   );
 };
 
