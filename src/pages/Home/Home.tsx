@@ -66,6 +66,8 @@ const Home = () => {
   const [totalAdmittedStudents, setTotalAdmittedStudents] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  console.log("courseBatches:", courseBatches);
+
   // Menu settings state
   const [menuSettings, setMenuSettings] = useState({
     admission: true,
