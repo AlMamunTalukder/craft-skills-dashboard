@@ -1,5 +1,3 @@
- 
-
 import * as React from "react";
 import {
   flexRender,
@@ -31,11 +29,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import SearchBar from "./SearchBar";
 import { DataTableViewOptions } from "./DataTableViewOptions";
 import { Button } from "../ui/button";
-import { ListFilter } from "lucide-react";
+import { ListFilter, Trash2, Loader2 } from "lucide-react";
 import DateFilters from "./DateFilters";
 import DateRangeFilter from "./DateRangeFilter";
 import { DataTablePagination } from "./DataTablePagination";
@@ -45,13 +53,22 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchPlaceholder?: string;
   dateField?: string;
-  searchable?: boolean; // Add this
+  searchable?: boolean;
+  // ✅ New props for row selection
+  enableRowSelection?: boolean;
+  onRowSelectionChange?: (selectedIds: string[]) => void;
+  onBulkDelete?: (selectedIds: string[]) => Promise<void>;
+  getRowId?: (row: TData) => string;
 }
 
 export default function DataTable<TData, TValue>({
   columns,
   data,
   searchPlaceholder = "Search",
+  enableRowSelection = false,
+  onRowSelectionChange,
+  onBulkDelete,
+  getRowId,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -60,6 +77,54 @@ export default function DataTable<TData, TValue>({
   const [filteredData, setFilteredData] = React.useState<TData[]>(data);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [isSearch, setIsSearch] = React.useState(true);
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
+
+  // ✅ Get selected row IDs
+  const getSelectedIds = React.useCallback(() => {
+    const selectedIndexes = Object.keys(rowSelection).filter(
+      (key) => rowSelection[key as keyof typeof rowSelection]
+    );
+    const currentData = isSearch ? searchResults : filteredData;
+    return selectedIndexes
+      .map((index) => {
+        const row = currentData[parseInt(index)];
+        return getRowId ? getRowId(row) : (row as any)._id || (row as any).id;
+      })
+      .filter(Boolean);
+  }, [rowSelection, isSearch, searchResults, filteredData, getRowId]);
+
+  const selectedCount = Object.keys(rowSelection).filter(
+    (key) => rowSelection[key as keyof typeof rowSelection]
+  ).length;
+
+  // ✅ Handle row selection change
+  React.useEffect(() => {
+    if (onRowSelectionChange) {
+      const selectedIds = getSelectedIds();
+      onRowSelectionChange(selectedIds);
+    }
+  }, [rowSelection, onRowSelectionChange, getSelectedIds]);
+
+  // ✅ Handle bulk delete
+  const handleBulkDelete = async () => {
+    if (!onBulkDelete) return;
+
+    const selectedIds = getSelectedIds();
+    if (selectedIds.length === 0) return;
+
+    setIsDeleting(true);
+    setShowDeleteDialog(false);
+
+    try {
+      await onBulkDelete(selectedIds);
+      setRowSelection({});
+    } catch (error) {
+      console.error("Bulk delete error:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const table = useReactTable({
     data: isSearch ? searchResults : filteredData,
@@ -70,7 +135,7 @@ export default function DataTable<TData, TValue>({
       rowSelection,
       columnFilters,
     },
-    enableRowSelection: true,
+    enableRowSelection,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -90,6 +155,35 @@ export default function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
+      {/* ✅ Bulk Delete Toolbar */}
+      {enableRowSelection && onBulkDelete && (
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {selectedCount > 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setShowDeleteDialog(true)}
+                disabled={isDeleting}
+                className="flex items-center gap-2"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4" />
+                    Delete Selected ({selectedCount})
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="w-full sm:w-auto sm:flex-1">
           <SearchBar
@@ -144,9 +238,9 @@ export default function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
@@ -183,7 +277,38 @@ export default function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
+
       <DataTablePagination table={table} />
+
+      {/* ✅ Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              selected {selectedCount} item(s) and remove them from the database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleBulkDelete}
+              className="bg-red-600 hover:bg-red-700"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

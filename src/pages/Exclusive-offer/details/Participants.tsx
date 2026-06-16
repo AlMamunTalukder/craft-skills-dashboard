@@ -57,7 +57,31 @@ export default function ExclusiveOfferParticipants() {
     }
   };
 
-  // ✅ Remove refreshParticipants if not needed
+  // ✅ Bulk delete handler
+  const handleBulkDelete = async (selectedIds: string[]) => {
+    try {
+      const deletePromises = selectedIds.map((id) =>
+        fetch(`${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${id}`, {
+          method: "DELETE",
+        })
+      );
+
+      const responses = await Promise.all(deletePromises);
+      const failed = responses.filter((res) => !res.ok);
+
+      if (failed.length > 0) {
+        toast.error(`${failed.length} participant(s) failed to delete.`);
+      } else {
+        toast.success(`${selectedIds.length} participant(s) deleted successfully`);
+        setRefreshTrigger(prev => prev + 1);
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete participants");
+    }
+  };
+
+
+
   const columns = participantColumns(handleDelete);
 
   return (
@@ -104,6 +128,9 @@ export default function ExclusiveOfferParticipants() {
               columns={columns}
               searchable={true}
               searchPlaceholder="Search by name, email, phone..."
+              enableRowSelection={true}
+              onBulkDelete={handleBulkDelete}
+              getRowId={(row) => row._id}
             />
           )}
         </CardContent>

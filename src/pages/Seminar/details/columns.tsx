@@ -85,7 +85,7 @@ export const participantColumns: ColumnDef<Participant>[] = [
         <div className="text-sm">
           {/* <div>{formatted.dayName}</div>  */}
           <div className="text-muted-foreground">{formatted.date}</div>
-          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div> 
+          <div className="text-muted-foreground">{formatted.dayName}, {formatted.time}</div>
         </div>
       );
     },
