@@ -103,7 +103,7 @@ export default function ExclusiveOfferSettings() {
 
                         {/* Event Date */}
                         <div className="space-y-2">
-                            <Label htmlFor="date">Masterclass Date (shown on form)</Label>
+                            <Label htmlFor="date">Masterclass Date/Time</Label>
                             <Input
                                 id="date"
                                 type="text"
@@ -111,9 +111,7 @@ export default function ExclusiveOfferSettings() {
                                 onChange={(e) => setDate(e.target.value)}
                                 placeholder="e.g. ১৫ জুলাই ২০২৬, বিকাল ৪টা"
                             />
-                            <p className="text-sm text-muted-foreground">
-                                This date will be displayed on the registration form.
-                            </p>
+                           
                         </div>
 
                         {/* WhatsApp Link */}
@@ -129,16 +127,7 @@ export default function ExclusiveOfferSettings() {
                         </div>
 
                         {/* Facebook Group Link */}
-                        <div className="space-y-2">
-                            <Label htmlFor="fbLink">Facebook Group Link (shown on success page)</Label>
-                            <Input
-                                id="fbLink"
-                                type="url"
-                                value={fbLink}
-                                onChange={(e) => setFbLink(e.target.value)}
-                                placeholder="https://www.facebook.com/groups/..."
-                            />
-                        </div>
+                        
 
                         <div className="flex gap-3 pt-2">
                             <Button type="submit" disabled={saving}>
