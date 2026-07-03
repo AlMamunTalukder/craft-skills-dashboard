@@ -1,50 +1,34 @@
 export const formatBDDateTime = (isoString?: string | null) => {
-  if (!isoString) return null;
+    if (!isoString) return null;
 
-  const date = new Date(isoString);
-  if (isNaN(date.getTime())) return "invalid";
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return "invalid";
 
-  // Convert to Bangladesh time (UTC+6)
-  const bdDate = new Date(date.getTime() + 6 * 60 * 60 * 1000);
+    // ✅ Use Intl API with Asia/Dhaka timezone — always correct
+    const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Dhaka",
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        weekday: "long",
+    }).formatToParts(date);
 
-  // Format date: 08 Apr 2026
-  const day = String(bdDate.getDate()).padStart(2, "0");
-  const monthNames = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const month = monthNames[bdDate.getMonth()];
-  const year = bdDate.getFullYear();
-  const dateStr = `${day} ${month} ${year}`;
+    const get = (type: string) => parts.find(p => p.type === type)?.value ?? "";
 
-  // Format day name: Wednesday
-  const dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const dayName = dayNames[bdDate.getDay()];
+    const day = get("day");
+    const month = get("month");
+    const year = get("year");
+    const dayName = get("weekday");
+    const hour = get("hour");
+    const minute = get("minute");
+    const dayPeriod = get("dayPeriod").toUpperCase(); 
 
-  // Format 12-hour time: 09:00 PM
-  let hours = bdDate.getHours();
-  const minutes = String(bdDate.getMinutes()).padStart(2, "0");
-  const ampm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12; // convert 0 => 12
-  const time = `${String(hours).padStart(2, "0")}:${minutes} ${ampm}`;
-
-  return { date: dateStr, dayName, time };
+    return {
+        date: `${day} ${month} ${year}`,          
+        dayName,                                    
+        time: `${hour}:${minute} ${dayPeriod}`,    
+    };
 };

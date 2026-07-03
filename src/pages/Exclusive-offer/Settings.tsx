@@ -10,22 +10,28 @@ import toast from "react-hot-toast";
 export default function ExclusiveOfferSettings() {
     const navigate = useNavigate();
     const [price, setPrice] = useState<number>(199);
+    const [date, setDate] = useState<string>("");
+    const [whatsappLink, setWhatsappLink] = useState<string>("");
+    const [fbLink, setFbLink] = useState<string>("");
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
-        fetchPrice();
+        fetchSettings();
     }, []);
 
-    const fetchPrice = async () => {
+    const fetchSettings = async () => {
         try {
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-offer/price`
             );
             const { data } = await response.json();
             setPrice(data?.price || 199);
+            setDate(data?.date || "");
+            setWhatsappLink(data?.whatsappLink || "");
+            setFbLink(data?.fbLink || "");
         } catch (error) {
-            toast.error("Failed to fetch price");
+            toast.error("Failed to fetch settings");
         } finally {
             setLoading(false);
         }
@@ -40,14 +46,12 @@ export default function ExclusiveOfferSettings() {
                 {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ price }),
+                    body: JSON.stringify({ price, date, whatsappLink, fbLink }),
                 }
             );
             const result = await response.json();
-            if (!response.ok) {
-                throw new Error(result.message || "Failed to update price");
-            }
-            toast.success("Price updated successfully");
+            if (!response.ok) throw new Error(result.message || "Failed to update settings");
+            toast.success("Settings updated successfully");
             navigate("/exclusive-offer/participants");
         } catch (error: any) {
             toast.error(error.message);
@@ -71,17 +75,18 @@ export default function ExclusiveOfferSettings() {
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back
                 </Button>
-                <h1 className="text-2xl font-bold">Price Settings</h1>
+                <h1 className="text-2xl font-bold">Exclusive Offer Settings</h1>
             </div>
 
             <Card>
                 <CardHeader>
-                    <CardTitle>Exclusive Offer Price</CardTitle>
+                    <CardTitle>Settings</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+                    <form onSubmit={handleSubmit} className="space-y-6 max-w-lg">
+                        {/* Price */}
                         <div className="space-y-2">
-                            <Label htmlFor="price">Course Price (BDT)</Label>
+                            <Label htmlFor="price">Course Price (BDT) *</Label>
                             <Input
                                 id="price"
                                 type="number"
@@ -89,31 +94,61 @@ export default function ExclusiveOfferSettings() {
                                 onChange={(e) => setPrice(Number(e.target.value))}
                                 placeholder="Enter price"
                                 min="1"
+                                required
                             />
                             <p className="text-sm text-muted-foreground">
-                                This price will be applied to all new registrations.
+                                Applied to all new registrations.
                             </p>
                         </div>
 
-                        <div className="flex gap-3">
+                        {/* Event Date */}
+                        <div className="space-y-2">
+                            <Label htmlFor="date">Masterclass Date (shown on form)</Label>
+                            <Input
+                                id="date"
+                                type="text"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                placeholder="e.g. ১৫ জুলাই ২০২৬, বিকাল ৪টা"
+                            />
+                            <p className="text-sm text-muted-foreground">
+                                This date will be displayed on the registration form.
+                            </p>
+                        </div>
+
+                        {/* WhatsApp Link */}
+                        <div className="space-y-2">
+                            <Label htmlFor="whatsappLink">WhatsApp Link (shown on success page)</Label>
+                            <Input
+                                id="whatsappLink"
+                                type="url"
+                                value={whatsappLink}
+                                onChange={(e) => setWhatsappLink(e.target.value)}
+                                placeholder="https://chat.whatsapp.com/..."
+                            />
+                        </div>
+
+                        {/* Facebook Group Link */}
+                        <div className="space-y-2">
+                            <Label htmlFor="fbLink">Facebook Group Link (shown on success page)</Label>
+                            <Input
+                                id="fbLink"
+                                type="url"
+                                value={fbLink}
+                                onChange={(e) => setFbLink(e.target.value)}
+                                placeholder="https://www.facebook.com/groups/..."
+                            />
+                        </div>
+
+                        <div className="flex gap-3 pt-2">
                             <Button type="submit" disabled={saving}>
                                 {saving ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Saving...
-                                    </>
+                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving...</>
                                 ) : (
-                                    <>
-                                        <Save className="mr-2 h-4 w-4" />
-                                        Save Price
-                                    </>
+                                    <><Save className="mr-2 h-4 w-4" />Save Settings</>
                                 )}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => navigate("/exclusive-offer/participants")}
-                            >
+                            <Button type="button" variant="outline" onClick={() => navigate("/exclusive-offer/participants")}>
                                 Cancel
                             </Button>
                         </div>
