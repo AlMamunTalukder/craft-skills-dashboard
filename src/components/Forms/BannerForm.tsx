@@ -72,7 +72,6 @@ export default function BannerForm({ initialValues }: Props) {
       });
       
       if (response.ok) {
-        // const result = await response.json();
         toast.success("Banner content updated successfully.");
         setTimeout(() => {
           navigate("/banner");
