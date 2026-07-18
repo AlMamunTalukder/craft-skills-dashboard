@@ -1,3 +1,4 @@
+// In ExclusiveBatchForm.tsx
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -10,6 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import toast from "react-hot-toast";
+import moment from 'moment-timezone';
+
+// ✅ Set default timezone to Bangladesh
+moment.tz.setDefault('Asia/Dhaka');
 
 const batchSchema = z.object({
     batchNo: z.union([z.string(), z.number()]),
@@ -19,23 +24,38 @@ const batchSchema = z.object({
     registrationDeadline: z.string().min(1, "Registration deadline is required"),
     offerPrice: z.number().min(0, "Price must be positive"),
     regularPrice: z.number().min(0, "Regular price must be positive"),
-    maxSeats: z.number().optional(),
 });
 
 type BatchFormData = z.infer<typeof batchSchema>;
 
+// ✅ Convert BST to UTC for storage
 const convertToUTC = (localDateTime: string) => {
     if (!localDateTime) return "";
-    const date = new Date(localDateTime);
-    const utcDate = new Date(date.getTime() - 6 * 60 * 60 * 1000);
-    return utcDate.toISOString();
+    try {
+        // Parse the datetime as BST (Asia/Dhaka timezone)
+        const bstDate = moment.tz(localDateTime, 'Asia/Dhaka');
+        // Convert to UTC and return ISO string
+        return bstDate.utc().format();
+    } catch (error) {
+        console.error('Error converting to UTC:', error);
+        return "";
+    }
 };
 
+// ✅ Convert UTC to BST for display in input
 const formatDateForInput = (dateStr: string) => {
     if (!dateStr) return "";
-    const date = new Date(dateStr);
-    const bdDate = new Date(date.getTime() + 6 * 60 * 60 * 1000);
-    return bdDate.toISOString().slice(0, 16);
+    try {
+        // Parse as UTC and convert to BST
+        const bstDate = moment.utc(dateStr).tz('Asia/Dhaka');
+        // Format for datetime-local input (YYYY-MM-DDTHH:mm)
+        const formatted = bstDate.format('YYYY-MM-DDTHH:mm');
+        console.log(`UTC: ${dateStr} → BST: ${formatted}`); // Debug log
+        return formatted;
+    } catch (error) {
+        console.error('Error formatting date for input:', error);
+        return "";
+    }
 };
 
 export default function ExclusiveBatchForm() {
@@ -48,6 +68,7 @@ export default function ExclusiveBatchForm() {
         register,
         handleSubmit,
         reset,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm<BatchFormData>({
         resolver: zodResolver(batchSchema),
@@ -59,9 +80,12 @@ export default function ExclusiveBatchForm() {
             registrationDeadline: "",
             offerPrice: 199,
             regularPrice: 5500,
-            maxSeats: 50,
         },
     });
+
+    // Watch dates for live preview
+    const watchDate = watch('date');
+    const watchDeadline = watch('registrationDeadline');
 
     useEffect(() => {
         if (id) fetchBatch();
@@ -75,15 +99,27 @@ export default function ExclusiveBatchForm() {
             );
             const { data, success } = await response.json();
             if (success) {
+                console.log('Raw data from API:', {
+                    date: data.date,
+                    deadline: data.registrationDeadline
+                });
+
+                const formattedDate = formatDateForInput(data.date);
+                const formattedDeadline = formatDateForInput(data.registrationDeadline);
+
+                console.log('Formatted for input:', {
+                    date: formattedDate,
+                    deadline: formattedDeadline
+                });
+
                 reset({
                     batchNo: data.batchNo,
                     title: data.title,
                     description: data.description || "",
-                    date: formatDateForInput(data.date),
-                    registrationDeadline: formatDateForInput(data.registrationDeadline),
+                    date: formattedDate,
+                    registrationDeadline: formattedDeadline,
                     offerPrice: data.offerPrice,
                     regularPrice: data.regularPrice || 5500,
-                    maxSeats: data.maxSeats || 50,
                 });
                 setIsEditing(true);
             }
@@ -97,11 +133,17 @@ export default function ExclusiveBatchForm() {
 
     const onSubmit = async (data: BatchFormData) => {
         try {
+            console.log('Form data before conversion:', data);
+            
             const payload = {
                 ...data,
                 date: convertToUTC(data.date),
                 registrationDeadline: convertToUTC(data.registrationDeadline),
+                offerPrice: Number(data.offerPrice),
+                regularPrice: Number(data.regularPrice),
             };
+
+            console.log('Payload being sent:', payload);
 
             const url = isEditing
                 ? `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`
@@ -120,7 +162,7 @@ export default function ExclusiveBatchForm() {
             toast.success(isEditing ? "Batch updated" : "Batch created");
             navigate("/exclusive-offer/batches");
         } catch (error: any) {
-            toast.error(error.message);
+            toast.error(error.message || "Something went wrong");
         }
     };
 
@@ -153,13 +195,22 @@ export default function ExclusiveBatchForm() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="batchNo">Batch Number *</Label>
-                                <Input id="batchNo" {...register("batchNo")} placeholder="1" />
+                                <Input 
+                                    id="batchNo" 
+                                    {...register("batchNo")} 
+                                    placeholder="1" 
+                                    type="number"
+                                />
                                 {errors.batchNo && <p className="text-sm text-red-500">{errors.batchNo.message}</p>}
                             </div>
 
                             <div className="space-y-2">
                                 <Label htmlFor="title">Batch Title *</Label>
-                                <Input id="title" {...register("title")} placeholder="Masterclass Batch 1" />
+                                <Input 
+                                    id="title" 
+                                    {...register("title")} 
+                                    placeholder="Masterclass Batch 1" 
+                                />
                                 {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
                             </div>
 
@@ -170,29 +221,61 @@ export default function ExclusiveBatchForm() {
 
                             <div className="space-y-2">
                                 <Label htmlFor="date">Event Date & Time *</Label>
-                                <Input id="date" type="datetime-local" {...register("date")} />
+                                <Input 
+                                    id="date" 
+                                    type="datetime-local" 
+                                    {...register("date")} 
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    Time will be displayed in Bangladesh Standard Time (BST)
+                                </p>
+                                {watchDate && (
+                                    <p className="text-xs text-blue-600 font-medium">
+                                        BST: {moment.tz(watchDate, 'Asia/Dhaka').format('DD MMM YYYY hh:mm A')}
+                                    </p>
+                                )}
                                 {errors.date && <p className="text-sm text-red-500">{errors.date.message}</p>}
                             </div>
 
                             <div className="space-y-2">
                                 <Label htmlFor="registrationDeadline">Registration Deadline *</Label>
-                                <Input id="registrationDeadline" type="datetime-local" {...register("registrationDeadline")} />
+                                <Input 
+                                    id="registrationDeadline" 
+                                    type="datetime-local" 
+                                    {...register("registrationDeadline")} 
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    Time will be displayed in Bangladesh Standard Time (BST)
+                                </p>
+                                {watchDeadline && (
+                                    <p className="text-xs text-blue-600 font-medium">
+                                        BST: {moment.tz(watchDeadline, 'Asia/Dhaka').format('DD MMM YYYY hh:mm A')}
+                                    </p>
+                                )}
                                 {errors.registrationDeadline && <p className="text-sm text-red-500">{errors.registrationDeadline.message}</p>}
                             </div>
 
                             <div className="space-y-2">
                                 <Label htmlFor="offerPrice">Offer Price (BDT) *</Label>
-                                <Input id="offerPrice" type="number" {...register("offerPrice", { valueAsNumber: true })} />
+                                <Input 
+                                    id="offerPrice" 
+                                    type="number" 
+                                    {...register("offerPrice", { valueAsNumber: true })} 
+                                    step="0.01"
+                                />
                                 {errors.offerPrice && <p className="text-sm text-red-500">{errors.offerPrice.message}</p>}
                             </div>
 
                             <div className="space-y-2">
                                 <Label htmlFor="regularPrice">Regular Price (BDT) *</Label>
-                                <Input id="regularPrice" type="number" {...register("regularPrice", { valueAsNumber: true })} />
+                                <Input 
+                                    id="regularPrice" 
+                                    type="number" 
+                                    {...register("regularPrice", { valueAsNumber: true })} 
+                                    step="0.01"
+                                />
                                 {errors.regularPrice && <p className="text-sm text-red-500">{errors.regularPrice.message}</p>}
                             </div>
-
-                            
                         </div>
 
                         <div className="flex justify-end gap-3 pt-4 border-t">

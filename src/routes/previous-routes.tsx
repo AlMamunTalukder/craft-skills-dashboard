@@ -39,7 +39,7 @@ import ErrorPage from "@/components/ErrorBoundary";
 import ParticipantForm from "@/components/Forms/ParticipantForm";
 import ExclusiveBatchList from "@/pages/Exclusive-offer/BatchList";
 import ExclusiveBatchForm from "@/components/Forms/ExclusiveBatchForm";
-import ExclusiveBatchDetails from "@/pages/Exclusive-offer/BatchDetails";
+import ExclusiveBatchDetails from "@/pages/Exclusive-offer/BatchParticipantDetails";
 
 const router = createBrowserRouter([
   {

@@ -118,7 +118,7 @@ export const batchColumns = (
                             registrationDeadline: batch.registrationDeadline,
                             offerPrice: batch.offerPrice,
                             regularPrice: batch.regularPrice,
-                            maxSeats: batch.maxSeats,
+                          
                             isActive: false,
                         };
                         const response = await fetch(

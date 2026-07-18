@@ -1,34 +1,47 @@
+// lib/formatBDDate.ts
+import moment from 'moment-timezone';
+
+// Set default timezone to Bangladesh
+moment.tz.setDefault('Asia/Dhaka');
+
 export const formatBDDateTime = (isoString?: string | null) => {
     if (!isoString) return null;
 
-    const date = new Date(isoString);
-    if (isNaN(date.getTime())) return "invalid";
+    try {
+        const date = moment.utc(isoString).tz('Asia/Dhaka');
+        if (!date.isValid()) return "invalid";
 
-    // ✅ Use Intl API with Asia/Dhaka timezone — always correct
-    const parts = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Asia/Dhaka",
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-        weekday: "long",
-    }).formatToParts(date);
+        return {
+            date: date.format('DD MMM YYYY'),
+            dayName: date.format('dddd'),
+            time: date.format('hh:mm A'),
+            fullDateTime: date.format('DD MMM YYYY hh:mm A'),
+        };
+    } catch (error) {
+        return "invalid";
+    }
+};
 
-    const get = (type: string) => parts.find(p => p.type === type)?.value ?? "";
+// Format just the date
+export const formatBDDate = (isoString?: string | null) => {
+    if (!isoString) return null;
+    try {
+        const date = moment.utc(isoString).tz('Asia/Dhaka');
+        if (!date.isValid()) return null;
+        return date.format('DD MMM YYYY');
+    } catch {
+        return null;
+    }
+};
 
-    const day = get("day");
-    const month = get("month");
-    const year = get("year");
-    const dayName = get("weekday");
-    const hour = get("hour");
-    const minute = get("minute");
-    const dayPeriod = get("dayPeriod").toUpperCase(); 
-
-    return {
-        date: `${day} ${month} ${year}`,          
-        dayName,                                    
-        time: `${hour}:${minute} ${dayPeriod}`,    
-    };
+// Format just the time
+export const formatBDTime = (isoString?: string | null) => {
+    if (!isoString) return null;
+    try {
+        const date = moment.utc(isoString).tz('Asia/Dhaka');
+        if (!date.isValid()) return null;
+        return date.format('hh:mm A');
+    } catch {
+        return null;
+    }
 };

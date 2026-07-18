@@ -35,7 +35,7 @@ import EditStudentPage from "@/pages/Student/EditStudent";
 import ErrorPage from "@/components/ErrorBoundary";
 import ExclusiveBatchList from "@/pages/Exclusive-offer/BatchList";
 import ExclusiveBatchForm from "@/components/Forms/ExclusiveBatchForm";
-import ExclusiveBatchDetails from "@/pages/Exclusive-offer/BatchDetails";
+import ExclusiveBatchDetails from "@/pages/Exclusive-offer/BatchParticipantDetails";
 import ParticipantForm from "@/components/Forms/ParticipantForm";
 
 
