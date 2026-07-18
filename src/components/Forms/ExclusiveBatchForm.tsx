@@ -1,217 +1,215 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, DollarSign, Users, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Loader2, Save } from "lucide-react";
+import toast from "react-hot-toast";
 
-interface BatchFormData {
-  batchNo: string | number;
-  title: string; // This is both batch title AND course title
-  description?: string;
-  startDate: string;
-  endDate: string;
-  offerPrice: number;
-}
+const batchSchema = z.object({
+    batchNo: z.union([z.string(), z.number()]),
+    title: z.string().min(1, "Title is required"),
+    description: z.string().optional(),
+    date: z.string().min(1, "Date is required"),
+    registrationDeadline: z.string().min(1, "Registration deadline is required"),
+    offerPrice: z.number().min(0, "Price must be positive"),
+    regularPrice: z.number().min(0, "Regular price must be positive"),
+    maxSeats: z.number().optional(),
+});
 
-interface ExclusiveBatchFormProps {
-  initialData?: Partial<BatchFormData>;
-  onSubmit: (data: BatchFormData) => Promise<void>;
-  isSubmitting?: boolean;
-  isEditing?: boolean;
-}
+type BatchFormData = z.infer<typeof batchSchema>;
 
-const localToUTC = (localDateTime: string) => {
-  const localDate = new Date(localDateTime);
-  const utcDate = new Date(localDate.getTime() - 6 * 60 * 60 * 1000);
-  return utcDate.toISOString();
+const convertToUTC = (localDateTime: string) => {
+    if (!localDateTime) return "";
+    const date = new Date(localDateTime);
+    const utcDate = new Date(date.getTime() - 6 * 60 * 60 * 1000);
+    return utcDate.toISOString();
 };
 
-const utcToLocal = (utcDateStr: string) => {
-  const utcDate = new Date(utcDateStr);
-  const localDate = new Date(utcDate.getTime() + 6 * 60 * 60 * 1000);
-  return localDate.toISOString().slice(0, 16);
+const formatDateForInput = (dateStr: string) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const bdDate = new Date(date.getTime() + 6 * 60 * 60 * 1000);
+    return bdDate.toISOString().slice(0, 16);
 };
 
-export default function ExclusiveBatchForm({
-  initialData,
-  onSubmit,
-  isSubmitting = false,
-  isEditing = false,
-}: ExclusiveBatchFormProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<BatchFormData>({
-    defaultValues: {
-      batchNo: "",
-      title: "",
-      description: "",
-      startDate: "",
-      endDate: "",
-      offerPrice: 190,
-    },
-  });
+export default function ExclusiveBatchForm() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [isEditing, setIsEditing] = useState(!!id);
 
-  useEffect(() => {
-    if (initialData) {
-      reset({
-        batchNo: initialData.batchNo || "",
-        title: initialData.title || "",
-        description: initialData.description || "",
-        startDate: initialData.startDate
-          ? utcToLocal(initialData.startDate)
-          : "",
-        endDate: initialData.endDate ? utcToLocal(initialData.endDate) : "",
-        offerPrice: initialData.offerPrice || 190,
-      });
-    }
-  }, [initialData, reset]);
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm<BatchFormData>({
+        resolver: zodResolver(batchSchema),
+        defaultValues: {
+            batchNo: "",
+            title: "",
+            description: "",
+            date: "",
+            registrationDeadline: "",
+            offerPrice: 199,
+            regularPrice: 5500,
+            maxSeats: 50,
+        },
+    });
 
-  const handleFormSubmit = async (data: BatchFormData) => {
-    const convertedData = {
-      batchNo: data.batchNo,
-      title: data.title,
-      description: data.description || "",
-      startDate: localToUTC(data.startDate),
-      endDate: localToUTC(data.endDate),
-      registrationDeadline: localToUTC(data.startDate), // Use start date as deadline
-      regularPrice: 5500, // Fixed regular price
-      offerPrice: data.offerPrice,
-      isActive: true,
-      maxSeats: 50,
-      courseTitle: data.title, // Use same title for course title
+    useEffect(() => {
+        if (id) fetchBatch();
+    }, [id]);
+
+    const fetchBatch = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(
+                `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`
+            );
+            const { data, success } = await response.json();
+            if (success) {
+                reset({
+                    batchNo: data.batchNo,
+                    title: data.title,
+                    description: data.description || "",
+                    date: formatDateForInput(data.date),
+                    registrationDeadline: formatDateForInput(data.registrationDeadline),
+                    offerPrice: data.offerPrice,
+                    regularPrice: data.regularPrice || 5500,
+                    maxSeats: data.maxSeats || 50,
+                });
+                setIsEditing(true);
+            }
+        } catch (error) {
+            toast.error("Failed to fetch batch");
+            navigate("/exclusive-offer/batches");
+        } finally {
+            setLoading(false);
+        }
     };
-    await onSubmit(convertedData);
-  };
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isEditing ? "Edit Batch" : "Create New Batch"}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="space-y-2">
-              <Label htmlFor="batchNo">Batch Number *</Label>
-              <div className="relative">
-                <Users className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="batchNo"
-                  {...register("batchNo", {
-                    required: "Batch number is required",
-                  })}
-                  placeholder="e.g., 1, 2, or BATCH-001"
-                  className="pl-10"
-                />
-              </div>
-              {errors.batchNo && (
-                <p className="text-sm text-red-500">{errors.batchNo.message}</p>
-              )}
+    const onSubmit = async (data: BatchFormData) => {
+        try {
+            const payload = {
+                ...data,
+                date: convertToUTC(data.date),
+                registrationDeadline: convertToUTC(data.registrationDeadline),
+            };
+
+            const url = isEditing
+                ? `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`
+                : `${import.meta.env.VITE_API_URL}/exclusive-batches`;
+            const method = isEditing ? "PUT" : "POST";
+
+            const response = await fetch(url, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message);
+
+            toast.success(isEditing ? "Batch updated" : "Batch created");
+            navigate("/exclusive-offer/batches");
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="container mx-auto py-6">
+            <div className="flex items-center gap-4 mb-6">
+                <Button variant="outline" onClick={() => navigate("/exclusive-offer/batches")}>
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back
+                </Button>
+                <h1 className="text-2xl font-bold">
+                    {isEditing ? "Edit Batch" : "Create New Batch"}
+                </h1>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="title">Batch/Course Title *</Label>
-              <Input
-                id="title"
-                {...register("title", { required: "Title is required" })}
-                placeholder="e.g., Voice & Public Speaking Masterclass - Batch 1"
-              />
-              {errors.title && (
-                <p className="text-sm text-red-500">{errors.title.message}</p>
-              )}
-            </div>
+            <Card>
+                <CardHeader>
+                    <CardTitle>{isEditing ? "Edit" : "Add"} Batch</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="batchNo">Batch Number *</Label>
+                                <Input id="batchNo" {...register("batchNo")} placeholder="1" />
+                                {errors.batchNo && <p className="text-sm text-red-500">{errors.batchNo.message}</p>}
+                            </div>
 
-            <div className="md:col-span-2 space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                {...register("description")}
-                placeholder="Enter batch description"
-                rows={3}
-              />
-            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="title">Batch Title *</Label>
+                                <Input id="title" {...register("title")} placeholder="Masterclass Batch 1" />
+                                {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
+                            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date & Time *</Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="startDate"
-                  type="datetime-local"
-                  {...register("startDate", {
-                    required: "Start date is required",
-                  })}
-                  className="pl-10"
-                />
-              </div>
-              {errors.startDate && (
-                <p className="text-sm text-red-500">
-                  {errors.startDate.message}
-                </p>
-              )}
-            </div>
+                            <div className="md:col-span-2 space-y-2">
+                                <Label htmlFor="description">Description</Label>
+                                <Textarea id="description" {...register("description")} rows={3} />
+                            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="endDate">End Date & Time *</Label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="endDate"
-                  type="datetime-local"
-                  {...register("endDate", { required: "End date is required" })}
-                  className="pl-10"
-                />
-              </div>
-              {errors.endDate && (
-                <p className="text-sm text-red-500">{errors.endDate.message}</p>
-              )}
-            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="date">Event Date & Time *</Label>
+                                <Input id="date" type="datetime-local" {...register("date")} />
+                                {errors.date && <p className="text-sm text-red-500">{errors.date.message}</p>}
+                            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="offerPrice">Offer Price (BDT) *</Label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="offerPrice"
-                  type="number"
-                  {...register("offerPrice", {
-                    required: "Offer price is required",
-                    valueAsNumber: true,
-                  })}
-                  className="pl-10"
-                />
-              </div>
-              {errors.offerPrice && (
-                <p className="text-sm text-red-500">
-                  {errors.offerPrice.message}
-                </p>
-              )}
-            </div>
-          </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="registrationDeadline">Registration Deadline *</Label>
+                                <Input id="registrationDeadline" type="datetime-local" {...register("registrationDeadline")} />
+                                {errors.registrationDeadline && <p className="text-sm text-red-500">{errors.registrationDeadline.message}</p>}
+                            </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  {isEditing ? "Update Batch" : "Create Batch"}
-                </>
-              )}
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
-  );
+                            <div className="space-y-2">
+                                <Label htmlFor="offerPrice">Offer Price (BDT) *</Label>
+                                <Input id="offerPrice" type="number" {...register("offerPrice", { valueAsNumber: true })} />
+                                {errors.offerPrice && <p className="text-sm text-red-500">{errors.offerPrice.message}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="regularPrice">Regular Price (BDT) *</Label>
+                                <Input id="regularPrice" type="number" {...register("regularPrice", { valueAsNumber: true })} />
+                                {errors.regularPrice && <p className="text-sm text-red-500">{errors.regularPrice.message}</p>}
+                            </div>
+
+                            
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-4 border-t">
+                            <Button type="button" variant="outline" onClick={() => navigate("/exclusive-offer/batches")}>
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? (
+                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving...</>
+                                ) : (
+                                    <><Save className="mr-2 h-4 w-4" />{isEditing ? "Update" : "Save"}</>
+                                )}
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    );
 }

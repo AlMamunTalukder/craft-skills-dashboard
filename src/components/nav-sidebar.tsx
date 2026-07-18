@@ -74,7 +74,7 @@ const navData = [
   },
   {
     title: "Exclusive",
-    url: "/exclusive",
+    url: "/exclusive-offer",
     icon: GiftIcon,
     color: "text-blue-600",
   },

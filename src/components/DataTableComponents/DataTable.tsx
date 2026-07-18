@@ -58,6 +58,7 @@ interface DataTableProps<TData, TValue> {
   onRowSelectionChange?: (selectedIds: string[]) => void;
   onBulkDelete?: (selectedIds: string[]) => Promise<void>;
   getRowId?: (row: TData) => string;
+  bulkDeleteLabel?: string;
 }
 
 export default function DataTable<TData, TValue>({
@@ -68,6 +69,7 @@ export default function DataTable<TData, TValue>({
   onRowSelectionChange,
   onBulkDelete,
   getRowId,
+  bulkDeleteLabel = "items",
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -98,10 +100,14 @@ export default function DataTable<TData, TValue>({
   ).length;
 
   // ✅ Handle row selection change
+  const prevSelectedIdsRef = React.useRef<string[]>([]);
   React.useEffect(() => {
     if (onRowSelectionChange) {
       const selectedIds = getSelectedIds();
-      onRowSelectionChange(selectedIds);
+      if (JSON.stringify(prevSelectedIdsRef.current) !== JSON.stringify(selectedIds)) {
+        prevSelectedIdsRef.current = selectedIds;
+        onRowSelectionChange(selectedIds);
+      }
     }
   }, [rowSelection, onRowSelectionChange, getSelectedIds]);
 
@@ -152,33 +158,34 @@ export default function DataTable<TData, TValue>({
     setFilteredData(data);
   }, [data]);
 
+  // ✅ Check if selection is enabled and bulk delete is provided
+  const hasBulkDelete = enableRowSelection && onBulkDelete;
+
   return (
     <div className="space-y-4">
       {/* ✅ Bulk Delete Toolbar */}
-      {enableRowSelection && onBulkDelete && (
+      {hasBulkDelete && selectedCount > 0 && (
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            {selectedCount > 0 && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => setShowDeleteDialog(true)}
-                disabled={isDeleting}
-                className="flex items-center gap-2"
-              >
-                {isDeleting ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Deleting...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="h-4 w-4" />
-                    Delete Selected ({selectedCount})
-                  </>
-                )}
-              </Button>
-            )}
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setShowDeleteDialog(true)}
+              disabled={isDeleting}
+              className="flex items-center gap-2"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4" />
+                  Delete Selected ({selectedCount} {bulkDeleteLabel})
+                </>
+              )}
+            </Button>
           </div>
         </div>
       )}
@@ -280,34 +287,36 @@ export default function DataTable<TData, TValue>({
       <DataTablePagination table={table} />
 
       {/* ✅ Delete Confirmation Dialog */}
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              selected {selectedCount} item(s) and remove them from the database.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleBulkDelete}
-              className="bg-red-600 hover:bg-red-700"
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                "Delete"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {hasBulkDelete && (
+        <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the
+                selected {selectedCount} {bulkDeleteLabel} and remove them from the database.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleBulkDelete}
+                className="bg-red-600 hover:bg-red-700"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 }

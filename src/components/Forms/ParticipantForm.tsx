@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -17,15 +17,21 @@ const participantSchema = z.object({
     email: z.string().email("Invalid email").optional().or(z.literal("")),
     occupation: z.string().optional(),
     price: z.number().min(1, "Price must be at least 1"),
+    batchId: z.string().min(1, "Batch is required"),
 });
 
 type ParticipantFormData = z.infer<typeof participantSchema>;
 
 export default function ParticipantForm() {
     const { id } = useParams();
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(!!id);
+    
+    // ✅ Get batchId from URL
+    const batchIdFromUrl = searchParams.get("batchId") || "";
+    const [batchInfo, setBatchInfo] = useState<{ batchNo: string; title: string } | null>(null);
 
     const {
         register,
@@ -41,20 +47,46 @@ export default function ParticipantForm() {
             email: "",
             occupation: "",
             price: 199,
+            batchId: batchIdFromUrl,
         },
     });
 
+    // ✅ Fetch batch info for display
     useEffect(() => {
-        if (id) {
-            fetchParticipant();
+        if (batchIdFromUrl) {
+            fetch(`${import.meta.env.VITE_API_URL}/exclusive-batches/${batchIdFromUrl}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        setBatchInfo({
+                            batchNo: data.data.batchNo,
+                            title: data.data.title,
+                        });
+                    }
+                })
+                .catch(console.error);
         }
+    }, [batchIdFromUrl]);
+
+    // ✅ Reset form with batchId when URL changes
+    useEffect(() => {
+        if (batchIdFromUrl) {
+            reset(prev => ({
+                ...prev,
+                batchId: batchIdFromUrl,
+            }));
+        }
+    }, [batchIdFromUrl, reset]);
+
+    useEffect(() => {
+        if (id) fetchParticipant();
     }, [id]);
 
     const fetchParticipant = async () => {
         try {
             setLoading(true);
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/exclusive-offer/admin/participants/${id}`
+                `${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${id}`
             );
             const { data, success } = await response.json();
             if (success) {
@@ -65,12 +97,13 @@ export default function ParticipantForm() {
                     email: data.email || "",
                     occupation: data.occupation || "",
                     price: data.price || 199,
+                    batchId: data.batchId || batchIdFromUrl,
                 });
                 setIsEditing(true);
             }
         } catch (error) {
             toast.error("Failed to fetch participant");
-            navigate("/exclusive-offer/participants");
+            navigate(`/exclusive-offer/details/${batchIdFromUrl}`);
         } finally {
             setLoading(false);
         }
@@ -90,12 +123,12 @@ export default function ParticipantForm() {
             });
 
             const result = await response.json();
-            if (!response.ok) {
-                throw new Error(result.message || "Failed to save");
-            }
-
+            if (!response.ok) throw new Error(result.message);
+            
             toast.success(isEditing ? "Updated successfully" : "Added successfully");
-            navigate("/exclusive-offer/participants");
+            
+            // ✅ Navigate back to batch details page
+            navigate(`/exclusive-offer/details/${data.batchId}`);
         } catch (error: any) {
             toast.error(error.message);
         }
@@ -122,11 +155,25 @@ export default function ParticipantForm() {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>{isEditing ? "Edit" : "Add"} Participant</CardTitle>
+                <CardHeader >
+                    <CardTitle>{isEditing ? "Edit" : "Add"} Participant
+                        {batchInfo && (
+                            <div >
+                                <p className="text-sm">
+                                    Batch: {batchInfo.batchNo}
+                                </p>
+                            </div>
+                        )}
+                    </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        {/* ✅ Show batch info (read-only) */}
+
+
+                        {/* ✅ Hidden batchId field */}
+                        <input type="hidden" {...register("batchId")} />
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Name *</Label>
@@ -158,12 +205,7 @@ export default function ParticipantForm() {
 
                             <div className="space-y-2">
                                 <Label htmlFor="price">Price (BDT) *</Label>
-                                <Input
-                                    id="price"
-                                    type="number"
-                                    {...register("price", { valueAsNumber: true })}
-                                    placeholder="199"
-                                />
+                                <Input id="price" type="number" {...register("price", { valueAsNumber: true })} placeholder="199" />
                                 {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
                             </div>
                         </div>
@@ -174,15 +216,9 @@ export default function ParticipantForm() {
                             </Button>
                             <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Saving...
-                                    </>
+                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving...</>
                                 ) : (
-                                    <>
-                                        <Save className="mr-2 h-4 w-4" />
-                                        {isEditing ? "Update" : "Save"}
-                                    </>
+                                    <><Save className="mr-2 h-4 w-4" />{isEditing ? "Update" : "Save"}</>
                                 )}
                             </Button>
                         </div>

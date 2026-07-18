@@ -15,6 +15,10 @@ export default function CourseBatchDetails() {
   const [batch, setBatch] = useState<any>(null);
   const [admissions, setAdmissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+
+  console.log(selectedRows, "selectedRows");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,17 +46,64 @@ export default function CourseBatchDetails() {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, refreshTrigger]);
 
-  const handleDeleteStudent = async (id: string) => {
-    await dashboardApi.deleteAdmission(id);
-    setAdmissions((prev) => prev.filter((s) => s._id !== id));
+  // ✅ Delete single student
+  const handleDeleteStudent = async (studentId: string) => {
+    try {
+      await dashboardApi.deleteAdmission(studentId);
+      // toast.success("Student removed from batch");
+      setRefreshTrigger(prev => prev + 1);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete student");
+    }
+  };
+
+  // ✅ Handle row selection change
+  const handleRowSelectionChange = (selectedIds: string[]) => {
+    setSelectedRows(selectedIds);
+  };
+
+  // ✅ Handle bulk delete - FIXED: Delete admissions not batches
+  const handleBulkDelete = async (selectedIds: string[]) => {
+    if (selectedIds.length === 0) {
+      toast.error("Please select at least one student");
+      return;
+    }
+
+    // const confirmed = window.confirm(
+    //   `Are you sure you want to delete ${selectedIds.length} student(s)?`
+    // );
+    // if (!confirmed) return;
+
+    const loadingToast = toast.loading(`Deleting ${selectedIds.length} students...`);
+
+    try {
+      const deletePromises = selectedIds.map((id) =>
+        dashboardApi.deleteAdmission(id)
+      );
+
+      const responses = await Promise.allSettled(deletePromises);
+      const failed = responses.filter((r) => r.status === "rejected");
+
+      toast.dismiss(loadingToast);
+
+      if (failed.length > 0) {
+        toast.error(`${failed.length} student(s) failed to delete.`);
+      } else {
+        toast.success(`${selectedIds.length} student(s) deleted successfully`);
+        setSelectedRows([]);
+        setRefreshTrigger(prev => prev + 1);
+      }
+    } catch (error: any) {
+      toast.dismiss(loadingToast);
+      toast.error(error.message || "Failed to delete students");
+    }
   };
 
   const handleAddStudent = () => {
     navigate("/add-student");
   };
-  
 
   if (loading) {
     return (
@@ -127,6 +178,11 @@ export default function CourseBatchDetails() {
               })}
               searchable={true}
               searchPlaceholder="Search students by name, email, or phone..."
+              enableRowSelection={true}
+              onRowSelectionChange={handleRowSelectionChange}
+              onBulkDelete={handleBulkDelete}
+              getRowId={(row) => row._id}
+              bulkDeleteLabel="students"
             />
           ) : (
             <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
@@ -136,7 +192,7 @@ export default function CourseBatchDetails() {
               </h3>
               <p className="text-gray-500 max-w-md mx-auto">
                 No students have registered for this batch yet.
-              </p>             
+              </p>
             </div>
           )}
         </CardContent>

@@ -1,3 +1,4 @@
+
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "@/Layout/Main";
 import Home from "../pages/Home/Home";
@@ -19,6 +20,7 @@ import Course from "@/pages/Course/Course";
 import CouponList from "@/pages/Coupon/CouponList";
 import CreateCoupon from "@/pages/Coupon/new/NewCoupon";
 import AttendanceList from "@/pages/Attendence/AttendanceList";
+// import CreateAttendance from "@/pages/Attendence/new/CreateAttendance";
 import UserList from "@/pages/Users/Users/UserList";
 import AdminList from "@/pages/Users/Admin/AdminList";
 import TeacherList from "@/pages/Users/Teacher/TeacherList";
@@ -33,11 +35,11 @@ import AddSchedule from "@/pages/ClassSchedule/add/page";
 import AddStudent from "@/pages/Student/AddStudent";
 import EditStudentPage from "@/pages/Student/EditStudent";
 import ErrorPage from "@/components/ErrorBoundary";
+// import ExclusiveOfferParticipants from "@/pages/Exclusive-offer/Participants";
+import ParticipantForm from "@/components/Forms/ParticipantForm";
 import ExclusiveBatchList from "@/pages/Exclusive-offer/BatchList";
 import ExclusiveBatchForm from "@/components/Forms/ExclusiveBatchForm";
 import ExclusiveBatchDetails from "@/pages/Exclusive-offer/BatchDetails";
-import ParticipantForm from "@/components/Forms/ParticipantForm";
-
 
 const router = createBrowserRouter([
   {
@@ -91,7 +93,7 @@ const router = createBrowserRouter([
       {
         path: "class-schedule/add",
         element: <AddSchedule />,
-        handle: { breadcrumb: "Add Class Schedule" },
+        handle: { breadcrumb: "Update Class Schedule" },
       },
       {
         path: "class-schedule/edit/:id",
@@ -99,55 +101,45 @@ const router = createBrowserRouter([
         handle: { breadcrumb: "Update Class Schedule" },
       },
 
-      // ========== Seminar ==========
+      // Seminar
       {
         path: "seminar",
-        children: [
-          {
-            index: true,
-            element: <SeminarList />,
-            handle: { breadcrumb: "Seminars" },
-          },
-          {
-            path: "new",
-            element: <SeminarFormPage />,
-            handle: { breadcrumb: "Create Seminar" },
-          },
-          {
-            path: "update/:id",
-            element: <SeminarFormPage />,
-            handle: { breadcrumb: "Update Seminar" },
-          },
-          {
-            path: "details/:id",
-            element: <SeminarDetailsPage />,
-            handle: { breadcrumb: "Seminar Details" },
-          },
-        ],
+        element: <SeminarList />,
+        handle: { breadcrumb: "Seminars" },
+      },
+      {
+        path: "seminar/new",
+        element: <SeminarFormPage />,
+        handle: { breadcrumb: "Create Seminar" },
+      },
+      {
+        path: "seminar/update/:id",
+        element: <SeminarFormPage />,
+        handle: { breadcrumb: "Update Seminar" },
+      },
+      {
+        path: "seminar/details/:id",
+        element: <SeminarDetailsPage />,
+        handle: { breadcrumb: "Seminar Details" },
       },
 
-      // ========== Exclusive Offer ==========
+
+      // Exclusive
       {
         path: "exclusive-offer",
         children: [
           {
             index: true,
-            element: <Navigate to="batches" replace />,
-            handle: { breadcrumb: "Exclusive Offer" },
-          },
-          // Batches
-          {
-            path: "batches",
             element: <ExclusiveBatchList />,
             handle: { breadcrumb: "Exclusive Batches" },
           },
           {
-            path: "batches/new",
+            path: "new",
             element: <ExclusiveBatchForm />,
             handle: { breadcrumb: "Create Exclusive Batch" },
           },
           {
-            path: "batches/edit/:id",
+            path: "edit/:id",
             element: <ExclusiveBatchForm />,
             handle: { breadcrumb: "Edit Exclusive Batch" },
           },
@@ -156,8 +148,15 @@ const router = createBrowserRouter([
             element: <ExclusiveBatchDetails />,
             handle: { breadcrumb: "Exclusive Batch Details" },
           },
-          // Participants
-        
+          {
+            index: true,
+            element: <Navigate to="participants" replace />,
+          },
+          // {
+          //   path: "participants",
+          //   element: <ExclusiveOfferParticipants />,
+          //   handle: { breadcrumb: "Participants" },
+          // },
           {
             path: "participants/new",
             element: <ParticipantForm />,
@@ -168,155 +167,145 @@ const router = createBrowserRouter([
             element: <ParticipantForm />,
             handle: { breadcrumb: "Edit Participant" },
           },
+          
         ],
       },
 
-      // ========== Course ==========
+      // course
       {
         path: "courses",
-        children: [
-          {
-            index: true,
-            element: <CourseList />,
-            handle: { breadcrumb: "Courses" },
-          },
-          {
-            path: "new",
-            element: <Course />,
-            handle: { breadcrumb: "Create Course" },
-          },
-          {
-            path: "edit/:id",
-            element: <Course />,
-            handle: { breadcrumb: "Edit Course" },
-          },
-        ],
+        element: <CourseList />,
+        handle: { breadcrumb: "CourseList" },
       },
-
-      // ========== Course Batches ==========
+      {
+        path: "courses/new",
+        element: <Course />,
+        handle: { breadcrumb: "courses" },
+      },
+      {
+        path: "courses/edit/:id",
+        element: <Course />,
+        handle: { breadcrumb: "courses" },
+      },
+      // course batch
       {
         path: "course-batches",
-        children: [
-          {
-            index: true,
-            element: <BatchList />,
-            handle: { breadcrumb: "Course Batches" },
-          },
-          {
-            path: "new",
-            element: <CreateBatch />,
-            handle: { breadcrumb: "Create Course Batch" },
-          },
-          {
-            path: "edit/:id",
-            element: <UpdateBatch />,
-            handle: { breadcrumb: "Edit Course Batch" },
-          },
-          {
-            path: "details/:id",
-            element: <CourseBatchDetails />,
-            handle: { breadcrumb: "Course Batch Details" },
-          },
-        ],
+        element: <BatchList />,
+        handle: { breadcrumb: "course-batches" },
       },
-
-      // ========== Students ==========
+      {
+        path: "course-batches/new",
+        element: <CreateBatch />,
+        handle: { breadcrumb: "course-batches" },
+      },
+      {
+        path: "course-batches/edit/:id",
+        element: <UpdateBatch />,
+        handle: { breadcrumb: "course-batches" },
+      },
+      {
+        path: "course-batches/details/:id",
+        element: <CourseBatchDetails />,
+        handle: { breadcrumb: "course-batches" },
+      },
+      // Add Student
       {
         path: "add-student",
         element: <AddStudent />,
         handle: { breadcrumb: "Add Student" },
       },
       {
-        path: "students/edit/:id",
+        path: "/students/edit/:id",
         element: <EditStudentPage />,
         handle: { breadcrumb: "Edit Student" },
       },
-
-      // ========== Coupons ==========
+      // coupons
       {
         path: "coupons",
-        children: [
-          {
-            index: true,
-            element: <CouponList />,
-            handle: { breadcrumb: "Coupons" },
-          },
-          {
-            path: "new",
-            element: <CreateCoupon />,
-            handle: { breadcrumb: "Create Coupon" },
-          },
-          {
-            path: "edit/:id",
-            element: <CreateCoupon />,
-            handle: { breadcrumb: "Edit Coupon" },
-          },
-        ],
+        element: <CouponList />,
+        handle: { breadcrumb: "coupons" },
       },
-
-      // ========== Attendance ==========
+      {
+        path: "coupons/new",
+        element: <CreateCoupon />,
+        handle: { breadcrumb: "coupons" },
+      },
+      {
+        path: "coupons/edit/:id",
+        element: <CreateCoupon />,
+        handle: { breadcrumb: "coupons" },
+      },
+      // Attendance
+      // In your router configuration
       {
         path: "attendance",
-        children: [
-          {
-            index: true,
-            element: <AttendanceList />,
-            handle: { breadcrumb: "Attendance" },
-          },
-          {
-            path: "batches",
-            element: <BatchAttendanceDashboard />,
-            handle: { breadcrumb: "Attendance Batches" },
-          },
-          {
-            path: "batch/:batchId",
-            element: <BatchDetailsPage />,
-            handle: { breadcrumb: "Batch Attendance Details" },
-          },
-        ],
+        element: <AttendanceList />,
+        handle: { breadcrumb: "attendance" },
+      },
+      // {
+      //   path: "attendance/new",
+      //   element: <CreateAttendance />,
+      // },
+      // {
+      //   path: "attendance/edit/:id",
+      //   element: <CreateAttendance />,
+      // },
+      {
+        path: "attendance/batches",
+        element: <BatchAttendanceDashboard />,
+        handle: { breadcrumb: "attendance" },
       },
 
-      // ========== Users ==========
+      // path="/attendance/batch/:batchId" element={<BatchDetailsPage />}
+      {
+        path: "attendance/batch/:batchId",
+        element: <BatchDetailsPage />,
+        handle: { breadcrumb: "attendance" },
+      },
+
+      // Users
       {
         path: "users",
         element: <UserList />,
-        handle: { breadcrumb: "Users" },
+        handle: { breadcrumb: "users" },
       },
       {
         path: "admin",
         element: <AdminList />,
-        handle: { breadcrumb: "Admins" },
+        handle: { breadcrumb: "admin" },
       },
+      // teacher
       {
         path: "teacher",
-        children: [
-          {
-            index: true,
-            element: <TeacherList />,
-            handle: { breadcrumb: "Teachers" },
-          },
-          {
-            path: "new",
-            element: <CreateUser />,
-            handle: { breadcrumb: "Create Teacher" },
-          },
-          {
-            path: ":id",
-            element: <CreateUser />,
-            handle: { breadcrumb: "Edit Teacher" },
-          },
-        ],
+        element: <TeacherList />,
+        handle: { breadcrumb: "teacher" },
+      },
+      {
+        path: "teacher/new",
+        element: <CreateUser />,
+        handle: { breadcrumb: "teacher" },
       },
 
-      // ========== Review ==========
+      {
+        path: "teacher/:id",
+        element: <CreateUser />,
+        handle: { breadcrumb: "teacher" },
+      },
+      // PDF
+      // {
+      //   path: "pdf",
+      //   element: <PDF />,
+      //   handle: { breadcrumb: "PDF" },
+      // },
+
+      // Review
       {
         path: "review",
         element: <Review />,
-        handle: { breadcrumb: "Reviews" },
+        handle: { breadcrumb: "Review" },
       },
     ],
   },
 ]);
 
 export default router;
-

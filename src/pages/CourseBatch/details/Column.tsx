@@ -3,6 +3,7 @@ import { Mail, Phone, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type AdmissionStudent = {
   _id: string;
@@ -35,6 +36,25 @@ interface StudentAdmissionColumnsProps {
 export const studentAdmissionColumns = ({
   onDelete,
 }: StudentAdmissionColumnsProps): ColumnDef<AdmissionStudent>[] => [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "sl",
     header: "SL",
@@ -69,13 +89,15 @@ export const studentAdmissionColumns = ({
     header: "Course & Payment",
     cell: ({ row }) => {
       const student = row.original;
-      
-      
       return (
         <div className="space-y-1">
-          
           <div className="flex items-center gap-2">
-            <span className="text-sm">৳{student.amount.toLocaleString()}</span>
+            <span className="text-sm font-semibold">৳{student.amount.toLocaleString()}</span>
+            {/* {student.discountAmount && student.discountAmount > 0 && (
+              <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                -৳{student.discountAmount}
+              </Badge>
+            )} */}
           </div>
         </div>
       );
@@ -89,13 +111,10 @@ export const studentAdmissionColumns = ({
       return (
         <div className="flex items-center gap-2">
           {student.couponCode ? (
-            <>
-             
-              <Badge variant="outline" className="text-xs bg-green-50 dark:text-black">
-                 <Tag className="h-3 w-3 text-green-500" />{student.couponCode}
-              </Badge>
-             
-            </>
+            <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+              <Tag className="h-3 w-3 mr-1" />
+              {student.couponCode}
+            </Badge>
           ) : (
             <span className="text-gray-400 text-xs">No coupon</span>
           )}
@@ -108,35 +127,70 @@ export const studentAdmissionColumns = ({
     header: "Payment Details",
     cell: ({ row }) => {
       const student = row.original;
-      const paymentMethodColors = {
-        BKASH: "bg-pink-100 text-pink-800",
-        NAGAD: "bg-green-100 text-green-800",
-        ROCKET: "bg-blue-100 text-blue-800",
-        CASH: "bg-yellow-100 text-yellow-800",
-      };
-      
-      
+      // const paymentMethodColors: Record<string, string> = {
+      //   "BKASH-BKash": "bg-pink-100 text-pink-800",
+      //   "NAGAD-Nagad": "bg-green-100 text-green-800",
+      //   "ROCKET-Rocket": "bg-blue-100 text-blue-800",
+      //   "sslcommerz": "bg-purple-100 text-purple-800",
+      //   "CASH-Cash": "bg-yellow-100 text-yellow-800",
+      // };
 
       return (
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Badge 
               className={paymentMethodColors[student.paymentMethod as keyof typeof paymentMethodColors] || "bg-gray-100"}
               variant="outline"
             >
-              {student.senderNumber}
-              
+              {student.senderNumber || student.paymentMethod || "N/A"}
             </Badge>
-            
-          </div>
+          </div> */}
           <div className="text-xs text-gray-500 truncate">
-            {student.paymentMethod}
+            {student.paymentMethod || "N/A"}
           </div>
         </div>
       );
     },
   },
+  // ✅ NEW: Payment Status Column
+  {
+    accessorKey: "paymentStatus",
+    header: "Payment Status",
+    cell: ({ row }) => {
+      const status = row.original.paymentStatus || "pending";
+      
+      const statusConfig: Record<string, { label: string; className: string }> = {
+        paid: {
+          label: "Paid",
+          className: "bg-green-100 text-green-800 border-green-300",
+        },
+        pending: {
+          label: "Pending",
+          className: "bg-yellow-100 text-yellow-800 border-yellow-300",
+        },
+        failed: {
+          label: "Failed",
+          className: "bg-red-100 text-red-800 border-red-300",
+        },
+        partial: {
+          label: "Partial",
+          className: "bg-orange-100 text-orange-800 border-orange-300",
+        },
+        cancelled: {
+          label: "Cancelled",
+          className: "bg-gray-100 text-gray-800 border-gray-300",
+        },
+      };
 
+      const config = statusConfig[status] || statusConfig.pending;
+
+      return (
+        <Badge className={`${config.className} border`} variant="outline">
+          {config.label}
+        </Badge>
+      );
+    },
+  },
   {
     accessorKey: "registeredAt",
     header: "Registered",
@@ -176,7 +230,6 @@ export const studentAdmissionColumns = ({
             showDetails={false}
             showEdit={true}
             showDelete={true}
-            // No onEdit or useModalForEdit props needed
           />
         </div>
       );
