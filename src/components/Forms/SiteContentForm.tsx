@@ -39,6 +39,7 @@ interface SiteContentData {
   facebook?: string;
   facebookGroup?: string;
   whatsapp?: string;
+  whatsappNumber?: string;
   youtube?: string;
   telegram?: string;
   // logoLight: string;
@@ -254,8 +255,25 @@ export default function SiteContentForm({ initialValues }: Props) {
                     name="whatsapp"
                     value={formData.whatsapp || ""}
                     onChange={handleChange}
-                    placeholder="https://wa.me/group-invite"
+                    placeholder="https://chat.whatsapp.com/group-invite"
                   />
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="whatsappNumber" className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-green-600" />
+                    WhatsApp Number
+                  </Label>
+                  <Input
+                    id="whatsappNumber"
+                    name="whatsappNumber"
+                    value={formData.whatsappNumber || ""}
+                    onChange={handleChange}
+                    placeholder="8801700999093 (with country code, no +)"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Used to build the "Message on WhatsApp" buttons (wa.me / tel links)
+                  </p>
                 </div>
 
                 <div className="space-y-3">
