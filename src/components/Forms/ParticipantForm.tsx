@@ -54,7 +54,9 @@ export default function ParticipantForm() {
     // ✅ Fetch batch info for display
     useEffect(() => {
         if (batchIdFromUrl) {
-            fetch(`${import.meta.env.VITE_API_URL}/exclusive-batches/${batchIdFromUrl}`)
+            fetch(`${import.meta.env.VITE_API_URL}/exclusive-batches/${batchIdFromUrl}`, {
+                credentials: "include",
+            })
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -86,7 +88,8 @@ export default function ParticipantForm() {
         try {
             setLoading(true);
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${id}`
+                `${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${id}`,
+                { credentials: "include" },
             );
             const { data, success } = await response.json();
             if (success) {
@@ -120,6 +123,7 @@ export default function ParticipantForm() {
                 method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
+                credentials: "include",
             });
 
             const result = await response.json();

@@ -127,6 +127,7 @@ export const batchColumns = (
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify(duplicateData),
+                                credentials: "include",
                             }
                         );
                         const result = await response.json();

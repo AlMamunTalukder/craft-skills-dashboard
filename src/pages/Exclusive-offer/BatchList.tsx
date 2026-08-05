@@ -21,7 +21,8 @@ export default function ExclusiveBatchList() {
         try {
             setLoading(true);
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/exclusive-batches`
+                `${import.meta.env.VITE_API_URL}/exclusive-batches`,
+                { credentials: "include" }
             );
             const { data, success } = await response.json();
             if (!success || !Array.isArray(data)) {
@@ -44,7 +45,7 @@ export default function ExclusiveBatchList() {
         try {
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`,
-                { method: "DELETE" }
+                { method: "DELETE", credentials: "include" }
             );
             const result = await response.json();
             if (!response.ok) throw new Error(result.message);
@@ -63,6 +64,7 @@ export default function ExclusiveBatchList() {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ isActive }),
+                    credentials: "include",
                 }
             );
             const result = await response.json();
@@ -85,6 +87,7 @@ export default function ExclusiveBatchList() {
             const deletePromises = selectedIds.map((id) =>
                 fetch(`${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`, {
                     method: "DELETE",
+                    credentials: "include",
                 })
             );
 

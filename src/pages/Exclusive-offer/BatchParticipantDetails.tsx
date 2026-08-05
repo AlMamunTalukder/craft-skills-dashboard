@@ -30,7 +30,8 @@ export default function ExclusiveBatchDetails() {
         try {
             setLoading(true);
             const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`
+                `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`,
+                { credentials: "include" }
             );
 
             if (!response.ok) {
@@ -59,7 +60,7 @@ export default function ExclusiveBatchDetails() {
         try {
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${participantId}`,
-                { method: "DELETE" }
+                { method: "DELETE", credentials: "include" }
             );
             const result = await response.json();
             if (!response.ok) throw new Error(result.message);
@@ -76,6 +77,7 @@ export default function ExclusiveBatchDetails() {
             const deletePromises = selectedIds.map((participantId) =>
                 fetch(`${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${participantId}`, {
                     method: "DELETE",
+                    credentials: "include",
                 })
             );
 
