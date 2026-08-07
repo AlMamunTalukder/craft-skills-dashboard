@@ -152,11 +152,7 @@ const router = createBrowserRouter([
             index: true,
             element: <Navigate to="participants" replace />,
           },
-          // {
-          //   path: "participants",
-          //   element: <ExclusiveOfferParticipants />,
-          //   handle: { breadcrumb: "Participants" },
-          // },
+         
           {
             path: "participants/new",
             element: <ParticipantForm />,
@@ -242,21 +238,12 @@ const router = createBrowserRouter([
         element: <AttendanceList />,
         handle: { breadcrumb: "attendance" },
       },
-      // {
-      //   path: "attendance/new",
-      //   element: <CreateAttendance />,
-      // },
-      // {
-      //   path: "attendance/edit/:id",
-      //   element: <CreateAttendance />,
-      // },
+      
       {
         path: "attendance/batches",
         element: <BatchAttendanceDashboard />,
         handle: { breadcrumb: "attendance" },
       },
-
-      // path="/attendance/batch/:batchId" element={<BatchDetailsPage />}
       {
         path: "attendance/batch/:batchId",
         element: <BatchDetailsPage />,
@@ -291,12 +278,7 @@ const router = createBrowserRouter([
         element: <CreateUser />,
         handle: { breadcrumb: "teacher" },
       },
-      // PDF
-      // {
-      //   path: "pdf",
-      //   element: <PDF />,
-      //   handle: { breadcrumb: "PDF" },
-      // },
+      
 
       // Review
       {

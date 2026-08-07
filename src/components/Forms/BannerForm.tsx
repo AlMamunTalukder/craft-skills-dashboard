@@ -118,13 +118,6 @@ export default function BannerForm({ initialValues }: Props) {
     }
   };
 
-  // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormData(prev => ({
-  //     ...prev,
-  //     [name]: value ? new Date(value).toISOString() : "",
-  //   }));
-  // };
 
   return (
     <div className="space-y-6">
@@ -148,23 +141,7 @@ export default function BannerForm({ initialValues }: Props) {
             
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* <div className="space-y-3">
-                <Label htmlFor="homeBannerInfo.title" className="flex items-center gap-2">
-                  <Megaphone className="w-4 h-4" />
-                  Title
-                </Label>
-                <Input
-                  id="homeBannerInfo.title"
-                  name="homeBannerInfo.title"
-                  value={formData.homeBannerInfo?.title || ''}
-                  onChange={handleChange}
-                  placeholder="Enter seminar banner title"
-                />
-              </div> */}
-              
-             
-              
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">                        
               <div className="space-y-3 md:col-span-2">
                 <Label htmlFor="homeBannerInfo.description" className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
@@ -180,10 +157,6 @@ export default function BannerForm({ initialValues }: Props) {
                 />
               </div>
               </div>
-              
-              
-            
-            
           </CardContent>
         </Card>
 
@@ -198,22 +171,7 @@ export default function BannerForm({ initialValues }: Props) {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* <div className="space-y-3">
-                <Label htmlFor="admissionBannerInfo.title" className="flex items-center gap-2">
-                  <Megaphone className="w-4 h-4" />
-                  Title
-                </Label>
-                <Input
-                  id="admissionBannerInfo.title"
-                  name="admissionBannerInfo.title"
-                  value={formData.admissionBannerInfo?.title || ''}
-                  onChange={handleChange}
-                  placeholder="Enter admission banner title"
-                />
-              </div> */}
-              
              
-              
               <div className="space-y-3 md:col-span-2">
                 <Label htmlFor="admissionBannerInfo.description" className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
@@ -230,9 +188,6 @@ export default function BannerForm({ initialValues }: Props) {
               </div>
               </div>
               
-              
-            
-            
           </CardContent>
         </Card>
 

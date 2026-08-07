@@ -51,7 +51,7 @@ const formatDateForInput = (dateStr: string) => {
     const bstDate = moment.utc(dateStr).tz("Asia/Dhaka");
     // Format for datetime-local input (YYYY-MM-DDTHH:mm)
     const formatted = bstDate.format("YYYY-MM-DDTHH:mm");
-    console.log(`UTC: ${dateStr} → BST: ${formatted}`); // Debug log
+    // console.log(`UTC: ${dateStr} → BST: ${formatted}`);
     return formatted;
   } catch (error) {
     console.error("Error formatting date for input:", error);
@@ -97,18 +97,8 @@ export default function ExclusiveBatchForm() {
       );
       const { data, success } = await response.json();
       if (success) {
-        console.log("Raw data from API:", {
-          date: data.date,
-          deadline: data.registrationDeadline,
-        });
-
         const formattedDate = formatDateForInput(data.date);
         const formattedDeadline = formatDateForInput(data.registrationDeadline);
-
-        console.log("Formatted for input:", {
-          date: formattedDate,
-          deadline: formattedDeadline,
-        });
 
         reset({
           batchNo: data.batchNo,
@@ -132,7 +122,7 @@ export default function ExclusiveBatchForm() {
 
   const onSubmit = async (data: BatchFormData) => {
     try {
-      console.log("Form data before conversion:", data);
+      // console.log("Form data before conversion:", data);
 
       const payload = {
         ...data,
@@ -142,7 +132,7 @@ export default function ExclusiveBatchForm() {
         regularPrice: Number(data.regularPrice),
       };
 
-      console.log("Payload being sent:", payload);
+      // console.log("Payload being sent:", payload);
 
       const url = isEditing
         ? `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`
@@ -239,23 +229,13 @@ export default function ExclusiveBatchForm() {
                   {...register("whatsappGroupLink")}
                   placeholder="https://chat.whatsapp.com/..."
                 />
-                {/* <p className="text-xs text-muted-foreground">
-                  Students see this link on the payment success page to join the
-                  group
-                </p> */}
+              
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="date">Event Date & Time *</Label>
                 <Input id="date" type="datetime-local" {...register("date")} />
-                {/* <p className="text-xs text-muted-foreground">
-                                    Time will be displayed in Bangladesh Standard Time (BST)
-                                </p> */}
-                {/* {watchDate && (
-                                    <p className="text-xs text-blue-600 font-medium">
-                                        BST: {moment.tz(watchDate, 'Asia/Dhaka').format('DD MMM YYYY hh:mm A')}
-                                    </p>
-                                )} */}
+              
                 {errors.date && (
                   <p className="text-sm text-red-500">{errors.date.message}</p>
                 )}
@@ -270,14 +250,7 @@ export default function ExclusiveBatchForm() {
                   type="datetime-local"
                   {...register("registrationDeadline")}
                 />
-                {/* <p className="text-xs text-muted-foreground">
-                                    Time will be displayed in Bangladesh Standard Time (BST)
-                                </p> */}
-                {/* {watchDeadline && (
-                                    <p className="text-xs text-blue-600 font-medium">
-                                        BST: {moment.tz(watchDeadline, 'Asia/Dhaka').format('DD MMM YYYY hh:mm A')}
-                                    </p>  
-                                )} */}
+                
                 {errors.registrationDeadline && (
                   <p className="text-sm text-red-500">
                     {errors.registrationDeadline.message}

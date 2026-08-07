@@ -57,10 +57,8 @@ interface Props {
 export default function SiteContentForm({ initialValues }: Props) {
   const [formData, setFormData] = useState<SiteContentData>(initialValues);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState<string | null>(null);
+  const [uploading] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  console.log(setUploading);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
