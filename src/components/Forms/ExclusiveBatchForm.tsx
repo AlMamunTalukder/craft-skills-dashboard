@@ -25,6 +25,7 @@ const batchSchema = z.object({
   offerPrice: z.number().min(0, "Price must be positive"),
   regularPrice: z.number().min(0, "Regular price must be positive"),
   whatsappGroupLink: z.string().optional(),
+  giftDriveLink: z.string().optional(),
 });
 
 type BatchFormData = z.infer<typeof batchSchema>;
@@ -81,6 +82,7 @@ export default function ExclusiveBatchForm() {
       offerPrice: 199,
       regularPrice: 5500,
       whatsappGroupLink: "",
+      giftDriveLink: "",
     },
   });
 
@@ -109,6 +111,7 @@ export default function ExclusiveBatchForm() {
           offerPrice: data.offerPrice,
           regularPrice: data.regularPrice || 5500,
           whatsappGroupLink: data.whatsappGroupLink || "",
+          giftDriveLink: data.giftDriveLink || "",
         });
         setIsEditing(true);
       }
@@ -230,6 +233,19 @@ export default function ExclusiveBatchForm() {
                   placeholder="https://chat.whatsapp.com/..."
                 />
               
+              </div>
+
+              <div className="md:col-span-2 space-y-2">
+                <Label htmlFor="giftDriveLink">Exclusive Gift Drive Link</Label>
+                <Input
+                  id="giftDriveLink"
+                  {...register("giftDriveLink")}
+                  placeholder="https://drive.google.com/file/d/..."
+                />
+                <p className="text-xs text-muted-foreground">
+                  Students open this link from the exclusive gift success page to
+                  download their gift
+                </p>
               </div>
 
               <div className="space-y-2">
