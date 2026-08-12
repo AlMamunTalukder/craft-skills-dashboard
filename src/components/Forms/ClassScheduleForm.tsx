@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
@@ -107,7 +108,7 @@ export default function ClassScheduleForm({
       method = "POST";
     }
 
-    const res = await fetch(url, {
+    const res = await apiFetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       credentials: "include",

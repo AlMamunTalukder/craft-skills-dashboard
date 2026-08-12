@@ -1,5 +1,6 @@
  
 
+import { apiFetch } from "../../lib/apiFetch";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -62,7 +63,7 @@ export default function BannerForm({ initialValues }: Props) {
     setLoading(true);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/site`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

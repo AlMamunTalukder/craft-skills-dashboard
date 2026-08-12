@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import DataTable from "@/components/DataTableComponents/DataTable";
@@ -29,7 +30,7 @@ export default function ExclusiveBatchDetails() {
 
         try {
             setLoading(true);
-            const response = await fetch(
+            const response = await apiFetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`,
                 { credentials: "include" }
             );
@@ -58,7 +59,7 @@ export default function ExclusiveBatchDetails() {
     // ✅ Delete single participant
     const handleDeleteParticipant = async (participantId: string) => {
         try {
-            const response = await fetch(
+            const response = await apiFetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${participantId}`,
                 { method: "DELETE", credentials: "include" }
             );
@@ -75,7 +76,7 @@ export default function ExclusiveBatchDetails() {
     const handleBulkDelete = async (selectedIds: string[]) => {
         try {
             const deletePromises = selectedIds.map((participantId) =>
-                fetch(`${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${participantId}`, {
+                apiFetch(`${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${participantId}`, {
                     method: "DELETE",
                     credentials: "include",
                 })

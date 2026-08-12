@@ -1,4 +1,5 @@
 // src/pages/Seminar/columns.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import type { Seminar } from "@/types";
 import { Switch } from "@/components/ui/switch";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -116,7 +117,7 @@ export const SeminarColumns = (
             telegramGroup: seminar.telegramGroup || "",
           };
 
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/seminars`, {
+          const response = await apiFetch(`${import.meta.env.VITE_API_URL}/seminars`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(duplicateData),

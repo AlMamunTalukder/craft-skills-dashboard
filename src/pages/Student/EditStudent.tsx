@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
@@ -30,7 +31,7 @@ export default function EditStudentPage() {
       try {
         setLoading(true);
 
-        const studentResponse = await fetch(
+        const studentResponse = await apiFetch(
           `${import.meta.env.VITE_API_URL}/admissions/${id}`,
           { credentials: "include" },
         );
@@ -45,7 +46,7 @@ export default function EditStudentPage() {
 
         setStudent(studentResult.data);
 
-        const coursesResponse = await fetch(
+        const coursesResponse = await apiFetch(
           `${import.meta.env.VITE_API_URL}/courses`,
           { credentials: "include" },
         );
@@ -63,7 +64,7 @@ export default function EditStudentPage() {
           );
         }
 
-        const batchesResponse = await fetch(
+        const batchesResponse = await apiFetch(
           `${import.meta.env.VITE_API_URL}/course-batches`,
           { credentials: "include" },
         );

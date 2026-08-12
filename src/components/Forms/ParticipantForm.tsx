@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -29,7 +30,7 @@ export default function ParticipantForm() {
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(!!id);
     
-    // ✅ Get batchId from URL
+    // âœ… Get batchId from URL
     const batchIdFromUrl = searchParams.get("batchId") || "";
     const [batchInfo, setBatchInfo] = useState<{ batchNo: string; title: string } | null>(null);
 
@@ -51,10 +52,10 @@ export default function ParticipantForm() {
         },
     });
 
-    // ✅ Fetch batch info for display
+    // âœ… Fetch batch info for display
     useEffect(() => {
         if (batchIdFromUrl) {
-            fetch(`${import.meta.env.VITE_API_URL}/exclusive-batches/${batchIdFromUrl}`, {
+            apiFetch(`${import.meta.env.VITE_API_URL}/exclusive-batches/${batchIdFromUrl}`, {
                 credentials: "include",
             })
                 .then(res => res.json())
@@ -70,7 +71,7 @@ export default function ParticipantForm() {
         }
     }, [batchIdFromUrl]);
 
-    // ✅ Reset form with batchId when URL changes
+    // âœ… Reset form with batchId when URL changes
     useEffect(() => {
         if (batchIdFromUrl) {
             reset(prev => ({
@@ -87,7 +88,7 @@ export default function ParticipantForm() {
     const fetchParticipant = async () => {
         try {
             setLoading(true);
-            const response = await fetch(
+            const response = await apiFetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-offer/participants/${id}`,
                 { credentials: "include" },
             );
@@ -104,7 +105,7 @@ export default function ParticipantForm() {
                 });
                 setIsEditing(true);
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to fetch participant");
             navigate(`/exclusive-offer/details/${batchIdFromUrl}`);
         } finally {
@@ -119,7 +120,7 @@ export default function ParticipantForm() {
                 : `${import.meta.env.VITE_API_URL}/exclusive-offer/participants`;
             const method = isEditing ? "PUT" : "POST";
 
-            const response = await fetch(url, {
+            const response = await apiFetch(url, {
                 method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
@@ -131,7 +132,7 @@ export default function ParticipantForm() {
             
             toast.success(isEditing ? "Updated successfully" : "Added successfully");
             
-            // ✅ Navigate back to batch details page
+            // âœ… Navigate back to batch details page
             navigate(`/exclusive-offer/details/${data.batchId}`);
         } catch (error: any) {
             toast.error(error.message);
@@ -172,10 +173,10 @@ export default function ParticipantForm() {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        {/* ✅ Show batch info (read-only) */}
+                        {/* âœ… Show batch info (read-only) */}
 
 
-                        {/* ✅ Hidden batchId field */}
+                        {/* âœ… Hidden batchId field */}
                         <input type="hidden" {...register("batchId")} />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

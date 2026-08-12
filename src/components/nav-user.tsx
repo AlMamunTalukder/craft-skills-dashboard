@@ -2,6 +2,7 @@ import {
   Bell,
   ChevronsUpDown,
   ExternalLink,
+  KeyRound,
   LogOut,
   Moon,
   Sun,
@@ -26,6 +27,9 @@ import {
 } from "@/components/ui/sidebar";
 import { useTheme } from "./theme-provider";
 import { useSignOutMutation } from "@/redux/features/auth/auth.api";
+import { clearApiCache } from "@/lib/apiFetch";
+import ChangePasswordDialog from "./ChangePasswordDialog";
+import { useState } from "react";
 
 export function NavUser({
   user,
@@ -44,10 +48,12 @@ export function NavUser({
   };
 
   const [signOut] = useSignOutMutation();
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   const handleSignOut = async () => {
     try {
       await signOut(null).unwrap();
+      clearApiCache();
       window.location.href = "/";
     } catch (error) {
       console.error("Failed to sign out:", error);
@@ -126,6 +132,13 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <DropdownMenuItem onSelect={() => setShowChangePassword(true)}>
+                <KeyRound />
+                Change Password
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
               <div
                 onClick={handleSignOut}
                 className="flex px-2 py-1 text-gray-400 gap-2 items-center cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-sm"
@@ -136,6 +149,10 @@ export function NavUser({
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
+        <ChangePasswordDialog
+          open={showChangePassword}
+          onOpenChange={setShowChangePassword}
+        />
       </SidebarMenuItem>
     </SidebarMenu>
   );

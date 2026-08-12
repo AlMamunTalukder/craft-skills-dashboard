@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
@@ -19,7 +20,7 @@ export default function AddStudentPage() {
       try {
         setLoading(true);
 
-        const coursesResponse = await fetch(
+        const coursesResponse = await apiFetch(
           `${import.meta.env.VITE_API_URL}/courses`,
           { credentials: "include" }
         );
@@ -38,7 +39,7 @@ export default function AddStudentPage() {
           );
         }
 
-        const batchesResponse = await fetch(
+        const batchesResponse = await apiFetch(
           `${import.meta.env.VITE_API_URL}/course-batches`,
           { credentials: "include" }
         );

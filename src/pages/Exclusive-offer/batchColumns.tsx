@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
@@ -121,7 +122,7 @@ export const batchColumns = (
                           
                             isActive: false,
                         };
-                        const response = await fetch(
+                        const response = await apiFetch(
                             `${import.meta.env.VITE_API_URL}/exclusive-batches`,
                             {
                                 method: "POST",

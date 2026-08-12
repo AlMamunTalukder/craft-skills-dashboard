@@ -1,4 +1,5 @@
 // src/pages/CourseBatch/BatchList.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,7 +20,7 @@ export default function BatchList() {
   const fetchBatches = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches`);
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/course-batches`);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -48,7 +49,7 @@ export default function BatchList() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}`, {
         method: "DELETE",
       });
 
@@ -69,7 +70,7 @@ export default function BatchList() {
 
   const handleStatusToggle = async (id: string, isActive: boolean) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}/status`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

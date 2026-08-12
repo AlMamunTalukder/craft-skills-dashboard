@@ -1,4 +1,5 @@
 // src/pages/Course/CreateCourse.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,7 @@ export default function Course() {
     const fetchCourse = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/courses/${id}`);
+        const response = await apiFetch(`${import.meta.env.VITE_API_URL}/courses/${id}`);
         
         if (!response.ok) throw new Error('Failed to load course');
         
@@ -55,7 +56,7 @@ export default function Course() {
       
       const method = isEditing ? 'PUT' : 'POST';
       
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

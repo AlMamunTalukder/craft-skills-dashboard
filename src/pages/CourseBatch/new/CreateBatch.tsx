@@ -1,4 +1,5 @@
 // src/pages/CourseBatch/new/CreateBatch.tsx
+import { apiFetch } from "../../../lib/apiFetch";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,7 +18,7 @@ export default function CreateBatch() {
     setSubmitting(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/course-batches`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, isActive: false }),

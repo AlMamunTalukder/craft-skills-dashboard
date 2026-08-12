@@ -8,6 +8,39 @@ import type { ColumnDef } from "@tanstack/react-table";
 import DeleteDialog from "@/components/common/DeleteDialog";
 import PasswordResetModal from "./_components/PasswordResetModal";
 
+function ResetPasswordCell({
+  user,
+  refreshUsers,
+}: {
+  user: any;
+  refreshUsers: () => void;
+}) {
+  const [showResetModal, setShowResetModal] = useState(false);
+
+  return (
+    <>
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-muted-foreground">••••••••</span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowResetModal(true)}
+        >
+          Reset
+        </Button>
+      </div>
+
+      <PasswordResetModal
+        userId={user._id || user.id}
+        userName={`${user.firstName} ${user.lastName}`}
+        isOpen={showResetModal}
+        onClose={() => setShowResetModal(false)}
+        onSuccess={refreshUsers}
+      />
+    </>
+  );
+}
+
 export const userColumns = (
   onDelete: (id: string) => Promise<void>,
   refreshUsers: () => void,
@@ -125,33 +158,9 @@ export const userColumns = (
   {
     id: "password",
     header: "Password",
-    cell: ({ row }) => {
-      const user = row.original;
-      const [showResetModal, setShowResetModal] = useState(false);
-
-      return (
-        <>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">••••••••</span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowResetModal(true)}
-            >
-              Reset
-            </Button>
-          </div>
-
-          <PasswordResetModal
-            userId={user._id || user.id}
-            userName={`${user.firstName} ${user.lastName}`}
-            isOpen={showResetModal}
-            onClose={() => setShowResetModal(false)}
-            onSuccess={refreshUsers}
-          />
-        </>
-      );
-    },
+    cell: ({ row }) => (
+      <ResetPasswordCell user={row.original} refreshUsers={refreshUsers} />
+    ),
   },
   {
     id: "actions",

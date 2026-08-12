@@ -1,4 +1,5 @@
 // src/pages/CourseBatch/edit/[id]/UpdateBatch.tsx
+import { apiFetch } from "../../../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BatchForm from "@/components/Forms/Course/BatchForm";
@@ -43,7 +44,7 @@ export default function UpdateBatch() {
   const fetchBatch = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}`);
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -79,7 +80,7 @@ export default function UpdateBatch() {
     setSubmitting(true);
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/course-batches/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

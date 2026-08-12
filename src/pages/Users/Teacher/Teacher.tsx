@@ -1,4 +1,5 @@
 // src/pages/Users/Teacher/Teacher.tsx
+import { apiFetch } from "../../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Loader2, ArrowLeft } from "lucide-react";
@@ -22,7 +23,7 @@ export default function Teacher() {
     const fetchTeacher = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/users/${id}`, { credentials: "include" });
+        const res = await apiFetch(`${import.meta.env.VITE_API_URL}/users/${id}`, { credentials: "include" });
         const result = await res.json();
         if (!result.success) throw new Error(result.message || "Failed to load teacher");
         setInitialData(result.data);
@@ -42,7 +43,7 @@ export default function Teacher() {
       const submitData = { ...data };
       if (isEditing && !submitData.password) delete submitData.password;
 
-      const res = await fetch(
+      const res = await apiFetch(
         isEditing
           ? `${import.meta.env.VITE_API_URL}/users/${id}`
           : `${import.meta.env.VITE_API_URL}/users`,

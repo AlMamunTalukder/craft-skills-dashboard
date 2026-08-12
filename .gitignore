@@ -25,3 +25,6 @@ dist-ssr
 *.sln
 *.sw?
 config.bat
+
+# Vite build output
+dist

@@ -1,4 +1,5 @@
 // src/pages/Course/CourseList.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect, useCallback } from 'react';
 import DataTable from '@/components/DataTableComponents/DataTable';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,7 +19,7 @@ export default function CourseList() {
   const fetchCourses = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/courses`);
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/courses`);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -47,7 +48,7 @@ export default function CourseList() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/courses/${id}`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/courses/${id}`, {
         method: 'DELETE',
       });
 

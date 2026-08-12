@@ -1,6 +1,7 @@
 // src/pages/Users/_components/PasswordResetModal.tsx
 "use client";
 
+import { apiFetch } from "../../../lib/apiFetch";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,7 +55,7 @@ export default function PasswordResetModal({
       const apiUrl = `${import.meta.env.VITE_API_URL}/users/${userId}/reset-password`;
       // console.log("Attempting fetch to:", apiUrl);
 
-      const response = await fetch(apiUrl, {
+      const response = await apiFetch(apiUrl, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

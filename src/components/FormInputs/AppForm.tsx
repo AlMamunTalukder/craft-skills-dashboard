@@ -39,7 +39,9 @@ const AppForm = ({
 
   const submit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      onSubmit && (await onSubmit(data));
+      if (onSubmit) {
+        await onSubmit(data);
+      }
       // methods.reset();
     } catch (error) {
       console.error(error);

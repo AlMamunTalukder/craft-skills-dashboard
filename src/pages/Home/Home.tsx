@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import {
   Card,
   CardContent,
@@ -77,15 +78,6 @@ const Home = () => {
   });
   const [savingMenuSettings, setSavingMenuSettings] = useState(false);
 
-  // Helper function to extract batchId as string
-  const getBatchIdString = (batchId: any): string => {
-    if (!batchId) return '';
-    if (typeof batchId === 'string') return batchId;
-    if (batchId && typeof batchId === 'object' && batchId.$oid) return batchId.$oid;
-    if (batchId && typeof batchId === 'object' && batchId._id) return batchId._id;
-    return String(batchId);
-  };
-
   // Quick actions configuration
   const quickActions = [
     { path: "/seminar/new", icon: PlayCircle, label: "Add Seminar", color: "text-purple-600", hoverBg: "hover:bg-purple-50" },
@@ -94,46 +86,22 @@ const Home = () => {
     { path: "/coupons/new", icon: Ticket, label: "Add Coupon", color: "text-orange-600", hoverBg: "hover:bg-orange-50" },
   ];
 
-  // ✅ Fetch menu settings on mount
-  useEffect(() => {
-    const fetchMenuSettings = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
-          credentials: "include",
-        });
-        const result = await response.json();
-        if (result.success && result.data?.menuSettings) {
-          setMenuSettings(result.data.menuSettings);
-        }
-      } catch (error) {
-        console.error("Failed to fetch menu settings:", error);
-      }
-    };
-
-    fetchMenuSettings();
-  }, []);
-
   useEffect(() => {
     const loadData = async () => {
       try {
         // Load site data
-        const siteRes = await fetch(`${import.meta.env.VITE_API_URL}/site`);
+        const siteRes = await apiFetch(`${import.meta.env.VITE_API_URL}/site`);
         const siteJson = await siteRes.json();
         setData(siteJson?.data);
+        if (siteJson?.data?.menuSettings) {
+          setMenuSettings(siteJson.data.menuSettings);
+        }
 
         // Load all course batches
-        const batchesRes = await fetch(`${import.meta.env.VITE_API_URL}/course-batches?sort=-createdAt`);
+        const batchesRes = await apiFetch(`${import.meta.env.VITE_API_URL}/course-batches?sort=-createdAt`);
         const batchesJson = await batchesRes.json();
         const batches = batchesJson?.data || [];
         setCourseBatches(batches);
-
-        // Load ALL admissions without limit
-        const admissionsRes = await fetch(`${import.meta.env.VITE_API_URL}/admissions?limit=1000`);
-        const admissionsJson = await admissionsRes.json();
-        const allAdmissions = admissionsJson?.data || [];
-
-        // Set recent admissions (last 5)
-        setRecentAdmissions(allAdmissions.slice(0, 5));
 
         // Select default batch (active or first)
         const activeBatch = batches.find((batch: CourseBatch) => batch.isActive === true);
@@ -142,14 +110,18 @@ const Home = () => {
         if (defaultBatch) {
           setSelectedBatch(defaultBatch);
 
-          // Count admissions for this batch
-          const batchAdmissions = allAdmissions.filter((ad: Admission) => {
-            const admissionBatchId = getBatchIdString(ad.batchId);
-            return admissionBatchId === defaultBatch._id;
-          });
-
-          setTotalAdmittedStudents(batchAdmissions.length);
+          // Count admissions for this batch via the backend
+          const countRes = await apiFetch(
+            `${import.meta.env.VITE_API_URL}/admissions/count?batchId=${defaultBatch._id}`
+          );
+          const countJson = await countRes.json();
+          setTotalAdmittedStudents(countJson?.data?.count ?? 0);
         }
+
+        // Load recent admissions (last 5)
+        const recentRes = await apiFetch(`${import.meta.env.VITE_API_URL}/admissions?limit=5`);
+        const recentJson = await recentRes.json();
+        setRecentAdmissions(recentJson?.data || []);
 
       } catch (error) {
         console.error("Failed to load data:", error);
@@ -175,7 +147,7 @@ const Home = () => {
     setMenuSettings(prev => ({ ...prev, [key]: value }));
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/site/menu-settings`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/site/menu-settings`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

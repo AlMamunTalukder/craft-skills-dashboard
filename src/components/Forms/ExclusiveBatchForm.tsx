@@ -1,4 +1,5 @@
 // In ExclusiveBatchForm.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -11,10 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
 import toast from "react-hot-toast";
-import moment from "moment-timezone";
-
-// ✅ Set default timezone to Bangladesh
-moment.tz.setDefault("Asia/Dhaka");
 
 const batchSchema = z.object({
   batchNo: z.union([z.string(), z.number()]),
@@ -30,30 +27,29 @@ const batchSchema = z.object({
 
 type BatchFormData = z.infer<typeof batchSchema>;
 
-// ✅ Convert BST to UTC for storage
+// âœ… Convert BST to UTC for storage
 const convertToUTC = (localDateTime: string) => {
   if (!localDateTime) return "";
   try {
-    // Parse the datetime as BST (Asia/Dhaka timezone)
-    const bstDate = moment.tz(localDateTime, "Asia/Dhaka");
-    // Convert to UTC and return ISO string
-    return bstDate.utc().format();
+    // Interpret the wall time as Asia/Dhaka (UTC+6, no DST) and convert to UTC
+    const date = new Date(`${localDateTime}+06:00`);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toISOString();
   } catch (error) {
     console.error("Error converting to UTC:", error);
     return "";
   }
 };
 
-// ✅ Convert UTC to BST for display in input
+// âœ… Convert UTC to BST for display in input
 const formatDateForInput = (dateStr: string) => {
   if (!dateStr) return "";
   try {
-    // Parse as UTC and convert to BST
-    const bstDate = moment.utc(dateStr).tz("Asia/Dhaka");
-    // Format for datetime-local input (YYYY-MM-DDTHH:mm)
-    const formatted = bstDate.format("YYYY-MM-DDTHH:mm");
-    // console.log(`UTC: ${dateStr} → BST: ${formatted}`);
-    return formatted;
+    // Parse as UTC, shift to Asia/Dhaka (UTC+6) and format for datetime-local input
+    const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return "";
+    const dhakaTime = new Date(date.getTime() + 6 * 60 * 60 * 1000);
+    return dhakaTime.toISOString().slice(0, 16);
   } catch (error) {
     console.error("Error formatting date for input:", error);
     return "";
@@ -93,7 +89,7 @@ export default function ExclusiveBatchForm() {
   const fetchBatch = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`,
         { credentials: "include" },
       );
@@ -115,7 +111,7 @@ export default function ExclusiveBatchForm() {
         });
         setIsEditing(true);
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to fetch batch");
       navigate("/exclusive-offer/batches");
     } finally {
@@ -142,7 +138,7 @@ export default function ExclusiveBatchForm() {
         : `${import.meta.env.VITE_API_URL}/exclusive-batches`;
       const method = isEditing ? "PUT" : "POST";
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

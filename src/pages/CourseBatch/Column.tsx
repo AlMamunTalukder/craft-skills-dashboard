@@ -1,4 +1,5 @@
 // src/pages/CourseBatch/Column.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
@@ -99,7 +100,7 @@ export const batchColumns = (
             messengerSecretGroup: batch.messengerSecretGroup || "",
             isActive: false,
           };
-          const res = await fetch(
+          const res = await apiFetch(
             `${import.meta.env.VITE_API_URL}/course-batches`,
             {
               method: "POST",

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { apiFetch } from "./apiFetch";
 
 const DASHBOARD_API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
@@ -6,7 +6,7 @@ const DASHBOARD_API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000
 // Get all courses (not just active ones)
 export async function getDashboardCourses() {
   try {
-    const response = await fetch(`${DASHBOARD_API_URL}/courses`, {
+    const response = await apiFetch(`${DASHBOARD_API_URL}/courses`, {
       credentials: "include",
     });
 
@@ -34,7 +34,7 @@ export async function getDashboardCourses() {
 // Get all batches (including inactive ones)
 export async function getDashboardBatches() {
   try {
-    const response = await fetch(`${DASHBOARD_API_URL}/course-batches`, {
+    const response = await apiFetch(`${DASHBOARD_API_URL}/course-batches`, {
       credentials: "include",
     });
 
@@ -65,7 +65,7 @@ export async function getDashboardBatches() {
 // Get all admissions (for students list)
 export async function getDashboardAdmissions() {
   try {
-    const response = await fetch(`${DASHBOARD_API_URL}/admissions`, {
+    const response = await apiFetch(`${DASHBOARD_API_URL}/admissions`, {
       credentials: "include",
     });
 
@@ -108,7 +108,7 @@ export async function getDashboardAdmissions() {
 // Create admission (admin direct creation)
 export async function createDashboardAdmission(data: any) {
   try {
-    const response = await fetch(`${DASHBOARD_API_URL}/admissions/register`, {
+    const response = await apiFetch(`${DASHBOARD_API_URL}/admissions/register`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -133,7 +133,7 @@ export async function createDashboardAdmission(data: any) {
 // Update admission
 export async function updateDashboardAdmission(id: string, data: any) {
   try {
-    const response = await fetch(`${DASHBOARD_API_URL}/admissions/${id}`, {
+    const response = await apiFetch(`${DASHBOARD_API_URL}/admissions/${id}`, {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -158,7 +158,7 @@ export async function updateDashboardAdmission(id: string, data: any) {
 // Delete admission
 export async function deleteDashboardAdmission(id: string) {
   try {
-    const response = await fetch(`${DASHBOARD_API_URL}/admissions/${id}`, {
+    const response = await apiFetch(`${DASHBOARD_API_URL}/admissions/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
@@ -179,7 +179,7 @@ export async function deleteDashboardAdmission(id: string) {
 // Get admissions by batch ID
 export async function getAdmissionsByBatchId(batchId: string) {
   try {
-    const response = await fetch(
+    const response = await apiFetch(
       `${DASHBOARD_API_URL}/admissions/batch/${batchId}`,
       {
         credentials: "include",
@@ -225,7 +225,7 @@ export async function getAdmissionsByBatchId(batchId: string) {
 // Get batch by ID
 export async function getBatchById(id: string) {
   try {
-    const response = await fetch(`${DASHBOARD_API_URL}/course-batches/${id}`, {
+    const response = await apiFetch(`${DASHBOARD_API_URL}/course-batches/${id}`, {
       credentials: "include",
     });
 
@@ -257,7 +257,7 @@ export async function getBatchById(id: string) {
 // Create admission directly (bypass queue for admin)
 export async function createAdmissionDirect(data: any) {
   try {
-    const response = await fetch(`${DASHBOARD_API_URL}/admissions/admin/register`, {
+    const response = await apiFetch(`${DASHBOARD_API_URL}/admissions/admin/register`, {
       method: "POST",
       credentials: "include",
       headers: {

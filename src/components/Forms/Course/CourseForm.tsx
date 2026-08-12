@@ -9,22 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Banknote } from "lucide-react";
 import { courseSchema, type CourseFormData } from "@/api/course.schema";
-import { z } from "zod";
 
-
-// Create a form-specific schema that matches React Hook Form's expectations
-const formSchema = z.object({
-  name: z.string().min(1, 'Course name is required'),
-  description: z.string().optional(),
-  price: z.coerce.number().min(0, 'Price must be at least 0'),
-  discount: z.coerce.number().min(0).max(100).optional(),
-  paymentCharge: z.coerce.number().min(0).optional(),
-});
-
-type FormData = z.infer<typeof formSchema>;
 
 interface CourseFormProps {
-  initialValues?: Partial<FormData>;
+  initialValues?: Partial<CourseFormData>;
   onSubmit: (data: CourseFormData) => Promise<void>;
   isSubmitting?: boolean;
 }

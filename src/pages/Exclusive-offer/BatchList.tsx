@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,7 +21,7 @@ export default function ExclusiveBatchList() {
     const fetchBatches = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch(
+            const response = await apiFetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-batches`,
                 { credentials: "include" }
             );
@@ -43,7 +44,7 @@ export default function ExclusiveBatchList() {
 
     const handleDelete = async (id: string) => {
         try {
-            const response = await fetch(
+            const response = await apiFetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`,
                 { method: "DELETE", credentials: "include" }
             );
@@ -58,7 +59,7 @@ export default function ExclusiveBatchList() {
 
     const handleStatusToggle = async (id: string, isActive: boolean) => {
         try {
-            const response = await fetch(
+            const response = await apiFetch(
                 `${import.meta.env.VITE_API_URL}/exclusive-batches/${id}/status`,
                 {
                     method: "PUT",
@@ -85,7 +86,7 @@ export default function ExclusiveBatchList() {
     const handleBulkDelete = async (selectedIds: string[]) => {
         try {
             const deletePromises = selectedIds.map((id) =>
-                fetch(`${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`, {
+                apiFetch(`${import.meta.env.VITE_API_URL}/exclusive-batches/${id}`, {
                     method: "DELETE",
                     credentials: "include",
                 })

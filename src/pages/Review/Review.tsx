@@ -1,4 +1,5 @@
 // src/pages/Reviews/ReviewList.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,7 +20,7 @@ export default function ReviewList() {
   const fetchReviews = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/review`);
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/review`);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -48,7 +49,7 @@ export default function ReviewList() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_URL}/review/${id}`,
         {
           method: "DELETE",

@@ -1,4 +1,5 @@
 // src/pages/Attendance/BatchDetailsPageV2.tsx
+import { apiFetch } from "../../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -80,7 +81,7 @@ export default function BatchDetailsPageV2() {
         // );
 
         // Get all admissions for this batch
-        const admissionsResponse = await fetch(
+        const admissionsResponse = await apiFetch(
           `${import.meta.env.VITE_API_URL}/admissions/batch/${batchId}`,
           {
             credentials: "include",
@@ -107,7 +108,7 @@ export default function BatchDetailsPageV2() {
 
       // If we have an admission ID, update in backend
       if (admissionId) {
-        const updateResponse = await fetch(
+        const updateResponse = await apiFetch(
           `${import.meta.env.VITE_API_URL}/admissions/${admissionId}/result`,
           {
             method: "PUT",
@@ -193,7 +194,7 @@ export default function BatchDetailsPageV2() {
 
       // Step 1: Get batch details
       console.log("Step 1: Fetching batch details...");
-      const batchResponse = await fetch(
+      const batchResponse = await apiFetch(
         `${import.meta.env.VITE_API_URL}/course-batches/${batchId}`,
         {
           credentials: "include",
@@ -216,7 +217,7 @@ export default function BatchDetailsPageV2() {
 
       // Step 2: Get admissions for this batch
       // console.log("Step 2: Fetching admissions...");
-      const admissionsResponse = await fetch(
+      const admissionsResponse = await apiFetch(
         `${import.meta.env.VITE_API_URL}/admissions/batch/${batchId}`,
         {
           credentials: "include",
@@ -234,7 +235,7 @@ export default function BatchDetailsPageV2() {
 
       // Step 3: Get attendance for this batch
       // console.log("Step 3: Fetching attendance...");
-      const attendanceResponse = await fetch(
+      const attendanceResponse = await apiFetch(
         `${import.meta.env.VITE_API_URL}/attendances/batch/${batchData.code}`,
         {
           credentials: "include",
@@ -331,7 +332,7 @@ export default function BatchDetailsPageV2() {
 
             // Try to get student details
             try {
-              const studentResponse = await fetch(
+              const studentResponse = await apiFetch(
                 `${import.meta.env.VITE_API_URL}/admissions/${studentId}`,
                 {
                   credentials: "include",
@@ -350,7 +351,7 @@ export default function BatchDetailsPageV2() {
                   continue;
                 }
               }
-            } catch (e) {
+            } catch {
               console.log(`Could not fetch student ${studentId} details`);
             }
 
@@ -836,7 +837,7 @@ export default function BatchDetailsPageV2() {
           <div>
             <h1 className="text-2xl font-bold">{batch.name}</h1>
             <p className="text-gray-600 mt-1">
-              Code: {batch.code} • Total Students: {students.length} • Total
+              Code: {batch.code} â€¢ Total Students: {students.length} â€¢ Total
               Attendance Records: {attendanceData.length}
             </p>
           </div>

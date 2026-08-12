@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { Card, CardContent } from "@/components/ui/card";
 import { PanelTop, Tag, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -11,7 +12,7 @@ export default function Banner() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/site`);
+        const res = await apiFetch(`${import.meta.env.VITE_API_URL}/site`);
         const json = await res.json();
         setData(json?.data);
       } catch (error) {

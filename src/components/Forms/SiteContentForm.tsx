@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,7 +58,6 @@ interface Props {
 export default function SiteContentForm({ initialValues }: Props) {
   const [formData, setFormData] = useState<SiteContentData>(initialValues);
   const [loading, setLoading] = useState(false);
-  const [uploading] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,7 +65,7 @@ export default function SiteContentForm({ initialValues }: Props) {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/site`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/site`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -424,7 +424,7 @@ export default function SiteContentForm({ initialValues }: Props) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <Button
             type="submit"
-            disabled={loading || uploading !== null}
+            disabled={loading}
             size="lg"
             className="gap-2 min-w-[200px]"
           >
@@ -432,11 +432,6 @@ export default function SiteContentForm({ initialValues }: Props) {
               <>
                 <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                 Updating...
-              </>
-            ) : uploading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                Uploading...
               </>
             ) : (
               <>

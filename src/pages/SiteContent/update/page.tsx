@@ -1,5 +1,6 @@
  
 
+import { apiFetch } from "../../../lib/apiFetch";
 import FormHeader from "@/components/Forms/FormHeader";
 import SiteContentForm from "@/components/Forms/SiteContentForm";
 import { useEffect, useState } from "react";
@@ -34,7 +35,7 @@ export default function UpdateSiteContentPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/site`);
+        const res = await apiFetch(`${import.meta.env.VITE_API_URL}/site`);
         const json = await res.json();
         setData(json?.data);
       } catch (error) {

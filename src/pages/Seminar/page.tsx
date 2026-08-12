@@ -1,4 +1,5 @@
 // src/pages/Seminar/page.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,7 +21,7 @@ export default function SeminarList() {
   const fetchSeminars = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/seminars`);
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/seminars`);
 
       if (!response.ok) throw new Error("Failed to fetch seminars");
 
@@ -44,7 +45,7 @@ export default function SeminarList() {
   const handleDelete = async (id: string): Promise<void> => {
     try {
       // Call the API to actually delete from database
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_URL}/seminars/${id}`,
         {
           method: "DELETE",
@@ -70,7 +71,7 @@ export default function SeminarList() {
 
   const handleStatusToggle = async (id: string, isActive: boolean) => {
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_URL}/seminars/${id}/status`,
         {
           method: "PUT",

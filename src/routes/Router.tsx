@@ -1,43 +1,57 @@
+import { lazy, Suspense, type ComponentType } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Main from "@/Layout/Main";
-import Home from "../pages/Home/Home";
 import { LoginForm } from "@/components/login-form";
 import GuestRoute from "@/components/GuestRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import SiteContent from "@/pages/SiteContent/SiteContent";
-import UpdateSiteContentPage from "@/pages/SiteContent/update/page";
-import Banner from "@/pages/Banner/Banner";
-import UpdateBanner from "@/pages/Banner/update/page";
-import ClassSchedule from "@/pages/ClassSchedule/ClassSchedule";
-import UpdateClassSchedule from "@/pages/ClassSchedule/update/page";
-import SeminarList from "@/pages/Seminar/page";
-import BatchList from "@/pages/CourseBatch/BatchList";
-import CreateBatch from "@/pages/CourseBatch/new/CreateBatch";
-import UpdateBatch from "@/pages/CourseBatch/edit/[id]/UpdateBatch";
-import CourseList from "@/pages/Course/CourseList";
-import Course from "@/pages/Course/Course";
-import CouponList from "@/pages/Coupon/CouponList";
-import CreateCoupon from "@/pages/Coupon/new/NewCoupon";
-import AttendanceList from "@/pages/Attendence/AttendanceList";
-import UserList from "@/pages/Users/Users/UserList";
-import AdminList from "@/pages/Users/Admin/AdminList";
-import TeacherList from "@/pages/Users/Teacher/TeacherList";
-import CreateUser from "@/pages/Users/Teacher/Teacher";
-import CourseBatchDetails from "@/pages/CourseBatch/details/CourseBatchDetails";
-import SeminarFormPage from "@/pages/Seminar/new/SeminarFormPage";
-import SeminarDetailsPage from "@/pages/Seminar/details/SeminarDetailsPage";
-import BatchAttendanceDashboard from "@/pages/Attendence/AttendanceList";
-import BatchDetailsPage from "@/pages/Attendence/BatchAttendanceDetails/BatchDetailsPage";
-import Review from "@/pages/Review/Review";
-import AddSchedule from "@/pages/ClassSchedule/add/page";
-import AddStudent from "@/pages/Student/AddStudent";
-import EditStudentPage from "@/pages/Student/EditStudent";
 import ErrorPage from "@/components/ErrorBoundary";
-import ExclusiveBatchList from "@/pages/Exclusive-offer/BatchList";
-import ExclusiveBatchForm from "@/components/Forms/ExclusiveBatchForm";
-import ExclusiveBatchDetails from "@/pages/Exclusive-offer/BatchParticipantDetails";
-import ParticipantForm from "@/components/Forms/ParticipantForm";
+import PagePreloader from "@/components/PagePreloader";
 
+// Route-level code splitting: every page loads on demand (on first visit),
+// so the login screen no longer downloads the whole admin bundle.
+const lazyPage = (loader: () => Promise<{ default: ComponentType }>) => {
+  const Comp = lazy(loader);
+  const Wrapped = () => (
+    <Suspense fallback={<PagePreloader />}>
+      <Comp />
+    </Suspense>
+  );
+  return Wrapped;
+};
+
+// ========== Lazy pages (each becomes its own Vite chunk) ==========
+const Home = lazyPage(() => import("@/pages/Home/Home"));
+const SiteContent = lazyPage(() => import("@/pages/SiteContent/SiteContent"));
+const UpdateSiteContentPage = lazyPage(() => import("@/pages/SiteContent/update/page"));
+const Banner = lazyPage(() => import("@/pages/Banner/Banner"));
+const UpdateBanner = lazyPage(() => import("@/pages/Banner/update/page"));
+const ClassSchedule = lazyPage(() => import("@/pages/ClassSchedule/ClassSchedule"));
+const UpdateClassSchedule = lazyPage(() => import("@/pages/ClassSchedule/update/page"));
+const AddSchedule = lazyPage(() => import("@/pages/ClassSchedule/add/page"));
+const SeminarList = lazyPage(() => import("@/pages/Seminar/page"));
+const SeminarFormPage = lazyPage(() => import("@/pages/Seminar/new/SeminarFormPage"));
+const SeminarDetailsPage = lazyPage(() => import("@/pages/Seminar/details/SeminarDetailsPage"));
+const ExclusiveBatchList = lazyPage(() => import("@/pages/Exclusive-offer/BatchList"));
+const ExclusiveBatchForm = lazyPage(() => import("@/components/Forms/ExclusiveBatchForm"));
+const ExclusiveBatchDetails = lazyPage(() => import("@/pages/Exclusive-offer/BatchParticipantDetails"));
+const ParticipantForm = lazyPage(() => import("@/components/Forms/ParticipantForm"));
+const CourseList = lazyPage(() => import("@/pages/Course/CourseList"));
+const Course = lazyPage(() => import("@/pages/Course/Course"));
+const BatchList = lazyPage(() => import("@/pages/CourseBatch/BatchList"));
+const CreateBatch = lazyPage(() => import("@/pages/CourseBatch/new/CreateBatch"));
+const UpdateBatch = lazyPage(() => import("@/pages/CourseBatch/edit/[id]/UpdateBatch"));
+const CourseBatchDetails = lazyPage(() => import("@/pages/CourseBatch/details/CourseBatchDetails"));
+const AddStudent = lazyPage(() => import("@/pages/Student/AddStudent"));
+const EditStudentPage = lazyPage(() => import("@/pages/Student/EditStudent"));
+const CouponList = lazyPage(() => import("@/pages/Coupon/CouponList"));
+const CreateCoupon = lazyPage(() => import("@/pages/Coupon/new/NewCoupon"));
+const BatchAttendanceDashboard = lazyPage(() => import("@/pages/Attendence/AttendanceList"));
+const BatchDetailsPage = lazyPage(() => import("@/pages/Attendence/BatchAttendanceDetails/BatchDetailsPage"));
+const UserList = lazyPage(() => import("@/pages/Users/Users/UserList"));
+const AdminList = lazyPage(() => import("@/pages/Users/Admin/AdminList"));
+const TeacherList = lazyPage(() => import("@/pages/Users/Teacher/TeacherList"));
+const CreateUser = lazyPage(() => import("@/pages/Users/Teacher/Teacher"));
+const Review = lazyPage(() => import("@/pages/Review/Review"));
 
 const router = createBrowserRouter([
   {
@@ -157,7 +171,6 @@ const router = createBrowserRouter([
             handle: { breadcrumb: "Exclusive Batch Details" },
           },
           // Participants
-        
           {
             path: "participants/new",
             element: <ParticipantForm />,
@@ -260,7 +273,7 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <AttendanceList />,
+            element: <BatchAttendanceDashboard />,
             handle: { breadcrumb: "Attendance" },
           },
           {
@@ -319,4 +332,3 @@ const router = createBrowserRouter([
 ]);
 
 export default router;
-

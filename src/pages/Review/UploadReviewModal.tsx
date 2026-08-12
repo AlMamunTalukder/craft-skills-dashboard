@@ -1,6 +1,7 @@
 // src/pages/Reviews/UploadReviewModal.tsx
 "use client";
 
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,7 +107,7 @@ export default function UploadReviewModal({
         
         console.log('Uploading image with session cookie...');
         
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/upload`, {
+        const response = await apiFetch(`${import.meta.env.VITE_API_URL}/upload`, {
             method: 'POST',
             body: formData,
             credentials: 'include', // This sends cookies with the request
@@ -131,7 +132,7 @@ export default function UploadReviewModal({
             try {
                 const errorData = JSON.parse(errorText);
                 errorMessage = errorData.message || errorMessage;
-            } catch (e) {
+            } catch {
                 // Not JSON
             }
             
@@ -186,7 +187,7 @@ export default function UploadReviewModal({
 
       const method = isEditing ? "PUT" : "POST";
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",

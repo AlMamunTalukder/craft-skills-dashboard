@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import type { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2, Hash, } from 'lucide-react';
@@ -101,7 +102,7 @@ export const scheduleColumns = (
             throw new Error('Schedule ID not found');
           }
 
-          const response = await fetch(
+          const response = await apiFetch(
             `${import.meta.env.VITE_API_URL}/class-schedule/${scheduleId}/status`,
             {
               method: 'PUT',

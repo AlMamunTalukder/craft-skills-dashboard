@@ -1,4 +1,5 @@
 // src/pages/Seminar/details/page.tsx
+import { apiFetch } from "../../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import DataTable from "@/components/DataTableComponents/DataTable";
@@ -45,7 +46,7 @@ export default function SeminarDetailsPage() {
 
       try {
         setLoading(true);
-        const response = await fetch(
+        const response = await apiFetch(
           `${import.meta.env.VITE_API_URL}/seminars/${id}`
         );
 

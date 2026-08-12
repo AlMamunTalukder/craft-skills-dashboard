@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { Card, CardContent } from "@/components/ui/card";
 import { StatCard } from "@/components/common/StatCard";
 import {
@@ -30,7 +31,7 @@ export default function SiteContent() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/site`);
+        const res = await apiFetch(`${import.meta.env.VITE_API_URL}/site`);
         const json = await res.json();
         setData(json?.data);
       } catch (error) {

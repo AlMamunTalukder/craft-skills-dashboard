@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChevronRight, type LucideIcon } from "lucide-react";
+﻿import { ChevronRight, type LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 

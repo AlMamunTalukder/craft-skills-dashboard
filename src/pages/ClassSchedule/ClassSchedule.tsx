@@ -1,3 +1,4 @@
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect, useCallback } from 'react';
 import DataTable from '@/components/DataTableComponents/DataTable';
 import { Card, CardContent } from '@/components/ui/card';
@@ -33,7 +34,7 @@ export default function ScheduleList() {
     try {
       setLoading(true);
       // Use the new endpoint for multiple schedules
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/class-schedule/all`);
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/class-schedule/all`);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -62,7 +63,7 @@ export default function ScheduleList() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/class-schedule/${id}`, {
+      const response = await apiFetch(`${import.meta.env.VITE_API_URL}/class-schedule/${id}`, {
         method: 'DELETE',
       });
 

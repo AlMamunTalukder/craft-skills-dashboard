@@ -1,4 +1,4 @@
-// src/components/FormInputs/SubmitButton.tsx
+﻿// src/components/FormInputs/SubmitButton.tsx
 import { cn } from "@/lib/utils";
 import { Loader, Loader2, Plus } from "lucide-react";
 import { useFormContext } from "react-hook-form";
@@ -31,7 +31,7 @@ export default function SubmitButton({
   try {
     const formContext = useFormContext();
     formState = formContext?.formState;
-  } catch (error) {
+  } catch {
     // Form context not available, use props only
   }
 

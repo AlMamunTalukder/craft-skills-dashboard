@@ -1,3 +1,4 @@
+import { apiFetch } from "../../../lib/apiFetch";
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,7 +18,7 @@ export default function EditSchedule() {
     const fetchSchedule = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/class-schedule/${id}`);
+        const response = await apiFetch(`${import.meta.env.VITE_API_URL}/class-schedule/${id}`);
 
         if (!response.ok) {
           const errorData = await response.json();

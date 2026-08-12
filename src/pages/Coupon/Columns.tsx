@@ -1,4 +1,5 @@
 // src/pages/Coupon/Columns.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import type { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash2 } from 'lucide-react';
@@ -65,7 +66,7 @@ export const couponColumns = (
       
       const handleToggleStatus = async (checked: boolean) => {
         try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/coupons/${couponId}/status`, {
+          const response = await apiFetch(`${import.meta.env.VITE_API_URL}/coupons/${couponId}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ isActive: checked }),

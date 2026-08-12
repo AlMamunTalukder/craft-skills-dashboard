@@ -1,4 +1,5 @@
 // src/pages/Users/AllUsers/AllUsersList.tsx
+import { apiFetch } from "../../../lib/apiFetch";
 import { useState, useEffect, useCallback } from "react";
 import DataTable from "@/components/DataTableComponents/DataTable";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,7 +21,7 @@ export default function UsersList() {
 
       const url = `${import.meta.env.VITE_API_URL}/users?role=${currentRole}`;
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         credentials: "include",
       });
 
@@ -51,7 +52,7 @@ export default function UsersList() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_URL}/users/${id}`,
         {
           method: "DELETE",

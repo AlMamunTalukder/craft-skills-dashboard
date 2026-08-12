@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
+﻿
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -149,7 +148,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     setNavItems((prevNav) => updateActiveStates(prevNav, location.pathname));
   }, [location.pathname]);
 
-  const { data: currentUser } = useCurrentUserQuery(undefined);
+  const { data: currentUser } = useCurrentUserQuery(null);
 
   const userData = {
     name: currentUser?.name || "User",

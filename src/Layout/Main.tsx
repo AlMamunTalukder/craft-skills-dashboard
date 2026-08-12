@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { AppSidebar } from "@/components/nav-sidebar";
+﻿import { AppSidebar } from "@/components/nav-sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,

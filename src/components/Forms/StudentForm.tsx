@@ -1,4 +1,5 @@
 // src/components/Forms/StudentForm.tsx
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -296,7 +297,7 @@ export default function StudentForm({
     setCouponState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_URL}/coupons/apply`,
         {
           method: "POST",
@@ -421,7 +422,7 @@ export default function StudentForm({
 
       if (isEdit && initialData?._id) {
         // Update existing student
-        const response = await fetch(
+        const response = await apiFetch(
           `${import.meta.env.VITE_API_URL}/admissions/${initialData._id}`,
           {
             method: "PUT",
@@ -442,7 +443,7 @@ export default function StudentForm({
         toast.success("Student updated successfully!");
       } else {
         // Create new student
-        const response = await fetch(
+        const response = await apiFetch(
           `${import.meta.env.VITE_API_URL}/admissions/register`,
           {
             method: "POST",

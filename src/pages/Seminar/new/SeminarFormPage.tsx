@@ -1,4 +1,5 @@
 // src/pages/Seminar/form/page.tsx
+import { apiFetch } from "../../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +42,7 @@ export default function SeminarFormPage() {
     const loadSeminar = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/seminars/${id}`);
+        const response = await apiFetch(`${import.meta.env.VITE_API_URL}/seminars/${id}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const json = await response.json();
 
@@ -83,7 +84,7 @@ export default function SeminarFormPage() {
 
       const method = isEditing ? "PUT" : "POST";
 
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(fixedData),

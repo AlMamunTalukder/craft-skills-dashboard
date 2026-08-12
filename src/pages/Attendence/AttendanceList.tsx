@@ -1,4 +1,5 @@
 // src/pages/Attendance/BatchDashboard.tsx - Updated
+import { apiFetch } from "../../lib/apiFetch";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ export default function BatchAttendanceDashboard() {
       setLoading(true);
 
       // Use the public endpoint
-      const response = await fetch(
+      const response = await apiFetch(
         `${import.meta.env.VITE_API_URL}/attendances/batch-stats-public`,
         {
           credentials: "include", 
@@ -63,7 +64,7 @@ export default function BatchAttendanceDashboard() {
   const fetchFallbackData = async () => {
     try {
       // Try to get batches directly
-      const batchesResponse = await fetch(
+      const batchesResponse = await apiFetch(
         `${import.meta.env.VITE_API_URL}/course-batches`,
         {
           credentials: "include",
