@@ -69,7 +69,7 @@ export default function CourseList() {
   const columns = courseColumns(handleDelete);
  
   return (
-    <div className="container mx-auto py-6">
+    <div className="w-full py-6">
       <TableTopBar
         title="Courses"
         linkTitle="Add New Course"

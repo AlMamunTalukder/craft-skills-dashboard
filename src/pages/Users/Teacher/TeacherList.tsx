@@ -83,7 +83,7 @@ export default function TeacherList() {
   const columns = userColumns(handleDelete, refreshUsers);
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="w-full py-6">
       <TableTopBar
         title="Teachers"
         linkTitle="Add New Teacher"

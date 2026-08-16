@@ -89,7 +89,7 @@ export default function ReviewList() {
   const columns = reviewColumns(handleDelete, handleEdit);
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="w-full py-6">
       <TableTopBar
         title="Reviews"
         linkTitle="Upload New Review"

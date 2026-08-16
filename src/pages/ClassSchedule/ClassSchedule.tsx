@@ -88,7 +88,7 @@ export default function ScheduleList() {
   const columns = scheduleColumns(handleDelete, refreshSchedules);
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="w-full py-6">
       <TableTopBar
         title="Weekly Schedules"
         linkTitle="Add New Schedule"

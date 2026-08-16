@@ -81,7 +81,7 @@ export default function UsersList() {
   const columns = userColumns(handleDelete, refreshUsers);
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="w-full py-6">
       <TableTopBar
         title="All Users"
         linkTitle=""

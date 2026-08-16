@@ -99,7 +99,7 @@ export default function BatchList() {
   const columns = batchColumns(handleDelete, handleStatusToggle, refreshBatches);
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="w-full py-6">
       <TableTopBar
         title="Course Batches"
         linkTitle="Add New Batch" 
