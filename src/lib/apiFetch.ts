@@ -8,7 +8,11 @@ const getCache = new Map<string, CacheEntry>();
 const inFlight = new Map<string, Promise<Response>>();
 
 export async function apiFetch(input: string, init?: RequestInit): Promise<Response> {
-  const method = (init?.method ?? "GET").toUpperCase();
+  // The backend uses session cookies for auth — always send them, so every
+  // dashboard call (including ones that forget to pass credentials) works
+  // against the protected endpoints.
+  const merged: RequestInit = { ...init, credentials: "include" };
+  const method = (merged.method ?? "GET").toUpperCase();
 
   if (method === "GET") {
     const cached = getCache.get(input);
@@ -21,7 +25,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
       return pending.then((response) => response.clone());
     }
 
-    const request = fetch(input, init)
+    const request = fetch(input, merged)
       .then((response) => {
         if (response.ok) {
           getCache.set(input, {
@@ -43,7 +47,7 @@ export async function apiFetch(input: string, init?: RequestInit): Promise<Respo
 
   getCache.clear();
   inFlight.clear();
-  return fetch(input, init);
+  return fetch(input, merged);
 }
 
 export function clearApiCache(): void {
