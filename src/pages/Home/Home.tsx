@@ -65,6 +65,7 @@ const Home = () => {
   const [courseBatches, setCourseBatches] = useState<CourseBatch[]>([]);
   const [selectedBatch, setSelectedBatch] = useState<CourseBatch | null>(null);
   const [totalAdmittedStudents, setTotalAdmittedStudents] = useState(0);
+  const [showAllAdmissions, setShowAllAdmissions] = useState(false);
   const [loading, setLoading] = useState(true);
 
   console.log("courseBatches:", courseBatches);
@@ -110,19 +111,16 @@ const Home = () => {
         if (defaultBatch) {
           setSelectedBatch(defaultBatch);
 
-          // Count admissions for this batch via the same endpoint the batch
-          // details page uses (response includes `count`)
-          const countRes = await apiFetch(
+          // Admissions for this batch: used for BOTH the count and the recent
+          // list. The response is sorted newest-first and includes `count`.
+          const batchRes = await apiFetch(
             `${import.meta.env.VITE_API_URL}/admissions/batch/${defaultBatch._id}`
           );
-          const countJson = await countRes.json();
-          setTotalAdmittedStudents(countJson?.count ?? countJson?.data?.length ?? 0);
+          const batchJson = await batchRes.json();
+          const admissions = batchJson?.data || [];
+          setRecentAdmissions(admissions);
+          setTotalAdmittedStudents(batchJson?.count ?? admissions.length);
         }
-
-        // Load recent admissions (last 5)
-        const recentRes = await apiFetch(`${import.meta.env.VITE_API_URL}/admissions?limit=5`);
-        const recentJson = await recentRes.json();
-        setRecentAdmissions(recentJson?.data || []);
 
       } catch (error) {
         console.error("Failed to load data:", error);
@@ -339,7 +337,7 @@ const Home = () => {
             {/* Recent Admissions List */}
             <div className="space-y-4">
               {recentAdmissions.length > 0 ? (
-                recentAdmissions.map((admission) => (
+                (showAllAdmissions ? recentAdmissions : recentAdmissions.slice(0, 10)).map((admission) => (
                   <div key={admission._id} className="flex items-center space-x-4 p-3 hover:bg-gray-50 rounded-lg transition-colors">
                     <div className="rounded-lg bg-green-100 p-2 shrink-0">
                       <UserPlus className="h-6 w-6 text-green-600" />
@@ -364,6 +362,12 @@ const Home = () => {
                 <div className="text-center py-8 text-muted-foreground">No recent admissions found</div>
               )}
             </div>
+
+            {!showAllAdmissions && recentAdmissions.length > 10 && (
+              <Button className="mt-2 w-full" variant="ghost" onClick={() => setShowAllAdmissions(true)}>
+                Show All ({recentAdmissions.length})
+              </Button>
+            )}
 
             <Button className="mt-4 w-full" variant="outline" onClick={handleViewAllAdmissions} disabled={!selectedBatch}>
               <Users className="mr-2 h-4 w-4" />
