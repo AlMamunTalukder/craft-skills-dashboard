@@ -110,12 +110,13 @@ const Home = () => {
         if (defaultBatch) {
           setSelectedBatch(defaultBatch);
 
-          // Count admissions for this batch via the backend
+          // Count admissions for this batch via the same endpoint the batch
+          // details page uses (response includes `count`)
           const countRes = await apiFetch(
-            `${import.meta.env.VITE_API_URL}/admissions/count?batchId=${defaultBatch._id}`
+            `${import.meta.env.VITE_API_URL}/admissions/batch/${defaultBatch._id}`
           );
           const countJson = await countRes.json();
-          setTotalAdmittedStudents(countJson?.data?.count ?? 0);
+          setTotalAdmittedStudents(countJson?.count ?? countJson?.data?.length ?? 0);
         }
 
         // Load recent admissions (last 5)
