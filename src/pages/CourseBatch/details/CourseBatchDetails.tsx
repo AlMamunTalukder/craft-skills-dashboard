@@ -107,7 +107,7 @@ export default function CourseBatchDetails() {
 
   if (loading) {
     return (
-      <div className="w-full py-6 px-4">
+      <div className="w-full md:py-6 md:px-4">
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
@@ -120,7 +120,7 @@ export default function CourseBatchDetails() {
 
   if (!batch) {
     return (
-      <div className="w-full py-6 px-4">
+      <div className="w-full md:py-6 md:px-4">
         <div className="text-center py-12">
           <h2 className="text-2xl font-bold mb-4">Batch Not Found</h2>
           <p className="text-gray-600 mb-6">
@@ -135,7 +135,7 @@ export default function CourseBatchDetails() {
   }
 
   return (
-    <div className="w-full py-6 px-4">
+    <div className="w-full md:py-6 md:px-4">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-4">

@@ -137,7 +137,7 @@ export default function ExclusiveBatchDetails() {
     };
 
     return (
-        <div className="w-full py-6 px-4">
+        <div className="w-full md:py-6 md:px-4">
             <Button variant="outline" asChild className="mb-6">
                 <Link to="/exclusive-offer/batches">
                     <ChevronLeft className="mr-2 h-4 w-4" />
