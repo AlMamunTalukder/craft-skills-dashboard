@@ -72,7 +72,7 @@ export const batchColumns = (
         <Switch
           checked={batch.isActive || false}
           onCheckedChange={(v) => onStatusToggle(batchId, v)}
-          className="data-[state=checked]:bg-green-600"
+          // className="data-[state=checked]:bg-green-600"
         />
       );
     },

@@ -129,9 +129,7 @@ export const scheduleColumns = (
             checked={schedule.isActive ?? true}
             onCheckedChange={handleToggleStatus}
           />
-          {/* <Badge variant={schedule.isActive ? 'default' : 'secondary'}>
-            {schedule.isActive ? 'Active' : 'Inactive'}
-          </Badge> */}
+          
         </div>
       );
     },

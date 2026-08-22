@@ -88,11 +88,10 @@ export const couponColumns = (
         <div className="flex items-center gap-2">
           <Switch
             checked={coupon.isActive}
-            onCheckedChange={handleToggleStatus}
+            onCheckedChange={handleToggleStatus} 
+            // className="data-[state=checked]:bg-green-600"
           />
-          {/* <Badge variant={coupon.isActive ? 'default' : 'secondary'}>
-            {coupon.isActive ? 'Active' : 'Inactive'}
-          </Badge> */}
+         
         </div>
       );
     },
