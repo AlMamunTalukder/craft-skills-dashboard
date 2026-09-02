@@ -62,13 +62,13 @@ const Home = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<SiteData | null>(null);
   const [recentAdmissions, setRecentAdmissions] = useState<Admission[]>([]);
-  const [courseBatches, setCourseBatches] = useState<CourseBatch[]>([]);
+  const [, setCourseBatches] = useState<CourseBatch[]>([]);
   const [selectedBatch, setSelectedBatch] = useState<CourseBatch | null>(null);
   const [totalAdmittedStudents, setTotalAdmittedStudents] = useState(0);
   const [showAllAdmissions, setShowAllAdmissions] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  console.log("courseBatches:", courseBatches);
+
 
 
   const [menuSettings, setMenuSettings] = useState({
@@ -150,7 +150,6 @@ const Home = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem('token')}`
         },
         credentials: "include",
         body: JSON.stringify({ [key]: value }),

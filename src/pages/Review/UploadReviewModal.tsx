@@ -66,9 +66,10 @@ export default function UploadReviewModal({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please upload an image file (JPEG, PNG, etc.)");
+    // Validate file type - whitelist only, block SVG for XSS
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Only JPG, PNG, WEBP allowed (SVG blocked for security)");
       return;
     }
 
@@ -191,7 +192,6 @@ export default function UploadReviewModal({
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         credentials: 'include',
         body: JSON.stringify(reviewPayload),
@@ -279,7 +279,7 @@ export default function UploadReviewModal({
                     </p>
                     <Input
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg,image/png,image/webp,image/jpg"
                       onChange={handleImageUpload}
                       className="hidden"
                       id="image-upload"

@@ -1,6 +1,9 @@
 import { apiFetch } from "./apiFetch";
 
-const DASHBOARD_API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+const DASHBOARD_API_URL = import.meta.env.VITE_API_URL;
+if (!DASHBOARD_API_URL && !import.meta.env.DEV) {
+  console.error("VITE_API_URL missing - check env");
+}
 
 
 // Get all courses (not just active ones)
