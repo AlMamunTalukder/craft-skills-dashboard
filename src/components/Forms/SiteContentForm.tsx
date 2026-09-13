@@ -43,12 +43,10 @@ interface SiteContentData {
   whatsappNumber?: string;
   youtube?: string;
   telegram?: string;
-  // logoLight: string;
-  // logoDark: string;
   totalsTeachers?: number;
   totalCourses?: number;
   totalBatches?: number;
-  successRate?: number;
+  successRate?: number | string;
 }
 
 interface Props {
@@ -65,16 +63,26 @@ export default function SiteContentForm({ initialValues }: Props) {
     setLoading(true);
 
     try {
+      const cleanedSuccessRate =
+        formData.successRate === undefined || formData.successRate === ""
+          ? undefined
+          : Number.parseFloat(String(formData.successRate));
+
+      const payload = {
+        ...formData,
+        successRate: Number.isFinite(cleanedSuccessRate as number)
+          ? cleanedSuccessRate
+          : undefined,
+      };
+
       const response = await apiFetch(`${import.meta.env.VITE_API_URL}/site`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
-
-   
 
       if (response.ok) {
         toast.success("Site content updated successfully.");
@@ -82,12 +90,9 @@ export default function SiteContentForm({ initialValues }: Props) {
           navigate("/site-content");
         }, 1000);
       } else {
-        // const errorData = await response.json();
-        // console.error('Update failed:', errorData);
         throw new Error("Failed to update site content");
       }
     } catch (error) {
-      // console.error('Error updating site content:', error);
       toast.error(
         error instanceof Error
           ? error.message
@@ -115,6 +120,22 @@ export default function SiteContentForm({ initialValues }: Props) {
       [name]: value === "" ? 0 : Number(value),
     }));
   };
+
+  const handleSuccessRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9.]/g, "");
+    const parts = value.split(".");
+    const cleanValue = parts.length > 2 ? `${parts[0]}.${parts.slice(1).join("")}` : value;
+
+    setFormData((prev) => ({
+      ...prev,
+      successRate: cleanValue,
+    }));
+  };
+
+  const formattedSuccessRate =
+    formData.successRate === undefined || formData.successRate === ""
+      ? ""
+      : String(formData.successRate);
 
   return (
     <div className="space-y-6">
@@ -406,13 +427,12 @@ export default function SiteContentForm({ initialValues }: Props) {
                 <Input
                   id="successRate"
                   name="successRate"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={formData.successRate || 0}
-                  onChange={handleNumberChange}
-                  placeholder="98"
-                  className="text-center text-lg"
+                  type="text"
+                  value={formattedSuccessRate}
+                  onChange={handleSuccessRateChange}
+                  placeholder="99.99"
+                  inputMode="decimal"
+                  className="text-center text-lg font-medium"
                 />
               </div>
             </div>
